@@ -40,9 +40,10 @@ namespace ngraph
                 });
                 return rc;
             };
-            for (auto p : get().m_string_enums)
+            const auto lower_name = to_lower(name);
+            for (const auto p : get().m_string_enums)
             {
-                if (to_lower(p.first) == to_lower(name))
+                if (to_lower(p.first) == lower_name)
                 {
                     return p.second;
                 }
@@ -65,10 +66,10 @@ namespace ngraph
 
     private:
         /// Creates the mapping.
-        EnumNames(const std::string& enum_name,
-                  const std::vector<std::pair<std::string, EnumType>> string_enums)
-            : m_enum_name(enum_name)
-            , m_string_enums(string_enums)
+        EnumNames(std::string&& enum_name,
+                  std::vector<std::pair<std::string, EnumType>>&& string_enums)
+            : m_enum_name(std::move(enum_name))
+            , m_string_enums(std::move(string_enums))
         {
         }
 
@@ -76,7 +77,7 @@ namespace ngraph
         static EnumNames<EnumType>& get();
 
         const std::string m_enum_name;
-        std::vector<std::pair<std::string, EnumType>> m_string_enums;
+        const std::vector<std::pair<std::string, EnumType>> m_string_enums;
     };
 
     /// Returns the enum value matching the string
