@@ -142,6 +142,8 @@ void ov::pass::ConvertBatchToSpace::convert_batch_to_space_by_elements() {
 
         shared_ptr<Node> flat_node = data.get_node_shared_ptr();
 
+        // Concatenates "non empty" tensors. It's used with 1D tensors to form shape input tensors.
+        // "Empty" tensors of shape value {0} aren't considered as these bring no value.
         const auto make_concat = [&](OutputVector nodes) {
             nodes.erase(remove_if(nodes.begin(),
                                   nodes.end(),
