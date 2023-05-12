@@ -405,6 +405,7 @@ TEST(GraphComparatorTests, CheckTensorIteratorPositive) {
         function = function_ref->clone();
     }
     comparator.enable(FunctionsComparator::NODES);
+    comparator.enable(FunctionsComparator::SUBGRAPH_DESCRIPTORS);
     auto res = comparator.compare(function, function_ref);
     ASSERT_TRUE(res.valid) << res.message;
 }

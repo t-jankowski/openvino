@@ -194,11 +194,8 @@ public:
             }
             const auto& param_partial_shape = m_parameter->get_partial_shape();
             const auto& input_partial_shape = m_input.get_partial_shape();
-            if (param_partial_shape.is_dynamic() && input_partial_shape.is_dynamic()) {
+            if (param_partial_shape.is_dynamic() || input_partial_shape.is_dynamic()) {
                 return true;
-            }
-            if (!param_partial_shape.is_static() || !input_partial_shape.is_static()) {
-                return false;
             }
             const auto& param_shape = param_partial_shape.to_shape();
             const auto& input_shape = input_partial_shape.to_shape();
@@ -290,11 +287,8 @@ public:
 
             const auto& output_partial_shape = m_output.get_partial_shape();
             const auto& result_partial_shape = m_result->output(0).get_partial_shape();
-            if (result_partial_shape.is_dynamic() && output_partial_shape.is_dynamic()) {
+            if (result_partial_shape.is_dynamic() || output_partial_shape.is_dynamic()) {
                 return true;
-            }
-            if (!result_partial_shape.is_static() || !output_partial_shape.is_static()) {
-                return false;
             }
             const auto& output_shape = output_partial_shape.to_shape();
             const auto& result_shape = result_partial_shape.to_shape();
