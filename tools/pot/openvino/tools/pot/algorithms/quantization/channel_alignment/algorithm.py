@@ -1,4 +1,4 @@
-# Copyright (C) 2020-2021 Intel Corporation
+# Copyright (C) 2020-2022 Intel Corporation
 # SPDX-License-Identifier: Apache-2.0
 
 from copy import deepcopy
@@ -29,10 +29,13 @@ class ActivationChannelAlignment(Algorithm):
             self._config.get(
                 'stat_subset_size', len(self._engine.data_loader)),
             len(self._engine.data_loader))
+        stat_batch_size = min(
+            self._config.get('stat_batch_size', 1), len(self._engine.data_loader))
         self.total_exec_steps = stat_subset_size
         shuffle_data = self._config.get('shuffle_data', False)
         seed = self._config.get('seed', 0)
-        self._sampler = create_sampler(engine, stat_subset_size, shuffle_data, seed)
+        self._sampler = create_sampler(
+            engine, stat_subset_size, shuffle_data, seed, stat_batch_size)
 
     @property
     def change_original_model(self):
@@ -75,7 +78,7 @@ class ActivationChannelAlignment(Algorithm):
             # Step over bias Add node
             if nu.get_bias_for_node(node_in):
                 node_in = nu.get_node_output(node_in, 0)[0]
-            name = node_in.name
+            name = node_in.fullname
             stats_layout[name] = {'channel_range_min': TensorStatistic(asf.quantile_per_channel, q=1e-4),
                                   'channel_range_max': TensorStatistic(asf.quantile_per_channel, q=1-1e-4)}
 
@@ -86,7 +89,7 @@ class ActivationChannelAlignment(Algorithm):
         # Step over bias Add node
         if nu.get_bias_for_node(node_in):
             node_in = nu.get_node_output(node_in, 0)[0]
-        name = node_in.name
+        name = node_in.fullname
 
         amin = stats[name]['channel_range_min']
         amax = stats[name]['channel_range_max']
@@ -108,7 +111,7 @@ class ActivationChannelAlignment(Algorithm):
         weight_in_type = weight_in_value.dtype
         weight_in_shape = weight_in_value.shape
         if weight_in_shape[0] == scale_factor.shape[0]:
-            scale_in_shape = np.ones(len(weight_in_shape), dtype=np.int)
+            scale_in_shape = np.ones(len(weight_in_shape), dtype=int)
             scale_in_shape[0] = scale_factor.shape[0]
             weight_in_value = weight_in_value / scale_factor.reshape(scale_in_shape)
             nu.set_node_value(weight_in, weight_in_value.astype(weight_in_type))
@@ -122,7 +125,7 @@ class ActivationChannelAlignment(Algorithm):
 
             weight_out_value = nu.get_node_value(weight_out)
             weight_out_type = weight_out_value.dtype
-            scale_out_shape = np.ones(len(weight_out_value.shape), dtype=np.int)
+            scale_out_shape = np.ones(len(weight_out_value.shape), dtype=int)
             scale_out_shape[1] = scale_factor.shape[0]
             weight_out_value = weight_out_value * scale_factor.reshape(scale_out_shape)
             nu.set_node_value(weight_out, weight_out_value.astype(weight_out_type))
@@ -151,7 +154,7 @@ class ActivationChannelAlignment(Algorithm):
 
     def find_node_pairs(self, model):
         node_pairs_list = []
-        nodes = sorted([(n.name, n) for n in mu.get_nodes_by_type(model, ['Convolution'])])
+        nodes = sorted([(n.fullname, n) for n in mu.get_nodes_by_type(model, ['Convolution'])])
         for _, node_out in nodes:
             if not self.check_conv_node(node_out):
                 continue
@@ -173,7 +176,7 @@ class ActivationChannelAlignment(Algorithm):
             node_pairs_list.append((node_in, weights_in, bias_in,
                                     node_out, weights_out, bias_out))
             # align activations channels inside this sequence
-            logger.debug('{} -> {}'.format(node_in.name, node_out.name))
+            logger.debug('{} -> {}'.format(node_in.fullname, node_out.fullname))
 
         return node_pairs_list
 
@@ -184,15 +187,15 @@ class ActivationChannelAlignment(Algorithm):
         if not node_out.has_valid('pads_begin') or not node_out.has_valid('pads_end') or \
                 not np.all(np.array(node_out.pads_begin) == 0) or not np.all(np.array(node_out.pads_end) == 0):
             logger.debug('Pad of {} Convolution node != 0 '
-                         'Do not align activations for this node pair.'.format(node_out.name))
+                         'Do not align activations for this node pair.'.format(node_out.fullname))
             return False
         if not node_out.has_valid('strides') or not np.all(np.array(node_out.strides) == 1):
             logger.debug('Strides of {} Convolution node != 1 '
-                         'Do not align activations for this node pair.'.format(node_out.name))
+                         'Do not align activations for this node pair.'.format(node_out.fullname))
             return False
         if not node_out.has_valid('strides') or not np.all(np.array(node_out.dilations) == 1):
             logger.debug('Dilation of {} Convolution node != 1 '
-                         'Do not align activations for this node pair.'.format(node_out.name))
+                         'Do not align activations for this node pair.'.format(node_out.fullname))
             return False
         return True
 
@@ -203,13 +206,13 @@ class ActivationChannelAlignment(Algorithm):
         node_out_producer_port = node_out.in_port(0).get_source()
         if len(node_out_producer_port.get_destinations()) > 1:
             logger.debug('{} has a producer that feeds many nodes. '
-                         'Do not align activations for this node pair.'.format(node_out.name))
+                         'Do not align activations for this node pair.'.format(node_out.fullname))
             return False
         # check that producer is convolution
         if node_in.type not in ['Convolution', 'MatMul']:
-            logger.debug('{} gets data from {} {}'.format(node_out.name, node_in.name, node_in.type))
+            logger.debug('{} gets data from {} {}'.format(node_out.fullname, node_in.fullname, node_in.type))
             logger.debug('{} has no Convolution producer. '
-                         'Do not align activations for this node pair.'.format(node_out.name))
+                         'Do not align activations for this node pair.'.format(node_out.fullname))
             return False
         return True
 
@@ -241,7 +244,7 @@ class ActivationChannelAlignment(Algorithm):
         if w_out.type != 'Const':
             w_out = None
             logger.debug('{} has no const weights. '
-                         'Do not align activations for this node pair.'.format(node_out.name))
+                         'Do not align activations for this node pair.'.format(node_out.fullname))
 
         # get consumer convolution bias
         b_out = nu.get_bias_for_node(node_out)

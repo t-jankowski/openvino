@@ -1,4 +1,4 @@
-# Copyright (C) 2020-2021 Intel Corporation
+# Copyright (C) 2020-2022 Intel Corporation
 # SPDX-License-Identifier: Apache-2.0
 
 import os
@@ -9,7 +9,7 @@ from sys import maxsize
 import numpy as np
 
 from .utils import create_metric_config, is_preset_performance, \
-    get_mixed_preset_config, evaluate_model, get_num_of_quantized_ops
+    get_mixed_preset_config, evaluate_model, get_num_of_quantized_ops, prepare_nodes_for_logger
 from ..utils import load_hardware_config
 from ...algorithm import Algorithm
 from ...algorithm_selector import COMPRESSION_ALGORITHMS
@@ -181,8 +181,8 @@ class AccuracyAwareCommon(Algorithm):
             default_quantization_config = self._preset_conversion_algo.config
 
         if not self._original_per_sample_metrics:
-            _, self._original_per_sample_metrics = \
-                self._evaluate_model(model=model, subset_indices=self._diff_subset_indices)
+            self._original_per_sample_metrics = self._calculate_per_sample_metrics(model,
+                                                                                   self._diff_subset_indices)
 
         # change quantization parameters of the model
         if self._config.tune_hyperparams:
@@ -356,7 +356,7 @@ class AccuracyAwareCommon(Algorithm):
             logger.debug('Changed FakeQuantize nodes:\n %s', '\n'.join(all_changed_nodes_names))
             logger.info(' %d out of %d layers have been reverted back to the %s precision: %s',
                         len(all_ops_in_targeted_prec), self._quantized_layers_num, self._precision_change_to,
-                        ', '.join(all_ops_in_targeted_prec))
+                        ', '.join(prepare_nodes_for_logger(all_ops_in_targeted_prec)))
             send_event("result_aa", self._get_result_aa(metrics_accuracy_drop, len(all_ops_in_targeted_prec)))
 
         logger.update_progress(self.total_exec_steps)
@@ -373,8 +373,8 @@ class AccuracyAwareCommon(Algorithm):
         """
         if qmodel_per_sample_metrics is None:
             # get quantized model predictions
-            _, qmodel_per_sample_metrics = self._evaluate_model(model=model,
-                                                                subset_indices=self._diff_subset_indices)
+            qmodel_per_sample_metrics = self._calculate_per_sample_metrics(model,
+                                                                           self._diff_subset_indices)
 
         ranking_subset = self._get_ranking_subset(qmodel_per_sample_metrics, metric_name)  # not sorted
         node_importance_score = self._calculate_node_importance_scores(model,
@@ -418,27 +418,33 @@ class AccuracyAwareCommon(Algorithm):
 
         fake_quantize_nodes = get_nodes_by_type(model, ['FakeQuantize'])
         for node in fake_quantize_nodes:
-            if excluded_nodes and node.name in excluded_nodes:
+            if excluded_nodes and node.fullname in excluded_nodes:
                 continue
-            if node.name not in change_fqs:
-                modified_model, modified_fq_layers, _ = self._modify_model_in_scope(deepcopy(model), [node.name])
+            if node.fullname not in change_fqs:
+                modified_model, modified_fq_layers, _ = self._modify_model_in_scope(deepcopy(model), [node.fullname])
                 if not modified_fq_layers:
                     continue
                 logger.debug('Changed\\Removed a block of %d FQ layers: %s', len(modified_fq_layers),
                              modified_fq_layers)
                 change_fqs += modified_fq_layers
-                self._engine.set_model(modified_model)
-                self._engine.allow_pairwise_subset = True
-                index_sampler = create_sampler(self._engine, samples=list(ranking_subset))
-                metrics, *_ = self._engine.predict(sampler=index_sampler)
-                self._engine.allow_pairwise_subset = False
                 logger.update_progress(self._config.ranking_subset_size)
-                ranking_metric = self._metrics_config[metric_name].ranking
-                node_importance_score[node.name] = ranking_metric.comparator(metrics[ranking_metric.name])
+                node_importance_score[node.fullname] = self._get_score(modified_model,
+                                                                       list(ranking_subset),
+                                                                       metric_name)
 
         eu.reset_dataset_to_default(self._engine)
 
         return node_importance_score
+
+    def _get_score(self, model, ranking_subset, metric_name):
+        self._engine.set_model(model)
+        self._engine.allow_pairwise_subset = True
+        index_sampler = create_sampler(self._engine, samples=list(ranking_subset))
+        metrics, *_ = self._engine.predict(sampler=index_sampler)
+        self._engine.allow_pairwise_subset = False
+        ranking_metric = self._metrics_config[metric_name].ranking
+        score = ranking_metric.comparator(metrics[ranking_metric.name])
+        return score
 
     def _modify_model_in_scope(self, model, nodes_names):
         return self._graph_transformer.remove_fq_nodes(deepcopy(model), nodes_names)
@@ -532,6 +538,10 @@ class AccuracyAwareCommon(Algorithm):
         predict_step_size = self._dataset_size if not subset_indices else len(subset_indices)
         logger.update_progress(predict_step_size)
         return metrics, metrics_per_sample
+
+    def _calculate_per_sample_metrics(self, model, subset_indices):
+        _, per_sample_metrics = self._evaluate_model(model, subset_indices=subset_indices)
+        return per_sample_metrics
 
     def _request_alt_statistics(self, model):
         pass

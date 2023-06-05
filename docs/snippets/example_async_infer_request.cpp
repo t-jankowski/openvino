@@ -2,9 +2,19 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#ifndef IN_OV_COMPONENT
+#    define IN_OV_COMPONENT
+#    define WAS_OV_LIBRARY_DEFINED
+#endif
+
 #include <threading/ie_itask_executor.hpp>
 #include <cpp_interfaces/impl/ie_infer_async_request_thread_safe_default.hpp>
 #include <memory>
+
+#ifdef WAS_OV_LIBRARY_DEFINED
+#    undef IN_OV_COMPONENT
+#    undef WAS_OV_LIBRARY_DEFINED
+#endif
 
 using namespace InferenceEngine;
 
@@ -12,11 +22,11 @@ class AcceleratorSyncRequest : public IInferRequestInternal {
 public:
     using Ptr = std::shared_ptr<AcceleratorSyncRequest>;
 
-    void Preprocess();
-    void WriteToDevice();
-    void RunOnDevice();
-    void ReadFromDevice();
-    void PostProcess();
+    void preprocess();
+    void write_to_device();
+    void run_on_device();
+    void read_from_device();
+    void post_process();
 };
 
 // ! [async_infer_request:define_pipeline]
@@ -40,19 +50,19 @@ class AcceleratorAsyncInferRequest : public AsyncInferRequestThreadSafeDefault {
         // Five pipeline stages of synchronous infer request are run by different executors
         _pipeline = {
             { _preprocessExecutor , [this] {
-                _accSyncRequest->Preprocess();
+                _accSyncRequest->preprocess();
             }},
             { _writeToDeviceExecutor , [this] {
-                _accSyncRequest->WriteToDevice();
+                _accSyncRequest->write_to_device();
             }},
             { _runOnDeviceExecutor , [this] {
-                _accSyncRequest->RunOnDevice();
+                _accSyncRequest->run_on_device();
             }},
             { _readFromDeviceExecutor , [this] {
-                _accSyncRequest->ReadFromDevice();
+                _accSyncRequest->read_from_device();
             }},
             { _postProcessExecutor , [this] {
-                _accSyncRequest->PostProcess();
+                _accSyncRequest->post_process();
             }},
         };
     }

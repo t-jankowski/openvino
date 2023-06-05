@@ -1,0 +1,11 @@
+-c ../constraints.txt
+coverage
+astroid
+pylint
+pyenchant
+test-generator
+defusedxml
+requests
+pytest
+py
+fastjsonschema

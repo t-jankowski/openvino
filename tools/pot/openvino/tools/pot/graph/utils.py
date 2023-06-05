@@ -1,4 +1,4 @@
-# Copyright (C) 2020-2021 Intel Corporation
+# Copyright (C) 2020-2022 Intel Corporation
 # SPDX-License-Identifier: Apache-2.0
 
 from pathlib import PosixPath, WindowsPath
@@ -7,22 +7,28 @@ import json
 
 import numpy as np
 
-import openvino.tools.pot.version
-from .cpu_patterns import get_cpu_ignored_patterns
+from openvino.tools.pot.version import get_version
+from .cpu_patterns import get_cpu_ignored_patterns, get_cpu_spr_ignored_patterns
 from .gpu_patterns import get_gpu_ignored_patterns
 from .vpu_patterns import get_vpu_ignored_patterns
-from .gna_patterns import get_gna_ignored_patterns
+from .gna_patterns import get_gna_ignored_patterns, get_gna3_ignored_patterns
 from .special_operations import QUANTIZE_AGNOSTIC_OPERATIONS
-from .node_utils import get_all_node_outputs
+from .node_utils import get_all_node_outputs, get_input_shape
 
 HARDWARE_AWARE_IGNORED_PATTERNS = {
+    'ANY': get_cpu_ignored_patterns(),
     'CPU': get_cpu_ignored_patterns(),
     'GPU': get_gpu_ignored_patterns(),
     'VPU': get_vpu_ignored_patterns(),
-    'GNA': get_gna_ignored_patterns()
+    'GNA': get_gna_ignored_patterns(),
+    'GNA3': get_gna3_ignored_patterns(),
+    'GNA3.5': get_gna3_ignored_patterns(),
+    'CPU_SPR': get_cpu_spr_ignored_patterns()
 }
 
 DEFAULT_PATH = 'PATH'
+
+HARDWARE_SPECIAL_FIELDS = ['target_device', 'primary_bitwidth']
 
 
 # pylint: disable=method-hidden
@@ -109,7 +115,7 @@ def find_operation_matches(src_ops, dst_ops):
 def get_operation_list(hardware_config):
     hw_ops = []
     for item in hardware_config:
-        if 'target_device' in item:
+        if any([special_value in item for special_value in HARDWARE_SPECIAL_FIELDS]):
             continue
 
         op = {}
@@ -120,13 +126,21 @@ def get_operation_list(hardware_config):
             hw_ops.append(op)
     return hw_ops
 
+def get_operation_list_with_outputs(hardware_config):
+    hw_ops = []
+    for item in hardware_config:
+        if any([special_value in item for special_value in HARDWARE_SPECIAL_FIELDS]):
+            continue
+        if 'quantization' in item and 'outputs' in item['quantization']:
+            hw_ops.append(item['type'])
+    return hw_ops
 
 def create_quantization_info_for_mo(config):
     quantization_section = {}
     config_info = {key: config[key] for key in ['compression', 'engine']}
     quantization_section['config'] = json.dumps(config_info, indent='\t',
                                                 cls=PathEncoder).replace('"', "'").replace('\n', '\n\t')
-    quantization_section['version'] = openvino.tools.pot.version.__version__
+    quantization_section['version'] = get_version()
     return quantization_section
 
 
@@ -142,7 +156,7 @@ def is_ignored(ignored_params, op, skipped=True):
     """
     if ignored_params.get('skip_model') or \
             skipped and 'skipped' in op and op['skipped'] or\
-            op.name in ignored_params['scope']:
+            op.fullname in ignored_params['scope']:
         return True
     for operation in ignored_params['operations']:
         if op.type == operation['type']:
@@ -188,7 +202,7 @@ def check_agnostic_and_ignored_params(model, ignored_params):
         children = [node for node in get_all_node_outputs(node) if node is not None]
         for child in children:
             if child not in quantize_agnostic:
-                ignored_params['scope'].append(child.name)
+                ignored_params['scope'].append(child.fullname)
             else:
                 add_new_ignored_params(model, node, quantize_agnostic,\
                                        ignored_params, model_is_cascade)
@@ -200,7 +214,7 @@ def check_agnostic_and_ignored_params(model, ignored_params):
         ignored_params_operation = [op['type'] for op in dict_ignored_operation_model['operations']]
 
         for node in model_dict['model'].get_op_nodes():
-            if (node.type in ignored_params_operation or node.name in dict_ignored_operation_model['scope']) \
+            if (node.type in ignored_params_operation or node.fullname in dict_ignored_operation_model['scope']) \
                                                                        and node.type in quantize_agnostic:
 
                 new_ignored_params = add_new_ignored_params(model_dict['model'], node,
@@ -218,3 +232,30 @@ def check_agnostic_and_ignored_params(model, ignored_params):
 
 def is_data_type_quantizable(type_node):
     return type_node not in (np.int32, np.int64, bool)
+
+
+def get_hardware_config_operation_type(node, available_types):
+    """ This function gets type by child
+    for hardware configuration of FQ node
+    :param node: node-type object
+    :param available_types: available types with config
+    :return: default or special type of layer as string
+    """
+
+    def _is_depth_wise(node):
+        if node.type == 'Convolution' and node.has_valid('group'):
+            group = node['group']
+            output = node['output']
+            input_shape = get_input_shape(node, 0)
+            if group == output and input_shape[1] == output:
+                return True
+        return False
+
+    type_checkers = {
+        'DepthWiseConvolution': _is_depth_wise
+    }
+
+    for real_type in type_checkers:
+        if real_type in available_types and type_checkers[real_type](node):
+            return real_type
+    return node.type

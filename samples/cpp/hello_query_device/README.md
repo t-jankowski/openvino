@@ -1,93 +1,110 @@
 # Hello Query Device C++ Sample {#openvino_inference_engine_samples_hello_query_device_README}
 
-This sample demonstrates how to execute an query Inference Engine devices, prints their metrics and default configuration values, using [Query Device API feature](../../../docs/IE_DG/InferenceEngine_QueryAPI.md).
+@sphinxdirective
 
-Hello Query Device C++ sample application demonstrates how to use the following Inference Engine C++ API in applications:
+This sample demonstrates how to execute an query OpenVINO™ Runtime devices, prints their metrics and default configuration values, using :doc:`Properties API <openvino_docs_OV_UG_query_api>`.
 
-| Feature    | API  | Description |
-|:---     |:--- |:---
-|Available Devices|`InferenceEngine::Core::GetAvailableDevices`, `InferenceEngine::Core::GetMetric`, `InferenceEngine::Core::GetConfig`| Get available devices information and configuration for inference
+The following C++ API is used in the application:
 
-Basic Inference Engine API is covered by [Hello Classification C++ sample](../hello_classification/README.md).
++----------------------------------------+---------------------------------------+-------------------------------------------------------------------+
+| Feature                                | API                                   | Description                                                       |
++========================================+=======================================+===================================================================+
+| Available Devices                      | ``ov::Core::get_available_devices``,  | Get available devices information and configuration for inference |
+|                                        | ``ov::Core::get_property``            |                                                                   |
++----------------------------------------+---------------------------------------+-------------------------------------------------------------------+
 
-| Options  | Values |
-|:---                              |:---
-| Supported devices                | [All](../../../docs/IE_DG/supported_plugins/Supported_Devices.md) |
-| Other language realization       | [Python](../../../samples/python/hello_query_device/README.md) |
+Basic OpenVINO™ Runtime API is covered by :doc:`Hello Classification C++ sample <openvino_inference_engine_samples_hello_classification_README>`.
 
-## How It Works
++----------------------------------------+----------------------------------------------------------------------------------------------+
+| Options                                | Values                                                                                       |
++========================================+==============================================================================================+
+| Supported devices                      | :doc:`All <openvino_docs_OV_UG_supported_plugins_Supported_Devices>`                         |
++----------------------------------------+----------------------------------------------------------------------------------------------+
+| Other language realization             | :doc:`Python <openvino_inference_engine_ie_bridges_python_sample_hello_query_device_README>` |
++----------------------------------------+----------------------------------------------------------------------------------------------+
 
-The sample queries all available Inference Engine devices, prints their supported metrics and plugin configuration parameters.
+How It Works
+############
 
-## Building
+The sample queries all available OpenVINO™ Runtime devices, prints their supported metrics and plugin configuration parameters.
 
-To build the sample, please use instructions available at [Build the Sample Applications](../../../docs/IE_DG/Samples_Overview.md) section in Inference Engine Samples guide.
+Building
+########
 
-## Running
+To build the sample, please use instructions available at :doc:`Build the Sample Applications <openvino_docs_OV_UG_Samples_Overview>` section in OpenVINO™ Toolkit Samples guide.
+
+Running
+#######
 
 To see quired information, run the following:
 
-```
-<path_to_sample>/hello_query_device -h
-Usage : hello_query_device
-```
+.. code-block:: console
+   
+   hello_query_device
 
-## Sample Output
+Sample Output
+#############
 
 The application prints all available devices with their supported metrics and default values for configuration parameters:
 
-```
-Available devices:
-        Device: CPU
-        Metrics:
-                SUPPORTED_METRICS : [ AVAILABLE_DEVICES SUPPORTED_METRICS FULL_DEVICE_NAME OPTIMIZATION_CAPABILITIES SUPPORTED_CONFIG_KEYS RANGE_FOR_ASYNC_INFER_REQUESTS RANGE_FOR_STREAMS ]
-                FULL_DEVICE_NAME : Intel(R) Core(TM) i5-8350U CPU @ 1.70GHz
-                OPTIMIZATION_CAPABILITIES : [ FP32 FP16 INT8 BIN ]
-                SUPPORTED_CONFIG_KEYS : [ CPU_BIND_THREAD CPU_THREADS_NUM CPU_THROUGHPUT_STREAMS DUMP_EXEC_GRAPH_AS_DOT DYN_BATCH_ENABLED DYN_BATCH_LIMIT ENFORCE_BF16 EXCLUSIVE_ASYNC_REQUESTS PERF_COUNT ]
-                RANGE_FOR_ASYNC_INFER_REQUESTS : { 1, 1, 1 }
-                RANGE_FOR_STREAMS : { 1, 8 }
-        Default values for device configuration keys:
-                CPU_BIND_THREAD : NUMA
-                CPU_THREADS_NUM : 0
-                CPU_THROUGHPUT_STREAMS : 1
-                DUMP_EXEC_GRAPH_AS_DOT : ""
-                DYN_BATCH_ENABLED : NO
-                DYN_BATCH_LIMIT : 0
-                ENFORCE_BF16 : NO
-                EXCLUSIVE_ASYNC_REQUESTS : NO
-                PERF_COUNT : NO
+.. code-block:: console
+   
+   [ INFO ] OpenVINO Runtime version ......... <version>
+   [ INFO ] Build ........... <build>
+   [ INFO ]
+   [ INFO ] Available devices:
+   [ INFO ] CPU
+   [ INFO ]        SUPPORTED_METRICS:
+   [ INFO ]                AVAILABLE_DEVICES : [  ]
+   [ INFO ]                FULL_DEVICE_NAME : Intel(R) Core(TM) i5-8350U CPU @ 1.70GHz
+   [ INFO ]                OPTIMIZATION_CAPABILITIES : [ FP32 FP16 INT8 BIN ]
+   [ INFO ]                RANGE_FOR_ASYNC_INFER_REQUESTS : { 1, 1, 1 }
+   [ INFO ]                RANGE_FOR_STREAMS : { 1, 8 }
+   [ INFO ]                IMPORT_EXPORT_SUPPORT : true
+   [ INFO ]        SUPPORTED_CONFIG_KEYS (default values):
+   [ INFO ]                CACHE_DIR : ""
+   [ INFO ]                CPU_BIND_THREAD : NO
+   [ INFO ]                CPU_THREADS_NUM : 0
+   [ INFO ]                CPU_THROUGHPUT_STREAMS : 1
+   [ INFO ]                DUMP_EXEC_GRAPH_AS_DOT : ""
+   [ INFO ]                DYN_BATCH_ENABLED : NO
+   [ INFO ]                DYN_BATCH_LIMIT : 0
+   [ INFO ]                ENFORCE_BF16 : NO
+   [ INFO ]                EXCLUSIVE_ASYNC_REQUESTS : NO
+   [ INFO ]                PERFORMANCE_HINT : ""
+   [ INFO ]                PERFORMANCE_HINT_NUM_REQUESTS : 0
+   [ INFO ]                PERF_COUNT : NO
+   [ INFO ]
+   [ INFO ] GNA
+   [ INFO ]        SUPPORTED_METRICS:
+   [ INFO ]                AVAILABLE_DEVICES : [ GNA_SW_EXACT ]
+   [ INFO ]                OPTIMAL_NUMBER_OF_INFER_REQUESTS : 1
+   [ INFO ]                FULL_DEVICE_NAME : GNA_SW_EXACT
+   [ INFO ]                GNA_LIBRARY_FULL_VERSION : 3.0.0.1455
+   [ INFO ]                IMPORT_EXPORT_SUPPORT : true
+   [ INFO ]        SUPPORTED_CONFIG_KEYS (default values):
+   [ INFO ]                EXCLUSIVE_ASYNC_REQUESTS : NO
+   [ INFO ]                GNA_COMPACT_MODE : YES
+   [ INFO ]                GNA_COMPILE_TARGET : ""
+   [ INFO ]                GNA_DEVICE_MODE : GNA_SW_EXACT
+   [ INFO ]                GNA_EXEC_TARGET : ""
+   [ INFO ]                GNA_FIRMWARE_MODEL_IMAGE : ""
+   [ INFO ]                GNA_FIRMWARE_MODEL_IMAGE_GENERATION : ""
+   [ INFO ]                GNA_LIB_N_THREADS : 1
+   [ INFO ]                GNA_PRECISION : I16
+   [ INFO ]                GNA_PWL_MAX_ERROR_PERCENT : 1.000000
+   [ INFO ]                GNA_PWL_UNIFORM_DESIGN : NO
+   [ INFO ]                GNA_SCALE_FACTOR : 1.000000
+   [ INFO ]                GNA_SCALE_FACTOR_0 : 1.000000
+   [ INFO ]                LOG_LEVEL : LOG_NONE
+   [ INFO ]                PERF_COUNT : NO
+   [ INFO ]                SINGLE_THREAD : YES
 
-        Device: GPU
-        Metrics:
-                SUPPORTED_METRICS : [ AVAILABLE_DEVICES SUPPORTED_METRICS FULL_DEVICE_NAME OPTIMIZATION_CAPABILITIES SUPPORTED_CONFIG_KEYS RANGE_FOR_ASYNC_INFER_REQUESTS RANGE_FOR_STREAMS ]
-                FULL_DEVICE_NAME : Intel(R) UHD Graphics 620 (iGPU)
-                OPTIMIZATION_CAPABILITIES : [ FP32 BIN FP16 ]
-                SUPPORTED_CONFIG_KEYS : [ CACHE_DIR CLDNN_ENABLE_FP16_FOR_QUANTIZED_MODELS CLDNN_GRAPH_DUMPS_DIR GPU_MAX_NUM_THREADS CLDNN_MEM_POOL CLDNN_NV12_TWO_INPUTS CLDNN_PLUGIN_PRIORITY CLDNN_PLUGIN_THROTTLE CLDNN_SOURCES_DUMPS_DIR GPU_ENABLE_LOOP_UNROLLING CONFIG_FILE DEVICE_ID DUMP_KERNELS DYN_BATCH_ENABLED EXCLUSIVE_ASYNC_REQUESTS GPU_THROUGHPUT_STREAMS PERF_COUNT TUNING_FILE TUNING_MODE ]
-                RANGE_FOR_ASYNC_INFER_REQUESTS : { 1, 2, 1 }
-                RANGE_FOR_STREAMS : { 1, 2 }
-        Default values for device configuration keys:
-                CACHE_DIR : ""
-                CLDNN_ENABLE_FP16_FOR_QUANTIZED_MODELS : YES
-                CLDNN_GRAPH_DUMPS_DIR : ""
-                CLDNN_MEM_POOL : YES
-                CLDNN_NV12_TWO_INPUTS : NO
-                CLDNN_PLUGIN_PRIORITY : 0
-                CLDNN_PLUGIN_THROTTLE : 0
-                CLDNN_SOURCES_DUMPS_DIR : ""
-                GPU_MAX_NUM_THREADS : 8
-                GPU_ENABLE_LOOP_UNROLLING : YES
-                CONFIG_FILE : ""
-                DEVICE_ID : ""
-                DUMP_KERNELS : NO
-                DYN_BATCH_ENABLED : NO
-                EXCLUSIVE_ASYNC_REQUESTS : NO
-                GPU_THROUGHPUT_STREAMS : 1
-                PERF_COUNT : NO
-                TUNING_FILE : ""
-                TUNING_MODE : TUNING_DISABLED
-```
+See Also
+########
 
-## See Also
+- :doc:`Integrate the OpenVINO™ Runtime with Your Application <openvino_docs_OV_UG_Integrate_OV_with_your_application>`
+- :doc:`Using OpenVINO™ Toolkit Samples <openvino_docs_OV_UG_Samples_Overview>`
 
-- [Integrate the Inference Engine with Your Application](../../../docs/IE_DG/Integrate_with_customer_application_new_API.md)
-- [Using Inference Engine Samples](../../../docs/IE_DG/Samples_Overview.md)
+@endsphinxdirective
+

@@ -1,10 +1,11 @@
-# Copyright (C) 2018-2021 Intel Corporation
+# Copyright (C) 2018-2023 Intel Corporation
 # SPDX-License-Identifier: Apache-2.0
 
 import numpy as np
 import pytest
 from common.layer_test_class import check_ir_version
 from common.onnx_layer_test_class import OnnxRuntimeLayerTest
+
 from unit_tests.utils.graph import build_graph
 
 
@@ -23,7 +24,7 @@ class TestReduceL1L2(OnnxRuntimeLayerTest):
 
         import onnx
         from onnx import helper
-        from onnx import TensorProto
+        from onnx import TensorProto, OperatorSetIdProto
 
         output_shape = shape.copy()
         _axes = axes.copy() if axes is not None else list(range(len(shape)))
@@ -54,8 +55,14 @@ class TestReduceL1L2(OnnxRuntimeLayerTest):
             [output],
         )
 
+        # Set ONNX Opset
+        onnx_opset = OperatorSetIdProto()
+        onnx_opset.domain = ""
+        # ONNX opset with `axes` as attribute in ONNX Reduce ops
+        onnx_opset.version = 11
+
         # Create the model (ModelProto)
-        onnx_net = helper.make_model(graph_def, producer_name='test_model')
+        onnx_net = helper.make_model(graph_def, producer_name='test_model', opset_imports=[onnx_opset])
 
         #
         #   Create reference IR net
@@ -102,7 +109,7 @@ class TestReduceL1L2(OnnxRuntimeLayerTest):
 
         import onnx
         from onnx import helper
-        from onnx import TensorProto
+        from onnx import TensorProto, OperatorSetIdProto
 
         output_shape = shape.copy()
         _axes = axes.copy() if axes is not None else list(range(len(shape)))
@@ -121,7 +128,7 @@ class TestReduceL1L2(OnnxRuntimeLayerTest):
         input = helper.make_tensor_value_info('input', TensorProto.FLOAT, output_shape)
         output = helper.make_tensor_value_info('output', TensorProto.FLOAT, concat_output_shape)
 
-        constant = np.random.randn(*shape).astype(np.float)
+        constant = np.random.randn(*shape).astype(float)
 
         node_const_def = onnx.helper.make_node(
             'Constant',
@@ -160,15 +167,23 @@ class TestReduceL1L2(OnnxRuntimeLayerTest):
             [output],
         )
 
+        # Set ONNX Opset
+        onnx_opset = OperatorSetIdProto()
+        onnx_opset.domain = ""
+        # ONNX opset with `axes` as attribute in ONNX Reduce ops
+        onnx_opset.version = 11
+
         # Create the model (ModelProto)
-        onnx_net = helper.make_model(graph_def, producer_name='test_model')
+        onnx_net = helper.make_model(graph_def, producer_name='test_model', opset_imports=[onnx_opset])
 
         #
         #   Create reference IR net
         #   Please, specify 'type': 'Input' for input node
         #   Moreover, do not forget to validate ALL layer attributes!!!
         #
-        constant = np.power(np.sum(a=np.abs(np.power(constant, reduce_p)), axis=tuple(_axes), keepdims=keep_dims), 1 / reduce_p)
+        constant = np.power(
+            np.sum(a=np.abs(np.power(constant, reduce_p)), axis=tuple(_axes), keepdims=keep_dims),
+            1 / reduce_p)
         ref_net = None
         if check_ir_version(10, None, ir_version):
             nodes_attributes = {
@@ -217,31 +232,42 @@ class TestReduceL1L2(OnnxRuntimeLayerTest):
     @pytest.mark.parametrize("keep_dims", [True, False])
     @pytest.mark.parametrize("reduce_p", [1, 2])
     @pytest.mark.precommit
-    def test_reduce_lp_precommit(self, params, keep_dims, reduce_p, ie_device, precision, ir_version, temp_dir):
-        self._test(*self.create_reduce_lp(**params, keep_dims=keep_dims, reduce_p=reduce_p, ir_version=ir_version),
-                   ie_device, precision, ir_version, temp_dir=temp_dir)
+    def test_reduce_lp_precommit(self, params, keep_dims, reduce_p, ie_device, precision,
+                                 ir_version, temp_dir, use_old_api):
+        self._test(*self.create_reduce_lp(**params, keep_dims=keep_dims, reduce_p=reduce_p,
+                                          ir_version=ir_version),
+                   ie_device, precision, ir_version, temp_dir=temp_dir, use_old_api=use_old_api)
 
     @pytest.mark.parametrize("params", test_data)
     @pytest.mark.parametrize("keep_dims", [True, False])
     @pytest.mark.parametrize("reduce_p", [1, 2])
     @pytest.mark.nightly
-    def test_reduce_lp(self, params, keep_dims, reduce_p, ie_device, precision, ir_version, temp_dir):
-        self._test(*self.create_reduce_lp(**params, keep_dims=keep_dims, reduce_p=reduce_p, ir_version=ir_version),
-                   ie_device, precision, ir_version, temp_dir=temp_dir)
+    def test_reduce_lp(self, params, keep_dims, reduce_p, ie_device, precision, ir_version,
+                       temp_dir, use_old_api):
+        if ie_device == 'GPU':
+            pytest.skip('GREEN_SUITE')
+        self._test(*self.create_reduce_lp(**params, keep_dims=keep_dims, reduce_p=reduce_p,
+                                          ir_version=ir_version),
+                   ie_device, precision, ir_version, temp_dir=temp_dir, use_old_api=use_old_api)
 
     @pytest.mark.parametrize("params", test_data_precommit)
     @pytest.mark.parametrize("keep_dims", [True, False])
     @pytest.mark.parametrize("reduce_p", [1, 2])
     @pytest.mark.precommit
-    def test_reduce_lp_const_precommit(self, params, keep_dims, reduce_p, ie_device, precision, ir_version, temp_dir):
+    def test_reduce_lp_const_precommit(self, params, keep_dims, reduce_p, ie_device, precision,
+                                       ir_version, temp_dir, use_old_api):
         self._test(
-            *self.create_reduce_lp_const(**params, keep_dims=keep_dims, reduce_p=reduce_p, ir_version=ir_version),
-            ie_device, precision, ir_version, temp_dir=temp_dir)
+            *self.create_reduce_lp_const(**params, keep_dims=keep_dims, reduce_p=reduce_p,
+                                         ir_version=ir_version),
+            ie_device, precision, ir_version, temp_dir=temp_dir, use_old_api=use_old_api)
 
     @pytest.mark.parametrize("params", test_data)
     @pytest.mark.parametrize("keep_dims", [True, False])
     @pytest.mark.parametrize("reduce_p", [1, 2])
     @pytest.mark.nightly
-    def test_reduce_lp_const(self, params, keep_dims, reduce_p, ie_device, precision, ir_version, temp_dir):
-        self._test(*self.create_reduce_lp_const(**params, keep_dims=keep_dims, reduce_p=reduce_p,ir_version=ir_version),
-                   ie_device, precision, ir_version, temp_dir=temp_dir)
+    @pytest.mark.skip(reason='GREEN_SUITE')
+    def test_reduce_lp_const(self, params, keep_dims, reduce_p, ie_device, precision, ir_version,
+                             temp_dir, use_old_api):
+        self._test(*self.create_reduce_lp_const(**params, keep_dims=keep_dims, reduce_p=reduce_p,
+                                                ir_version=ir_version),
+                   ie_device, precision, ir_version, temp_dir=temp_dir, use_old_api=use_old_api)

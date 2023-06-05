@@ -1,0 +1,13 @@
+-c ../../constraints.txt
+requests
+pyyaml
+wheel
+test-generator
+numpy
+pytest
+py
+scikit-build
+opencv-python
+progress
+nibabel
+scipy

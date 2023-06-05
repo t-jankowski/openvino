@@ -1,98 +1,129 @@
-# Create a Yocto* Image with OpenVINO™ toolkit {#openvino_docs_install_guides_installing_openvino_yocto}
-This document provides instructions for creating a Yocto* image with OpenVINO™ toolkit.
+# Create a Yocto Image with Intel® Distribution of OpenVINO™ toolkit {#openvino_docs_install_guides_installing_openvino_yocto}
 
-Instructions were validated and tested for [Yocto OpenVINO 2020.4 release](http://git.yoctoproject.org/cgit/cgit.cgi/meta-intel).
+@sphinxdirective
 
-## System Requirements
-Use the [Yocto Project* official documentation](https://www.yoctoproject.org/docs/latest/mega-manual/mega-manual.html#brief-compatible-distro) to set up and configure your host machine to be compatible with BitBake*.
+This document provides instructions for creating a Yocto image with Intel® Distribution of OpenVINO™ toolkit.
 
-## Setup 
+System Requirements
+###################
 
-### Set up Git repositories
-The following Git repositories are required to build a Yocto image:
+Follow the `Yocto Project official documentation <https://docs.yoctoproject.org/brief-yoctoprojectqs/index.html#compatible-linux-distribution>`__ to set up and configure your host machine to be compatible with BitBake.
 
-- [Poky](https://www.yoctoproject.org/docs/latest/mega-manual/mega-manual.html#poky)
-- [Meta-intel](http://git.yoctoproject.org/cgit/cgit.cgi/meta-intel/tree/README)
-- [Meta-openembedded](http://cgit.openembedded.org/meta-openembedded/tree/README)
-- <a href="https://github.com/kraj/meta-clang/blob/master/README.md">Meta-clang</a>
+Step 1: Set Up Environment
+##########################
 
-Clone these Git repositories to your host machine: 
-```sh
-git clone https://git.yoctoproject.org/git/poky
-git clone https://git.yoctoproject.org/git/meta-intel
-git clone https://git.openembedded.org/meta-openembedded
-git clone https://github.com/kraj/meta-clang.git
-```
+1. Clone the repositories.
+   
+   .. code-block:: sh
+      
+      git clone https://git.yoctoproject.org/git/poky
+      git clone https://git.yoctoproject.org/meta-intel
+      git clone https://git.openembedded.org/meta-openembedded
+      git clone https://github.com/kraj/meta-clang.git
+   
 
-### Set up BitBake* Layers
+2. Set up the OpenEmbedded build environment.
 
-```sh
-source poky/oe-init-build-env
-bitbake-layers add-layer ../meta-intel
-bitbake-layers add-layer ../meta-openembedded/meta-oe
-bitbake-layers add-layer ../meta-openembedded/meta-python
-bitbake-layers add-layer ../meta-clang
-```
+   .. code-block:: sh
+      
+      source poky/oe-init-build-env
+   
 
-### Set up BitBake Configurations
+3. Add BitBake layers.
 
-Include extra configuration in conf/local.conf in your build directory as required.
+   .. code-block:: sh
+      
+      bitbake-layers add-layer ../meta-intel
+      bitbake-layers add-layer ../meta-openembedded/meta-oe
+      bitbake-layers add-layer ../meta-openembedded/meta-python
+      bitbake-layers add-layer ../meta-clang
+   
 
-```sh
-# Build with SSE4.2, AVX2 etc. extensions
-MACHINE = "intel-skylake-64"
+4. Verify if layers were added (optional step).
 
-# Enable clDNN GPU plugin when needed.
-# This requires meta-clang and meta-oe layers to be included in bblayers.conf
-# and is not enabled by default.
-PACKAGECONFIG_append_pn-openvino-inference-engine = " opencl"
+   .. code-block:: sh
+      
+      bitbake-layers show-layers
+   
 
-# Enable building inference engine python API.
-# This requires meta-python layer to be included in bblayers.conf.
-PACKAGECONFIG_append_pn-openvino-inference-engine = " python3"
+5. Set up BitBake configurations.
+   Include extra configuration in the `conf/local.conf` file in your build directory as required.
 
-# This adds inference engine related libraries in the target image.
-CORE_IMAGE_EXTRA_INSTALL_append = " openvino-inference-engine"
+   .. code-block:: sh
+      
+      # Build with SSE4.2, AVX2 etc. extensions
+      MACHINE = "intel-skylake-64"
+   
+      # Enable clDNN GPU plugin when needed.
+      # This requires meta-clang and meta-oe layers to be included in bblayers.conf
+      # and is not enabled by default.
+      PACKAGECONFIG:append:pn-openvino-inference-engine = " opencl"
+   
+      # Enable building OpenVINO Python API.
+      # This requires meta-python layer to be included in bblayers.conf.
+      PACKAGECONFIG:append:pn-openvino-inference-engine = " python3"
+   
+      # This adds OpenVINO related libraries in the target image.
+      CORE_IMAGE_EXTRA_INSTALL:append = " openvino-inference-engine"
+   
+      # This adds OpenVINO samples in the target image.
+      CORE_IMAGE_EXTRA_INSTALL:append = " openvino-inference-engine-samples"
+   
+      # Include OpenVINO Python API package in the target image.
+      CORE_IMAGE_EXTRA_INSTALL:append = " openvino-inference-engine-python3"
+   
+      # Include model conversion API in the target image.
+      CORE_IMAGE_EXTRA_INSTALL:append = " openvino-model-optimizer"
+   
 
-# This adds inference engine samples in the target image.
-CORE_IMAGE_EXTRA_INSTALL_append = " openvino-inference-engine-samples"
+Step 2: Build a Yocto Image with OpenVINO Packages
+##################################################
 
-# Include inference engine python API package in the target image.
-CORE_IMAGE_EXTRA_INSTALL_append = " openvino-inference-engine-python3"
+Run BitBake to build your image with OpenVINO packages. For example, to build the minimal image, run the following command:
 
-# Enable MYRIAD plugin
-CORE_IMAGE_EXTRA_INSTALL_append = " openvino-inference-engine-vpu-firmware"
+.. code-block:: sh
+   
+   bitbake core-image-minimal
 
-# Include model optimizer in the target image.
-CORE_IMAGE_EXTRA_INSTALL_append = " openvino-model-optimizer"
-```
 
-## Build a Yocto Image with OpenVINO Packages
+.. note:: 
+   For validation/testing/reviewing purposes, you may consider using the ``nohup`` command and ensure that your vpn/ssh connection remains uninterrupted.
 
-Run BitBake to build the minimal image with OpenVINO packages: 
-```sh
-bitbake core-image-minimal
-```
+Step 3: Verify the Yocto Image
+##############################
 
-## Verify the Created Yocto Image with OpenVINO Packages
+Verify that OpenVINO packages were built successfully. Run the following command:
 
-Verify that OpenVINO packages were built successfully.
-Run 'oe-pkgdata-util list-pkgs | grep openvino' command.
-```sh
-oe-pkgdata-util list-pkgs | grep openvino
-```
+.. code-block:: sh
+   
+   oe-pkgdata-util list-pkgs | grep openvino
 
-Verify that it returns the list of packages below:
-```sh
-openvino-inference-engine
-openvino-inference-engine-dbg
-openvino-inference-engine-dev
-openvino-inference-engine-python3
-openvino-inference-engine-samples
-openvino-inference-engine-src
-openvino-inference-engine-staticdev
-openvino-inference-engine-vpu-firmware
-openvino-model-optimizer
-openvino-model-optimizer-dbg
-openvino-model-optimizer-dev
-```
+
+If the image build is successful, it will return the list of packages as below:
+
+.. code-block:: sh
+   
+   openvino-inference-engine
+   openvino-inference-engine-dbg
+   openvino-inference-engine-dev
+   openvino-inference-engine-python3
+   openvino-inference-engine-samples
+   openvino-inference-engine-src
+   openvino-model-optimizer
+   openvino-model-optimizer-dbg
+   openvino-model-optimizer-dev
+
+Additional Resources
+####################
+
+- :ref:`Troubleshooting Guide <yocto_install_issues>`
+- `Yocto Project <https://docs.yoctoproject.org/>`__ - official documentation webpage
+- `BitBake Tool <https://docs.yoctoproject.org/bitbake/>`__
+- `Poky <https://git.yoctoproject.org/poky>`__
+- `Meta-intel <https://git.yoctoproject.org/meta-intel/tree/README>`__
+- `Meta-openembedded <http://cgit.openembedded.org/meta-openembedded/tree/README>`__
+- `Meta-clang <https://github.com/kraj/meta-clang/tree/master/#readme>`__
+- `OpenVINO Installation Selector Tool <https://www.intel.com/content/www/us/en/developer/tools/openvino-toolkit/download.html>`__
+
+@endsphinxdirective
+
