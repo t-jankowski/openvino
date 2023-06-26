@@ -13,6 +13,7 @@ scan() {
     echo | tee -a "$log_file"
 }
 
-scan MATMUL_ADD
-scan IDENTICAL
-scan MATMUL
+# scan MATMUL_ADD
+# scan IDENTICAL
+# scan MATMUL
+scan FULL
