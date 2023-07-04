@@ -38,25 +38,25 @@ class DISABLED_MergeSimilarBranchesTestF : public MergeSimilarBranchesTestF {};
 
 TEST(TransformationTests, scan_cv_bench_cache) {
     set<string> model_paths;
-    ifstream models_list("/home/tj/space/bert-base-ner-fp16/model_paths.lst");
+    ifstream models_list("/home/tj/space/msb/model_paths.lst");
     string line;
     while (getline(models_list, line))
         model_paths.insert(line);
 
-    ifstream dont_list("/home/tj/space/bert-base-ner-fp16/dont_paths.lst");
-    set<string> dont_paths;
-    while (getline(dont_list, line))
-        model_paths.erase(line);
+    // ifstream dont_list("/home/tj/space/bert-base-ner-fp16/dont_paths.lst");
+    // set<string> dont_paths;
+    // while (getline(dont_list, line))
+    //     model_paths.erase(line);
 
     Core core;
-    // Manager const_manager;
-    // const_manager.register_pass<ConstantFolding>();
+    Manager const_manager;
+    const_manager.register_pass<ConstantFolding>();
     Manager manager;
     manager.register_pass<MergeSimilarBranches>();
     for (const auto& m_p : model_paths) {
         try {
             auto model = core.read_model(m_p);
-            // const_manager.run_passes(model)
+            const_manager.run_passes(model);
             if (manager.run_passes(model))
                 cout << "MSB " << m_p << "\n";
             else
