@@ -51,18 +51,26 @@ TEST(TransformationTests, scan_cv_bench_cache) {
     Core core;
     Manager const_manager;
     const_manager.register_pass<ConstantFolding>();
-    Manager manager;
-    manager.register_pass<MergeSimilarBranches>();
+    Manager msb_matmuls_adds_fusion;
+    msb_matmuls_adds_fusion.register_pass<MergeSimilarBranches>(false, true, false);
+    Manager msb_identical_merge;
+    msb_identical_merge.register_pass<MergeSimilarBranches>(true, false, false);
+    Manager msb_matmuls_fusion;
+    msb_matmuls_fusion.register_pass<MergeSimilarBranches>(false, false, true);
+
+    cout << "model,identical_merge,matmuls_adds_fusion,matmuls_fusion,any\n";
     for (const auto& m_p : model_paths) {
         try {
             auto model = core.read_model(m_p);
             const_manager.run_passes(model);
-            if (manager.run_passes(model))
-                cout << "MSB " << m_p << "\n";
-            else
-                cout << "not " << m_p << "\n";
+            const auto matmuls_adds_fusion = msb_matmuls_adds_fusion.run_passes(model);
+            const auto identical_merge = msb_identical_merge.run_passes(model);
+            const auto matmuls_fusion = msb_matmuls_fusion.run_passes(model);
+            cout << boolalpha << m_p << "," << identical_merge << "," << matmuls_adds_fusion << "," << matmuls_fusion
+                 << "," << (identical_merge || matmuls_adds_fusion || matmuls_fusion) << "\n";
         } catch (const exception& e) {
-            cout << "err " << m_p << "\n";
+            cerr << m_p << "\n" << e.what() << "\n";
+            cout << m_p << ",,,,\n";
         }
     }
 }
