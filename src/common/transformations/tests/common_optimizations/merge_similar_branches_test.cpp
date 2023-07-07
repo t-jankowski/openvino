@@ -245,6 +245,7 @@ TEST_F(DISABLED_MergeSimilarBranchesTestF, mixed_input_order) {
     }
 }
 
+/*
 template <typename T>
 vector<T> generate_seeded_tensor_data(size_t size, int seed = 101, T range_min = 0, T range_max = 200) {
     std::mt19937 gen(seed);
@@ -376,3 +377,4 @@ TEST(MergeSimilarBranchesTest, matmuls_adds_fusion) {
     const auto res = acc_comparator.compare(model, cloned_model);
     ASSERT_TRUE(res.valid) << res.message;
 }
+*/

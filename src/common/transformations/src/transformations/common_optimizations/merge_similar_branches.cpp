@@ -297,7 +297,7 @@ bool MergeSimilarBranches::run_on_model(const std::shared_ptr<ov::Model>& model)
         matmuls_adds_ms.update_logs = update_logs;
         matmuls_adds_ms.merge = merge_matmuls_and_adds;
     }
-    vector<MergeScanner*> scanners{&matmuls_adds_ms, &identical_ms, &matmuls_ms};
+    vector<MergeScanner*> scanners{&identical_ms};
 
     for (const auto& p : model->get_parameters())
         update_logs(p.get(), nullptr);
