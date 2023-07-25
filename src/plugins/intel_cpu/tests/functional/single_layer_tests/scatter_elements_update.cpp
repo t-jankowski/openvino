@@ -2,15 +2,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#include "test_utils/cpu_test_utils.hpp"
-#include <common_test_utils/ov_tensor_utils.hpp>
-#include "shared_test_classes/base/ov_subgraph.hpp"
+#include "common_test_utils/ov_tensor_utils.hpp"
 #include "ngraph_functions/builders.hpp"
+#include "shared_test_classes/base/ov_subgraph.hpp"
+#include "test_utils/cpu_test_utils.hpp"
 
-using namespace ngraph;
+using namespace ov;
+using namespace ov::test;
 using namespace InferenceEngine;
 using namespace CPUTestUtils;
-using namespace ov::test;
 
 namespace CPULayerTestsDefinitions {
 using ScatterElementsUpdateShapes = std::vector<InputShape>;
@@ -56,16 +56,16 @@ public:
     }
 
 protected:
-    void generate_inputs(const std::vector<ov::Shape>& targetInputStaticShapes) override {
+    void generate_inputs(const std::vector<Shape>& targetInputStaticShapes) override {
         inputs.clear();
         const auto& funcInputs = function->inputs();
         for (size_t i = 0; i < funcInputs.size(); ++i) {
             const auto& funcInput = funcInputs[i];
             const auto& inputPrecision = funcInput.get_element_type();
             const auto& targetShape = targetInputStaticShapes[i];
-            ov::Tensor tensor;
+            Tensor tensor;
             if (i == 1) {
-                tensor = ov::Tensor{ inputPrecision, targetShape };
+                tensor = Tensor{inputPrecision, targetShape};
                 const auto& indicesVals = std::get<0>(this->GetParam()).indicesValues;
                 if (inputPrecision == ElementType::i32) {
                     auto data = tensor.data<std::int32_t>();
@@ -82,9 +82,9 @@ protected:
                 }
             } else {
                 if (inputPrecision.is_real()) {
-                    tensor = ov::test::utils::create_and_fill_tensor(inputPrecision, targetShape, 10, 0, 1000);
+                    tensor = test::utils::create_and_fill_tensor(inputPrecision, targetShape, 10, 0, 1000);
                 } else {
-                    tensor = ov::test::utils::create_and_fill_tensor(inputPrecision, targetShape);
+                    tensor = test::utils::create_and_fill_tensor(inputPrecision, targetShape);
                 }
             }
             inputs.insert({ funcInput.get_node_shared_ptr(), tensor });
@@ -109,10 +109,11 @@ protected:
         indicesParam[0]->set_friendly_name("Param_2");
         dataParams[1]->set_friendly_name("Param_3");
 
-        auto axisNode = ngraph::opset3::Constant::create(idxPrecision, {}, { axis });
-        auto scatter = std::make_shared<ngraph::opset3::ScatterElementsUpdate>(dataParams[0], indicesParam[0], dataParams[1], axisNode);
+        auto axisNode = op::v0::Constant::create(idxPrecision, {}, {axis});
+        auto scatter =
+            std::make_shared<op::v12::ScatterElementsUpdate>(dataParams[0], indicesParam[0], dataParams[1], axisNode);
 
-        ngraph::ParameterVector allParams{ dataParams[0], indicesParam[0], dataParams[1] };
+        ParameterVector allParams{dataParams[0], indicesParam[0], dataParams[1]};
         function = makeNgraphFunction(inputPrecision, allParams, scatter, "ScatterElementsUpdateLayerCPUTest");
     }
 };
