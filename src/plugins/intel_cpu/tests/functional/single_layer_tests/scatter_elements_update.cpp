@@ -29,14 +29,13 @@ using scatterUpdateParams = std::tuple<
 
 class ScatterElementsUpdateLayerCPUTest : public testing::WithParamInterface<scatterUpdateParams>, public SubgraphBaseTest, public CPUTestsBase {
 public:
-    static std::string getTestCaseName(testing::TestParamInfo<scatterUpdateParams> obj) {
-        ScatterElementsUpdateLayerParams scatterParams;
-        std::int64_t axis;
-        ElementType inputPrecision;
-        ElementType idxPrecision;
-        std::tie(scatterParams, axis, inputPrecision, idxPrecision) = obj.param;
-        const auto inputShapes = scatterParams.inputShapes;
-        const auto indicesVals = scatterParams.indicesValues;
+    static std::string getTestCaseName(const testing::TestParamInfo<scatterUpdateParams>& obj) {
+        const auto& scatterParams = std::get<0>(obj.param);
+        const auto& axis = std::get<1>(obj.param);
+        const auto& inputPrecision = std::get<2>(obj.param);
+        const auto& idxPrecision = std::get<3>(obj.param);
+        const auto& inputShapes = scatterParams.inputShapes;
+        const auto& indicesVals = scatterParams.indicesValues;
 
         std::ostringstream result;
         result << inputPrecision << "_IS=";
@@ -67,7 +66,7 @@ protected:
             ov::Tensor tensor;
             if (i == 1) {
                 tensor = ov::Tensor{ inputPrecision, targetShape };
-                const auto indicesVals = std::get<0>(this->GetParam()).indicesValues;
+                const auto& indicesVals = std::get<0>(this->GetParam()).indicesValues;
                 if (inputPrecision == ElementType::i32) {
                     auto data = tensor.data<std::int32_t>();
                     for (size_t i = 0; i < tensor.get_size(); ++i) {
@@ -94,13 +93,12 @@ protected:
 
     void SetUp() override {
         targetDevice = CommonTestUtils::DEVICE_CPU;
-        ScatterElementsUpdateLayerParams scatterParams;
-        std::int64_t axis;
-        ElementType inputPrecision;
-        ElementType idxPrecision;
-        std::tie(scatterParams, axis, inputPrecision, idxPrecision) = this->GetParam();
-        const auto inputShapes = scatterParams.inputShapes;
-        const auto indicesDescr = scatterParams.indicesValues;
+        const auto& param = GetParam();
+        const auto& scatterParams = std::get<0>(param);
+        const auto& axis = std::get<1>(param);
+        const auto& inputPrecision = std::get<2>(param);
+        const auto& idxPrecision = std::get<3>(param);
+        const auto& inputShapes = scatterParams.inputShapes;
 
         init_input_shapes(inputShapes);
         selectedType = makeSelectedTypeStr("unknown", inputPrecision);
