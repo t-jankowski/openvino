@@ -15,17 +15,20 @@ using namespace CPUTestUtils;
 namespace CPULayerTestsDefinitions {
 using ScatterElementsUpdateShapes = std::vector<InputShape>;
 using IndicesValues = std::vector<std::int64_t>;
+using Reduction = op::v12::ScatterElementsUpdate::Reduction;
 
 struct ScatterElementsUpdateLayerParams {
     ScatterElementsUpdateShapes inputShapes;
     IndicesValues indicesValues;
 };
 
-using scatterUpdateParams = std::tuple<
-    ScatterElementsUpdateLayerParams,
-    std::int64_t,       // axis
-    ElementType,        // input precision
-    ElementType>;       // indices precision
+using scatterUpdateParams = std::tuple<ScatterElementsUpdateLayerParams,
+                                       std::int64_t,  // axis
+                                       ElementType,   // input precision
+                                       ElementType,   // indices precision
+                                       Reduction,     // reduction
+                                       bool           // use init value
+                                       >;
 
 class ScatterElementsUpdateLayerCPUTest : public testing::WithParamInterface<scatterUpdateParams>, public SubgraphBaseTest, public CPUTestsBase {
 public:
@@ -34,6 +37,8 @@ public:
         const auto& axis = std::get<1>(obj.param);
         const auto& inputPrecision = std::get<2>(obj.param);
         const auto& idxPrecision = std::get<3>(obj.param);
+        const auto& reduction = std::get<4>(obj.param);
+        const auto& useInitValue = std::get<5>(obj.param);
         const auto& inputShapes = scatterParams.inputShapes;
         const auto& indicesVals = scatterParams.indicesValues;
 
@@ -52,6 +57,15 @@ public:
         }
         result << "_indices_values=" << CommonTestUtils::vec2str(indicesVals)
                << "axis=" << axis << "_idx_precision=" << idxPrecision;
+
+        static std::map<Reduction, std::string> reduction_name{{Reduction::MAX, "max"},
+                                                               {Reduction::MEAN, "mean"},
+                                                               {Reduction::MIN, "min"},
+                                                               {Reduction::NONE, "none"},
+                                                               {Reduction::PROD, "prod"},
+                                                               {Reduction::SUM, "sum"}};
+        result << "_reduction=" << reduction_name.at(reduction);
+        result << "_use_init_value=" << std::boolalpha << useInitValue;
         return result.str();
     }
 
@@ -98,9 +112,10 @@ protected:
         const auto& axis = std::get<1>(param);
         const auto& inputPrecision = std::get<2>(param);
         const auto& idxPrecision = std::get<3>(param);
-        const auto& inputShapes = scatterParams.inputShapes;
+        const auto& reduction = std::get<4>(param);
+        const auto& useInitValue = std::get<5>(param);
 
-        init_input_shapes(inputShapes);
+        init_input_shapes(scatterParams.inputShapes);
         selectedType = makeSelectedTypeStr("unknown", inputPrecision);
 
         auto dataParams = ngraph::builder::makeDynamicParams(inputPrecision, { inputDynamicShapes[0], inputDynamicShapes[2] });
@@ -110,8 +125,12 @@ protected:
         dataParams[1]->set_friendly_name("Param_3");
 
         auto axisNode = op::v0::Constant::create(idxPrecision, {}, {axis});
-        auto scatter =
-            std::make_shared<op::v12::ScatterElementsUpdate>(dataParams[0], indicesParam[0], dataParams[1], axisNode);
+        auto scatter = std::make_shared<op::v12::ScatterElementsUpdate>(dataParams[0],
+                                                                        indicesParam[0],
+                                                                        dataParams[1],
+                                                                        axisNode,
+                                                                        reduction,
+                                                                        useInitValue);
 
         ParameterVector allParams{dataParams[0], indicesParam[0], dataParams[1]};
         function = makeNgraphFunction(inputPrecision, allParams, scatter, "ScatterElementsUpdateLayerCPUTest");
@@ -163,11 +182,58 @@ const std::vector<ElementType> constantPrecisions = {
     ElementType::i64,
 };
 
-INSTANTIATE_TEST_SUITE_P(smoke_CompareWithRefs, ScatterElementsUpdateLayerCPUTest,
-    ::testing::Combine(
-        ::testing::ValuesIn(scatterParams),
-        ::testing::ValuesIn(axes),
-        ::testing::ValuesIn(inputPrecisions),
-        ::testing::ValuesIn(constantPrecisions)),
-    ScatterElementsUpdateLayerCPUTest::getTestCaseName);
+INSTANTIATE_TEST_SUITE_P(smoke_CompareWithRefs,
+                         ScatterElementsUpdateLayerCPUTest,
+                         ::testing::Combine(::testing::ValuesIn(scatterParams),
+                                            ::testing::ValuesIn(axes),
+                                            ::testing::ValuesIn(inputPrecisions),
+                                            ::testing::ValuesIn(constantPrecisions),
+                                            ::testing::ValuesIn(std::vector<Reduction>{Reduction::NONE}),
+                                            ::testing::ValuesIn(std::vector<bool /*use init value*/>{false})),
+                         ScatterElementsUpdateLayerCPUTest::getTestCaseName);
+
+const std::vector<ScatterElementsUpdateLayerParams> scatterParams_reduct = {
+    ScatterElementsUpdateLayerParams{
+        ScatterElementsUpdateShapes{{{-1, -1, -1}, {{8, 12, 14}, {8, 9, 11}}},
+                                    {{-1, -1, -1}, {{1, 2, 4}, {2, 1, 4}}},
+                                    {{-1, -1, -1}, {{1, 2, 4}, {2, 1, 4}}}},
+        // IndicesValues{1, 0, 4, 6, 1, 3, 6, 0},
+        IndicesValues{1, 0, 4, 6, 2, 3, 5, 7},
+    },
+};
+
+const std::vector<std::int64_t> axes_reduct = {0, 1, 2};
+
+const std::vector<Reduction> reductions = {Reduction::MAX,
+                                           Reduction::MEAN,
+                                           Reduction::MIN,
+                                           Reduction::PROD,
+                                           Reduction::SUM};
+
+const std::vector<bool> useInitValues = {false, true};
+
+using ScatterElementsUpdateReductLayerCPUTest = ScatterElementsUpdateLayerCPUTest;
+TEST_P(ScatterElementsUpdateReductLayerCPUTest, CompareWithRefs) {
+    run();
+    CheckPluginRelatedResults(compiledModel, "ScatterUpdate");
+}
+INSTANTIATE_TEST_SUITE_P(smoke_CompareWithRefs,
+                         ScatterElementsUpdateReductLayerCPUTest,
+                         ::testing::Combine(::testing::ValuesIn(scatterParams_reduct),
+#if 1
+                                            ::testing::Values(int64_t{0}),
+                                            ::testing::Values(ElementType::f32),
+                                            ::testing::Values(ElementType::i32),
+                                            // ::testing::Values(Reduction::NONE),
+                                            ::testing::ValuesIn(reductions),
+                                            // ::testing::Values(useInitValues[0])),
+                                            ::testing::ValuesIn(useInitValues)),
+#else
+                                            ::testing::ValuesIn(axes_reduct),
+                                            ::testing::ValuesIn(inputPrecisions),
+                                            ::testing::ValuesIn(constantPrecisions),
+                                            ::testing::ValuesIn(reductions),
+                                            ::testing::ValuesIn(useInitValues)),
+#endif
+                         ScatterElementsUpdateReductLayerCPUTest::getTestCaseName);
 } // namespace CPULayerTestsDefinitions
