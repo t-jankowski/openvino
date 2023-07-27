@@ -22,7 +22,7 @@ enum class ScatterUpdateMode {
 
 class ScatterUpdate : public Node {
 public:
-    ScatterUpdate(const std::shared_ptr<ngraph::Node>& op, const GraphContext::CPtr context);
+    ScatterUpdate(const std::shared_ptr<ov::Node>& op, const GraphContext::CPtr context);
 
     void getSupportedDescriptors() override;
     void initSupportedPrimitiveDescriptors() override;
@@ -36,12 +36,20 @@ public:
     void executeDynamicImpl(dnnl::stream strm) override;
 
     bool isExecutable() const override;
-    static bool isSupportedOperation(const std::shared_ptr<const ngraph::Node>& op, std::string& errorMessage) noexcept;
+    static bool isSupportedOperation(const std::shared_ptr<const ov::Node>& op, std::string& errorMessage) noexcept;
 
 private:
+    enum class Reduction { NONE, SUM, PROD, MIN, MAX, MEAN };
+
+    struct Attrs {
+        Reduction reduction = Reduction::NONE;
+        bool useInitVal = false;
+    } attrs;
+
     void scatterUpdate(uint8_t *indicesPtr, uint8_t *updatePtr, int axis, uint8_t *dstDataPtr);
     void scatterNDUpdate(uint8_t *indicesPtr, uint8_t *updatePtr, uint8_t *dstDataPtr);
     void scatterElementsUpdate(uint8_t *indicesPtr, uint8_t *updatePtr, int axis, uint8_t *dstDataPtr);
+    void scatterElementsUpdateReduct(uint8_t* indicesPtr, uint8_t* updatePtr, int axis, uint8_t* dstDataPtr);
     inline int64_t getIndicesValue(uint8_t *indices, size_t offset);
 
     ScatterUpdateMode scatterUpdateMode = ScatterUpdateMode::ScatterUpdate;

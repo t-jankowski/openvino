@@ -58,6 +58,27 @@ ScatterUpdate::ScatterUpdate(const std::shared_ptr<ov::Node>& op, const GraphCon
     } else {
         IE_THROW(NotImplemented) << errorMessage;
     }
+
+    const auto scatterElemUpd_v12 = as_type<const op::v12::ScatterElementsUpdate>(op.get());
+    if (scatterElemUpd_v12) {
+        attrs.useInitVal = scatterElemUpd_v12->get_use_init_val();
+
+#define CASE_REDUCTION(r)                              \
+    case op::v12::ScatterElementsUpdate::Reduction::r: \
+        attrs.reduction = Reduction::r;                \
+        break
+
+        switch (scatterElemUpd_v12->get_reduction()) {
+            CASE_REDUCTION(MAX);
+            CASE_REDUCTION(MEAN);
+            CASE_REDUCTION(MIN);
+            CASE_REDUCTION(NONE);
+            CASE_REDUCTION(PROD);
+            CASE_REDUCTION(SUM);
+        default:
+            IE_THROW(NotImplemented) << "Unknown reduction argument";
+        }
+    }
 }
 
 void ScatterUpdate::getSupportedDescriptors() {
@@ -360,7 +381,10 @@ void ScatterUpdate::execute(dnnl::stream strm) {
             break;
         }
         case ScatterUpdateMode::ScatterElementsUpdate: {
-            scatterElementsUpdate(indicesPtr, updatePtr, axis, dstPtr);
+            if (attrs.reduction == Reduction::NONE)
+                scatterElementsUpdate(indicesPtr, updatePtr, axis, dstPtr);
+            else
+                scatterElementsUpdateReduct(indicesPtr, updatePtr, axis, dstPtr);
             break;
         }
         default: {
@@ -471,6 +495,57 @@ void ScatterUpdate::scatterElementsUpdate(uint8_t *indices, uint8_t *update, int
             if (0 <= idxValue && idxValue < axisDim)
                 cpu_memcpy(dstData + dataSize * (dst_idx + idxValue * srcBlockND[axis + 1]),
                             update + iwork * dataSize, dataSize);
+
+            for (j = updateRank - 1; j >= 0; j--) {
+                tensorItr[j]++;
+                if (tensorItr[j] < updateDim[j]) {
+                    if (j != axis)
+                        dst_idx += srcBlockND[j + 1];
+                    break;
+                } else {
+                    tensorItr[j] = 0;
+                    for (dst_idx = 0, i = 0; i < static_cast<size_t>(axis); ++i)
+                        dst_idx += tensorItr[i] * srcBlockND[i + 1];
+                    for (i++; i < updateRank; ++i)
+                        dst_idx += tensorItr[i] * srcBlockND[i + 1];
+                }
+            }
+        }
+    });
+}
+
+void ScatterUpdate::scatterElementsUpdateReduct(uint8_t* indices, uint8_t* update, int axis, uint8_t* dstData) {
+    const auto& srcDataDim = getParentEdgeAt(DATA_ID)->getMemory().getStaticDims();
+    const auto& updateDim = getParentEdgeAt(UPDATE_ID)->getMemory().getStaticDims();
+    const size_t updateRank = updateDim.size();
+
+    const std::vector<size_t> srcBlockND = getBlockND(srcDataDim);
+    const std::vector<size_t> updateBlockND = getBlockND(updateDim);
+
+    parallel_nt(1, [&](const int ithr, const int nthr) {
+        int j;
+        size_t i, dst_idx = 0, start = 0, end = 0;
+        SizeVector tensorItr(updateRank, 0);
+        splitter(updateBlockND[0], nthr, ithr, start, end);
+        for (j = updateRank - 1, i = start; j >= 0; j--) {
+            tensorItr[j] = i % updateDim[j];
+            i /= updateDim[j];
+        }
+
+        for (i = 0; i < static_cast<size_t>(axis); ++i)
+            dst_idx += tensorItr[i] * srcBlockND[i + 1];
+        for (i++; i < updateRank; ++i)
+            dst_idx += tensorItr[i] * srcBlockND[i + 1];
+
+        for (size_t iwork = start; iwork < end; iwork++) {
+            int64_t idxValue = getIndicesValue(indices, iwork);
+            int64_t axisDim = static_cast<int64_t>(srcDataDim[axis]);
+            if (idxValue < 0)
+                idxValue += axisDim;
+            if (0 <= idxValue && idxValue < axisDim)
+                cpu_memcpy(dstData + dataSize * (dst_idx + idxValue * srcBlockND[axis + 1]),
+                           update + iwork * dataSize,
+                           dataSize);
 
             for (j = updateRank - 1; j >= 0; j--) {
                 tensorItr[j]++;
