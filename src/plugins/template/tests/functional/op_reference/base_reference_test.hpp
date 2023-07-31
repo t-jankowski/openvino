@@ -74,19 +74,21 @@ ov::Tensor CreateTensor(const ov::Shape& shape,
 struct Tensor {
     Tensor() = default;
 
-    Tensor(const ov::Shape& shape, ov::element::Type type, const ov::Tensor& data)
-        : shape{shape},
+    Tensor(ov::Shape shape, ov::element::Type type, ov::Tensor data)
+        : shape{std::move(shape)},
           type{type},
-          data{data} {}
+          data{std::move(data)} {}
 
     template <typename T>
-    Tensor(const ov::Shape& shape, ov::element::Type type, const std::vector<T>& data_elements)
-        : Tensor{shape, type, CreateTensor(type, data_elements)} {}
+    Tensor(ov::Shape shape, ov::element::Type type, const std::vector<T>& data_elements)
+        : Tensor{std::move(shape), type, CreateTensor(type, data_elements)} {}
 
     // Temporary constructor to create blob with passed input shape (not 1-dimensional)
     template <typename T>
-    Tensor(ov::element::Type type, const ov::Shape& shape, const std::vector<T>& data_elements)
-        : Tensor{shape, type, CreateTensor(shape, type, data_elements)} {}
+    Tensor(ov::element::Type type, ov::Shape s, const std::vector<T>& data_elements)
+        : shape{std::move(s)},
+          type{type},
+          data{CreateTensor(shape, type, data_elements)} {}
 
     ov::Shape shape;
     ov::element::Type type;

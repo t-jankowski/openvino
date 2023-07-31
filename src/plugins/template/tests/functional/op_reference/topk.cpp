@@ -15,14 +15,24 @@ using namespace ov;
 
 namespace {
 struct TopKParams {
-    TopKParams(
-        const reference_tests::Tensor& A, const reference_tests::Tensor& k, const int64_t axis,
-        const opset1::TopK::Mode mode, const opset1::TopK::SortType sort,
-        const reference_tests::Tensor& result0, const reference_tests::Tensor& result1, const size_t outIdx,
-        const std::string& testcaseName = "") :
-        A(A), k(k), axis(axis), mode(mode), sort(sort),
-        result0(result0), result1(result1), outIdx(outIdx),
-        testcaseName(testcaseName) {}
+    TopKParams(reference_tests::Tensor A,
+               reference_tests::Tensor k,
+               const int64_t axis,
+               const opset1::TopK::Mode mode,
+               const opset1::TopK::SortType sort,
+               reference_tests::Tensor result0,
+               reference_tests::Tensor result1,
+               const size_t outIdx,
+               std::string testcaseName = "")
+        : A(std::move(A)),
+          k(std::move(k)),
+          axis(axis),
+          mode(mode),
+          sort(sort),
+          result0(std::move(result0)),
+          result1(std::move(result1)),
+          outIdx(outIdx),
+          testcaseName(std::move(testcaseName)) {}
 
     reference_tests::Tensor A;
     reference_tests::Tensor k;
@@ -58,15 +68,18 @@ public:
 };
 
 struct TopKParamsResnet50 {
-    TopKParamsResnet50(
-        const reference_tests::Tensor& A,
-        const reference_tests::Tensor& result5Value, const reference_tests::Tensor& result5Index,
-        const reference_tests::Tensor& result1Value, const reference_tests::Tensor& result1Index,
-        const std::string& testcaseName = "") :
-        A(A),
-        result5Value(result5Value), result5Index(result5Index),
-        result1Value(result1Value), result1Index(result1Index),
-        testcaseName(testcaseName) {}
+    TopKParamsResnet50(reference_tests::Tensor A,
+                       reference_tests::Tensor result5Value,
+                       reference_tests::Tensor result5Index,
+                       reference_tests::Tensor result1Value,
+                       reference_tests::Tensor result1Index,
+                       std::string testcaseName = "")
+        : A(std::move(A)),
+          result5Value(std::move(result5Value)),
+          result5Index(std::move(result5Index)),
+          result1Value(std::move(result1Value)),
+          result1Index(std::move(result1Index)),
+          testcaseName(std::move(testcaseName)) {}
 
     reference_tests::Tensor A;
     reference_tests::Tensor result5Value;
@@ -191,7 +204,7 @@ std::vector<TopKParamsResnet50> generateParamsResnet50() {
 }
 
 std::vector<TopKParamsResnet50> generateCombinedParamsResnet50() {
-    const std::vector<std::vector<TopKParamsResnet50>> generatedParams {
+    std::vector<std::vector<TopKParamsResnet50>> generatedParams{
         generateParamsResnet50<element::Type_t::i8, element::Type_t::i32>(),
         generateParamsResnet50<element::Type_t::i16, element::Type_t::i32>(),
         generateParamsResnet50<element::Type_t::i32, element::Type_t::i32>(),
@@ -206,10 +219,8 @@ std::vector<TopKParamsResnet50> generateCombinedParamsResnet50() {
         generateParamsResnet50<element::Type_t::f64, element::Type_t::i32>(),
     };
     std::vector<TopKParamsResnet50> combinedParams;
-
-    for (const auto& params : generatedParams) {
-        combinedParams.insert(combinedParams.end(), params.begin(), params.end());
-    }
+    for (auto& params : generatedParams)
+        std::move(params.begin(), params.end(), std::back_inserter(combinedParams));
     return combinedParams;
 }
 
@@ -518,7 +529,7 @@ std::vector<TopKParams> generateParamsMaxMinSort() {
 }
 
 std::vector<TopKParams> generateCombinedParamsMaxMinSort() {
-    const std::vector<std::vector<TopKParams>> generatedParams {
+    std::vector<std::vector<TopKParams>> generatedParams{
         generateParamsMaxMinSort<element::Type_t::i8, element::Type_t::i64, element::Type_t::i32>(),
         generateParamsMaxMinSort<element::Type_t::i16, element::Type_t::i64, element::Type_t::i32>(),
         generateParamsMaxMinSort<element::Type_t::i32, element::Type_t::i64, element::Type_t::i32>(),
@@ -533,10 +544,8 @@ std::vector<TopKParams> generateCombinedParamsMaxMinSort() {
         generateParamsMaxMinSort<element::Type_t::f64, element::Type_t::i64, element::Type_t::i32>(),
     };
     std::vector<TopKParams> combinedParams;
-
-    for (const auto& params : generatedParams) {
-        combinedParams.insert(combinedParams.end(), params.begin(), params.end());
-    }
+    for (auto& params : generatedParams)
+        std::move(params.begin(), params.end(), std::back_inserter(combinedParams));
     return combinedParams;
 }
 
@@ -570,7 +579,7 @@ TEST_P(ReferenceTopKTestBackend, CompareWithRefs) {
 }
 
 std::vector<TopKParams> generateCombinedParamsBackend() {
-    const std::vector<std::vector<TopKParams>> generatedParams {
+    std::vector<std::vector<TopKParams>> generatedParams{
         generateParamsMaxMinSort<element::Type_t::i8, element::Type_t::i64, element::Type_t::i32>(),
         generateParamsMaxMinSort<element::Type_t::i16, element::Type_t::i64, element::Type_t::i32>(),
         generateParamsMaxMinSort<element::Type_t::i32, element::Type_t::i64, element::Type_t::i32>(),
@@ -585,10 +594,8 @@ std::vector<TopKParams> generateCombinedParamsBackend() {
         generateParamsMaxMinSort<element::Type_t::f64, element::Type_t::i64, element::Type_t::i32>(),
     };
     std::vector<TopKParams> combinedParams;
-
-    for (const auto& params : generatedParams) {
-        combinedParams.insert(combinedParams.end(), params.begin(), params.end());
-    }
+    for (auto& params : generatedParams)
+        std::move(params.begin(), params.end(), std::back_inserter(combinedParams));
     return combinedParams;
 }
 
@@ -1308,7 +1315,7 @@ std::vector<TopKParams> generateParams1dMaxMin() {
 }
 
 std::vector<TopKParams> generateCombinedParams1dMaxMin() {
-    const std::vector<std::vector<TopKParams>> generatedParams {
+    std::vector<std::vector<TopKParams>> generatedParams{
         generateParams1dMaxMin<element::Type_t::i16, element::Type_t::i64, element::Type_t::i32>(),
         generateParams1dMaxMin<element::Type_t::i32, element::Type_t::i64, element::Type_t::i32>(),
         generateParams1dMaxMin<element::Type_t::i64, element::Type_t::i64, element::Type_t::i32>(),
@@ -1321,10 +1328,8 @@ std::vector<TopKParams> generateCombinedParams1dMaxMin() {
         generateParams1dMaxMin<element::Type_t::f64, element::Type_t::i64, element::Type_t::i32>(),
     };
     std::vector<TopKParams> combinedParams;
-
-    for (const auto& params : generatedParams) {
-        combinedParams.insert(combinedParams.end(), params.begin(), params.end());
-    }
+    for (auto& params : generatedParams)
+        std::move(params.begin(), params.end(), std::back_inserter(combinedParams));
     return combinedParams;
 }
 
@@ -1397,14 +1402,12 @@ std::vector<TopKParams> generateParamsInt64() {
 }
 
 std::vector<TopKParams> generateCombinedParamsInt64() {
-    const std::vector<std::vector<TopKParams>> generatedParams {
+    std::vector<std::vector<TopKParams>> generatedParams{
         generateParamsInt64<element::Type_t::f32, element::Type_t::i64, element::Type_t::i32>(),
     };
     std::vector<TopKParams> combinedParams;
-
-    for (const auto& params : generatedParams) {
-        combinedParams.insert(combinedParams.end(), params.begin(), params.end());
-    }
+    for (auto& params : generatedParams)
+        std::move(params.begin(), params.end(), std::back_inserter(combinedParams));
     return combinedParams;
 }
 
@@ -1458,7 +1461,7 @@ std::vector<TopKParams> generateParamsSingleOutput() {
 }
 
 std::vector<TopKParams> generateCombinedParamsSingleOutput() {
-    const std::vector<std::vector<TopKParams>> generatedParams {
+    std::vector<std::vector<TopKParams>> generatedParams{
         generateParamsSingleOutput<element::Type_t::i8, element::Type_t::i64, element::Type_t::i32>(),
         generateParamsSingleOutput<element::Type_t::i16, element::Type_t::i64, element::Type_t::i32>(),
         generateParamsSingleOutput<element::Type_t::i32, element::Type_t::i64, element::Type_t::i32>(),
@@ -1473,10 +1476,8 @@ std::vector<TopKParams> generateCombinedParamsSingleOutput() {
         generateParamsSingleOutput<element::Type_t::f64, element::Type_t::i64, element::Type_t::i32>(),
     };
     std::vector<TopKParams> combinedParams;
-
-    for (const auto& params : generatedParams) {
-        combinedParams.insert(combinedParams.end(), params.begin(), params.end());
-    }
+    for (auto& params : generatedParams)
+        std::move(params.begin(), params.end(), std::back_inserter(combinedParams));
     return combinedParams;
 }
 
@@ -1749,9 +1750,8 @@ std::vector<TopKParams> generateCombinedParamsForStableTest() {
         generateParamsForStableTest<element::Type_t::f32, element::Type_t::i32, element::Type_t::i32>(),
     };
     std::vector<TopKParams> combinedParams;
-    for (auto& params : generatedParams) {
+    for (auto& params : generatedParams)
         std::move(params.begin(), params.end(), std::back_inserter(combinedParams));
-    }
     return combinedParams;
 }
 
@@ -1760,4 +1760,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_TopK_With_Hardcoded_Refs,
                          testing::ValuesIn(generateCombinedParamsForStableTest()),
                          ReferenceTopKv11StableTest::getTestCaseName);
 
-} // namespace
+}  // namespace
