@@ -9,9 +9,25 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     ie_add_compiler_flags(/wd4305)
 endif()
 
+list(APPEND EXCLUDED_SOURCE_PATHS
+    ${CMAKE_CURRENT_SOURCE_DIR}/op_reference
+    ${CMAKE_CURRENT_SOURCE_DIR}/subgraph_reference
+    ${CMAKE_CURRENT_SOURCE_DIR}/preprocessing
+    ${CMAKE_CURRENT_SOURCE_DIR}/transformations
+    ${CMAKE_CURRENT_SOURCE_DIR}/shared_tests_instances
+)
+list(APPEND TMP_EXPLICITLY_ENABLED_TESTS
+    # must have
+    ${CMAKE_CURRENT_SOURCE_DIR}/op_reference/base_reference_test.cpp
+    # the test
+    ${CMAKE_CURRENT_SOURCE_DIR}/op_reference/topk.cpp
+)
+
 ov_add_test_target(
         NAME ${TARGET_NAME}
         ROOT ${CMAKE_CURRENT_SOURCE_DIR}
+        EXCLUDED_SOURCE_PATHS ${EXCLUDED_SOURCE_PATHS}
+        OBJECT_FILES ${TMP_EXPLICITLY_ENABLED_TESTS}
         DEPENDENCIES
             openvino_template_plugin
         LINK_LIBRARIES

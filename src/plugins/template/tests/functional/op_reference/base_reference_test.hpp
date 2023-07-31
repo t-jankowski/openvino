@@ -5,6 +5,7 @@
 #pragma once
 
 #include "openvino/core/shape.hpp"
+#include "openvino/core/the_counter.hpp"
 #include "openvino/core/type/element_type.hpp"
 #include "openvino/runtime/allocator.hpp"
 #include "openvino/runtime/core.hpp"
@@ -90,6 +91,9 @@ struct Tensor {
     ov::Shape shape;
     ov::element::Type type;
     ov::Tensor data;
+
+private:
+    tj::the_counter<Tensor> cnt;
 };
 
 ///

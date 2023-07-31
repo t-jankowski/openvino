@@ -5,6 +5,7 @@
 #include <gtest/gtest.h>
 
 #include "base_reference_test.hpp"
+#include "openvino/core/the_counter.hpp"
 #include "openvino/opsets/opset1.hpp"
 #include "openvino/opsets/opset11.hpp"
 #include "openvino/opsets/opset3.hpp"
@@ -32,6 +33,9 @@ struct TopKParams {
     reference_tests::Tensor result1;
     size_t outIdx;
     std::string testcaseName;
+
+private:
+    tj::the_counter<TopKParams> cnt;
 };
 
 class ReferenceTopKTest : public testing::TestWithParam<TopKParams>, public CommonReferenceTest {
@@ -70,6 +74,9 @@ struct TopKParamsResnet50 {
     reference_tests::Tensor result1Value;
     reference_tests::Tensor result1Index;
     std::string testcaseName;
+
+private:
+    tj::the_counter<TopKParamsResnet50> cnt;
 };
 
 class ReferenceTopKTestResnet50 : public testing::TestWithParam<TopKParamsResnet50>, public CommonReferenceTest {
