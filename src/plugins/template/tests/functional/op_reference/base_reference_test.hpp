@@ -94,8 +94,8 @@ struct Tensor {
     ov::element::Type type;
     ov::Tensor data;
 
-private:
-    tj::the_counter<Tensor> cnt;
+    // private:
+    //     tj::the_counter<Tensor> cnt;
 };
 
 ///

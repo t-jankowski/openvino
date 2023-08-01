@@ -16,14 +16,14 @@ using namespace ov;
 namespace {
 struct TopKParams {
     TopKParams(reference_tests::Tensor A,
-               reference_tests::Tensor k,
-               const int64_t axis,
-               const opset1::TopK::Mode mode,
-               const opset1::TopK::SortType sort,
-               reference_tests::Tensor result0,
-               reference_tests::Tensor result1,
-               const size_t outIdx,
-               std::string testcaseName = "")
+                reference_tests::Tensor k,
+                const int64_t axis,
+                const opset1::TopK::Mode mode,
+                const opset1::TopK::SortType sort,
+                reference_tests::Tensor result0,
+                reference_tests::Tensor result1,
+                const size_t outIdx,
+                std::string testcaseName = "")
         : A(std::move(A)),
           k(std::move(k)),
           axis(axis),
@@ -44,25 +44,27 @@ struct TopKParams {
     size_t outIdx;
     std::string testcaseName;
 
-private:
-    tj::the_counter<TopKParams> cnt;
+    // private:
+    //     tj::the_counter<TopKParams> cnt;
 };
 
-class ReferenceTopKTest : public testing::TestWithParam<TopKParams>, public CommonReferenceTest {
+using TopKParamsPrt = std::shared_ptr<TopKParams>;
+
+class ReferenceTopKTest : public testing::TestWithParam<TopKParamsPrt>, public CommonReferenceTest {
 public:
-    static std::string getTestCaseName(const testing::TestParamInfo<TopKParams>& obj) {
+    static std::string getTestCaseName(const testing::TestParamInfo<TopKParamsPrt>& obj) {
         const auto& param = obj.param;
         std::ostringstream result;
-        result << "aType=" << param.A.type;
-        result << "_aShape=" << param.A.shape;
-        result << "_kType=" << param.k.type;
-        result << "_kShape=" << param.k.shape;
-        result << "_axis=" << param.axis;
-        result << "_r0Type=" << param.result0.type;
-        result << "_r0Shape=" << param.result0.shape;
-        result << "_r1Type=" << param.result1.type;
-        result << "_r1Shape=" << param.result1.shape;
-        result << "_=" << param.testcaseName;
+        result << "aType=" << param->A.type;
+        result << "_aShape=" << param->A.shape;
+        result << "_kType=" << param->k.type;
+        result << "_kShape=" << param->k.shape;
+        result << "_axis=" << param->axis;
+        result << "_r0Type=" << param->result0.type;
+        result << "_r0Shape=" << param->result0.shape;
+        result << "_r1Type=" << param->result1.type;
+        result << "_r1Shape=" << param->result1.shape;
+        result << "_=" << param->testcaseName;
         return result.str();
     }
 };
@@ -88,41 +90,44 @@ struct TopKParamsResnet50 {
     reference_tests::Tensor result1Index;
     std::string testcaseName;
 
-private:
-    tj::the_counter<TopKParamsResnet50> cnt;
+    // private:
+    //     tj::the_counter<TopKParamsResnet50> cnt;
 };
 
-class ReferenceTopKTestResnet50 : public testing::TestWithParam<TopKParamsResnet50>, public CommonReferenceTest {
+using TopKParamsResnet50Ptr = std::shared_ptr<TopKParamsResnet50>;
+
+class ReferenceTopKTestResnet50 : public testing::TestWithParam<TopKParamsResnet50Ptr>, public CommonReferenceTest {
 public:
     void SetUp() override {
         const auto& params = GetParam();
         function = CreateFunction(params);
-        inputData = {params.A.data};
-        refOutData = {params.result5Value.data, params.result5Index.data,
-                      params.result1Value.data, params.result1Index.data};
+        inputData = {params->A.data};
+        refOutData = {params->result5Value.data,
+                      params->result5Index.data,
+                      params->result1Value.data,
+                      params->result1Index.data};
     }
 
-    static std::string getTestCaseName(const testing::TestParamInfo<TopKParamsResnet50>& obj) {
+    static std::string getTestCaseName(const testing::TestParamInfo<TopKParamsResnet50Ptr>& obj) {
         const auto& param = obj.param;
         std::ostringstream result;
-        result << "aType=" << param.A.type;
-        result << "_aShape=" << param.A.shape;
-        result << "_r5vType=" << param.result5Value.type;
-        result << "_r5vShape=" << param.result5Value.shape;
-        result << "_r5iType=" << param.result5Index.type;
-        result << "_r5iShape=" << param.result5Index.shape;
-        result << "_r1vType=" << param.result1Value.type;
-        result << "_r1vShape=" << param.result1Value.shape;
-        result << "_r1iType=" << param.result1Index.type;
-        result << "_r1iShape=" << param.result1Index.shape;
-        result << "_=" << param.testcaseName;
+        result << "aType=" << param->A.type;
+        result << "_aShape=" << param->A.shape;
+        result << "_r5vType=" << param->result5Value.type;
+        result << "_r5vShape=" << param->result5Value.shape;
+        result << "_r5iType=" << param->result5Index.type;
+        result << "_r5iShape=" << param->result5Index.shape;
+        result << "_r1vType=" << param->result1Value.type;
+        result << "_r1vShape=" << param->result1Value.shape;
+        result << "_r1iType=" << param->result1Index.type;
+        result << "_r1iShape=" << param->result1Index.shape;
+        result << "_=" << param->testcaseName;
         return result.str();
     }
 
 private:
-    static std::shared_ptr<Model> CreateFunction(const TopKParamsResnet50& params) {
-        const auto A = std::make_shared<opset1::Parameter>(params.A.type,
-                                                           params.A.shape);
+    static std::shared_ptr<Model> CreateFunction(const TopKParamsResnet50Ptr& params) {
+        const auto A = std::make_shared<opset1::Parameter>(params->A.type, params->A.shape);
         const auto B = std::make_shared<opset1::TopK>(A,
                                                       opset1::Constant::create(element::i64, {}, {5}),
                                                       1,
@@ -148,63 +153,73 @@ TEST_P(ReferenceTopKTestResnet50, CompareWithRefs) {
 }
 
 template <element::Type_t ET, element::Type_t ET_OUT>
-std::vector<TopKParamsResnet50> generateParamsResnet50() {
+std::vector<TopKParamsResnet50Ptr> generateParamsResnet50() {
     using T = typename element_type_traits<ET>::value_type;
     using T_OUT = typename element_type_traits<ET_OUT>::value_type;
-    std::vector<TopKParamsResnet50> params {
-        TopKParamsResnet50(
-            reference_tests::Tensor(ET, {128, 1000}, [](std::vector<size_t> shape) -> std::vector<T> {
-                std::vector<T> data;
-                for (size_t i = 0; i < shape[0]; i++) {
-                    for (size_t j = 0; j < shape[1]; j++) {
-                        data.push_back(static_cast<T>(j));
-                    }
-                }
-                return data;
-            }({128, 1000})),
-            reference_tests::Tensor(ET, {128, 5}, [](std::vector<size_t> rshape, std::vector<size_t> shape) -> std::vector<T>{
-                std::vector<T> expected_value;
-                for (size_t i = 0; i < rshape[0]; i++) {
-                    for (size_t j = 0; j < rshape[1]; j++) {
-                        expected_value.push_back(static_cast<T>(shape[1] - j - 1));
-                    }
-                }
-                return expected_value;
-            }({128, 5}, {128, 1000})),
-            reference_tests::Tensor(ET_OUT, {128, 5}, [](std::vector<size_t> rshape, std::vector<size_t> shape) -> std::vector<T_OUT>{
-                std::vector<T_OUT> expected_index;
-                for (size_t i = 0; i < rshape[0]; i++) {
-                    for (size_t j = 0; j < rshape[1]; j++) {
-                        expected_index.push_back(static_cast<T_OUT>(shape[1] - j - 1));
-                    }
-                }
-                return expected_index;
-            }({128, 5}, {128, 1000})),
-            reference_tests::Tensor(ET, {128, 1}, [](std::vector<size_t> rshape, std::vector<size_t> shape) -> std::vector<T>{
-                std::vector<T> expected_value;
-                for (size_t i = 0; i < rshape[0]; i++) {
-                    for (size_t j = 0; j < rshape[1]; j++) {
-                        expected_value.push_back(static_cast<T>(shape[1] - j - 1));
-                    }
-                }
-                return expected_value;
-            }({128, 1}, {128, 1000})),
-            reference_tests::Tensor(ET_OUT, {128, 1}, [](std::vector<size_t> rshape, std::vector<size_t> shape) -> std::vector<T_OUT>{
-                std::vector<T_OUT> expected_index;
-                for (size_t i = 0; i < rshape[0]; i++) {
-                    for (size_t j = 0; j < rshape[1]; j++) {
-                        expected_index.push_back(static_cast<T_OUT>(shape[1] - j - 1));
-                    }
-                }
-                return expected_index;
-            }({128, 1}, {128, 1000})),
+    std::vector<TopKParamsResnet50Ptr> params{
+        std::make_shared<TopKParamsResnet50>(
+            reference_tests::Tensor(ET,
+                                    {128, 1000},
+                                    [](std::vector<size_t> shape) -> std::vector<T> {
+                                        std::vector<T> data;
+                                        for (size_t i = 0; i < shape[0]; i++) {
+                                            for (size_t j = 0; j < shape[1]; j++) {
+                                                data.push_back(static_cast<T>(j));
+                                            }
+                                        }
+                                        return data;
+                                    }({128, 1000})),
+            reference_tests::Tensor(ET,
+                                    {128, 5},
+                                    [](std::vector<size_t> rshape, std::vector<size_t> shape) -> std::vector<T> {
+                                        std::vector<T> expected_value;
+                                        for (size_t i = 0; i < rshape[0]; i++) {
+                                            for (size_t j = 0; j < rshape[1]; j++) {
+                                                expected_value.push_back(static_cast<T>(shape[1] - j - 1));
+                                            }
+                                        }
+                                        return expected_value;
+                                    }({128, 5}, {128, 1000})),
+            reference_tests::Tensor(ET_OUT,
+                                    {128, 5},
+                                    [](std::vector<size_t> rshape, std::vector<size_t> shape) -> std::vector<T_OUT> {
+                                        std::vector<T_OUT> expected_index;
+                                        for (size_t i = 0; i < rshape[0]; i++) {
+                                            for (size_t j = 0; j < rshape[1]; j++) {
+                                                expected_index.push_back(static_cast<T_OUT>(shape[1] - j - 1));
+                                            }
+                                        }
+                                        return expected_index;
+                                    }({128, 5}, {128, 1000})),
+            reference_tests::Tensor(ET,
+                                    {128, 1},
+                                    [](std::vector<size_t> rshape, std::vector<size_t> shape) -> std::vector<T> {
+                                        std::vector<T> expected_value;
+                                        for (size_t i = 0; i < rshape[0]; i++) {
+                                            for (size_t j = 0; j < rshape[1]; j++) {
+                                                expected_value.push_back(static_cast<T>(shape[1] - j - 1));
+                                            }
+                                        }
+                                        return expected_value;
+                                    }({128, 1}, {128, 1000})),
+            reference_tests::Tensor(ET_OUT,
+                                    {128, 1},
+                                    [](std::vector<size_t> rshape, std::vector<size_t> shape) -> std::vector<T_OUT> {
+                                        std::vector<T_OUT> expected_index;
+                                        for (size_t i = 0; i < rshape[0]; i++) {
+                                            for (size_t j = 0; j < rshape[1]; j++) {
+                                                expected_index.push_back(static_cast<T_OUT>(shape[1] - j - 1));
+                                            }
+                                        }
+                                        return expected_index;
+                                    }({128, 1}, {128, 1000})),
             "topk_resnet50"),
     };
     return params;
 }
 
-std::vector<TopKParamsResnet50> generateCombinedParamsResnet50() {
-    std::vector<std::vector<TopKParamsResnet50>> generatedParams{
+std::vector<TopKParamsResnet50Ptr> generateCombinedParamsResnet50() {
+    std::vector<std::vector<TopKParamsResnet50Ptr>> generatedParams{
         generateParamsResnet50<element::Type_t::i8, element::Type_t::i32>(),
         generateParamsResnet50<element::Type_t::i16, element::Type_t::i32>(),
         generateParamsResnet50<element::Type_t::i32, element::Type_t::i32>(),
@@ -218,32 +233,31 @@ std::vector<TopKParamsResnet50> generateCombinedParamsResnet50() {
         generateParamsResnet50<element::Type_t::f32, element::Type_t::i32>(),
         generateParamsResnet50<element::Type_t::f64, element::Type_t::i32>(),
     };
-    std::vector<TopKParamsResnet50> combinedParams;
+    std::vector<TopKParamsResnet50Ptr> combinedParams;
     for (auto& params : generatedParams)
         std::move(params.begin(), params.end(), std::back_inserter(combinedParams));
     return combinedParams;
 }
 
-INSTANTIATE_TEST_SUITE_P(smoke_TopK_With_Hardcoded_Refs, ReferenceTopKTestResnet50,
-    testing::ValuesIn(generateCombinedParamsResnet50()), ReferenceTopKTestResnet50::getTestCaseName);
+INSTANTIATE_TEST_SUITE_P(smoke_TopK_With_Hardcoded_Refs,
+                         ReferenceTopKTestResnet50,
+                         testing::ValuesIn(generateCombinedParamsResnet50()),
+                         ReferenceTopKTestResnet50::getTestCaseName);
 
 class ReferenceTopKTestMaxMinSort : public ReferenceTopKTest {
 public:
     void SetUp() override {
         const auto& params = GetParam();
         function = CreateFunction(params);
-        inputData = {params.A.data};
-        refOutData = {params.result0.data, params.result1.data};
+        inputData = {params->A.data};
+        refOutData = {params->result0.data, params->result1.data};
     }
 
 private:
-    static std::shared_ptr<Model> CreateFunction(const TopKParams& params) {
-        const auto A = std::make_shared<opset1::Parameter>(params.A.type,
-                                                           params.A.shape);
-        const auto k = opset1::Constant::create(params.k.type,
-                                                params.k.shape,
-                                                params.k.data.data());
-        const auto B = std::make_shared<opset1::TopK>(A, k, params.axis, params.mode, params.sort);
+    static std::shared_ptr<Model> CreateFunction(const TopKParamsPrt& params) {
+        const auto A = std::make_shared<opset1::Parameter>(params->A.type, params->A.shape);
+        const auto k = opset1::Constant::create(params->k.type, params->k.shape, params->k.data.data());
+        const auto B = std::make_shared<opset1::TopK>(A, k, params->axis, params->mode, params->sort);
         const auto f = std::make_shared<Model>(B->outputs(), ParameterVector{A});
         return f;
     }
@@ -254,282 +268,313 @@ TEST_P(ReferenceTopKTestMaxMinSort, CompareWithRefs) {
 }
 
 template <element::Type_t ET, element::Type_t ET2, element::Type_t ET_OUT>
-std::vector<TopKParams> generateParamsMaxMinSort() {
+std::vector<TopKParamsPrt> generateParamsMaxMinSort() {
     using T = typename element_type_traits<ET>::value_type;
     using T2 = typename element_type_traits<ET2>::value_type;
     using T_OUT = typename element_type_traits<ET_OUT>::value_type;
-    std::vector<TopKParams> params {
-        TopKParams(
-            reference_tests::Tensor(ET, {128, 1000}, [](std::vector<size_t> shape) -> std::vector<T> {
-                std::vector<T> data;
-                for (size_t i = 0; i < shape[0]; i++) {
-                    for (size_t j = 0; j < shape[1]; j++) {
-                        data.push_back(static_cast<T>(j));
-                    }
-                }
-                return data;
-            }({128, 1000})),
+    std::vector<TopKParamsPrt> params{
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET,
+                                    {128, 1000},
+                                    [](std::vector<size_t> shape) -> std::vector<T> {
+                                        std::vector<T> data;
+                                        for (size_t i = 0; i < shape[0]; i++) {
+                                            for (size_t j = 0; j < shape[1]; j++) {
+                                                data.push_back(static_cast<T>(j));
+                                            }
+                                        }
+                                        return data;
+                                    }({128, 1000})),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{5}),
             1,
             opset1::TopK::Mode::MAX,
             opset1::TopK::SortType::NONE,
-            reference_tests::Tensor(ET, {128, 5}, [](std::vector<size_t> rshape, std::vector<size_t> shape) -> std::vector<T>{
-                std::vector<T> expected_value;
-                for (size_t i = 0; i < rshape[0]; i++) {
-                    expected_value.push_back(static_cast<T>(shape[1] - 3));
-                    expected_value.push_back(static_cast<T>(shape[1] - 1));
-                    expected_value.push_back(static_cast<T>(shape[1] - 2));
-                    expected_value.push_back(static_cast<T>(shape[1] - 5));
-                    expected_value.push_back(static_cast<T>(shape[1] - 4));
-                }
-                return expected_value;
-            }({128, 5}, {128, 1000})),
-            reference_tests::Tensor(ET_OUT, {128, 5}, [](std::vector<size_t> rshape, std::vector<size_t> shape) -> std::vector<T_OUT>{
-                std::vector<T_OUT> expected_index;
-                for (size_t i = 0; i < rshape[0]; i++) {
-                    expected_index.push_back(static_cast<T_OUT>(shape[1] - 3));
-                    expected_index.push_back(static_cast<T_OUT>(shape[1] - 1));
-                    expected_index.push_back(static_cast<T_OUT>(shape[1] - 2));
-                    expected_index.push_back(static_cast<T_OUT>(shape[1] - 5));
-                    expected_index.push_back(static_cast<T_OUT>(shape[1] - 4));
-                }
-                return expected_index;
-            }({128, 5}, {128, 1000})),
+            reference_tests::Tensor(ET,
+                                    {128, 5},
+                                    [](std::vector<size_t> rshape, std::vector<size_t> shape) -> std::vector<T> {
+                                        std::vector<T> expected_value;
+                                        for (size_t i = 0; i < rshape[0]; i++) {
+                                            expected_value.push_back(static_cast<T>(shape[1] - 3));
+                                            expected_value.push_back(static_cast<T>(shape[1] - 1));
+                                            expected_value.push_back(static_cast<T>(shape[1] - 2));
+                                            expected_value.push_back(static_cast<T>(shape[1] - 5));
+                                            expected_value.push_back(static_cast<T>(shape[1] - 4));
+                                        }
+                                        return expected_value;
+                                    }({128, 5}, {128, 1000})),
+            reference_tests::Tensor(ET_OUT,
+                                    {128, 5},
+                                    [](std::vector<size_t> rshape, std::vector<size_t> shape) -> std::vector<T_OUT> {
+                                        std::vector<T_OUT> expected_index;
+                                        for (size_t i = 0; i < rshape[0]; i++) {
+                                            expected_index.push_back(static_cast<T_OUT>(shape[1] - 3));
+                                            expected_index.push_back(static_cast<T_OUT>(shape[1] - 1));
+                                            expected_index.push_back(static_cast<T_OUT>(shape[1] - 2));
+                                            expected_index.push_back(static_cast<T_OUT>(shape[1] - 5));
+                                            expected_index.push_back(static_cast<T_OUT>(shape[1] - 4));
+                                        }
+                                        return expected_index;
+                                    }({128, 5}, {128, 1000})),
             0,
             "topk_max_sort_none"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {128, 1000}, [](std::vector<size_t> shape) -> std::vector<T> {
-                std::vector<T> data;
-                for (size_t i = 0; i < shape[0]; i++) {
-                    for (size_t j = 0; j < shape[1]; j++) {
-                        data.push_back(static_cast<T>(j));
-                    }
-                }
-                return data;
-            }({128, 1000})),
-            reference_tests::Tensor(ET2, {}, std::vector<T2>{5}),
-            1,
-            opset1::TopK::Mode::MIN,
-            opset1::TopK::SortType::NONE,
-            reference_tests::Tensor(ET, {128, 5}, [](std::vector<size_t> rshape) -> std::vector<T>{
-                std::vector<T> expected_value;
-                for (size_t i = 0; i < rshape[0]; i++) {
-                    expected_value.push_back(1);
-                    expected_value.push_back(0);
-                    expected_value.push_back(3);
-                    expected_value.push_back(2);
-                    expected_value.push_back(4);
-                }
-                return expected_value;
-            }({128, 5})),
-            reference_tests::Tensor(ET_OUT, {128, 5}, [](std::vector<size_t> rshape) -> std::vector<T_OUT>{
-                std::vector<T_OUT> expected_index;
-                for (size_t i = 0; i < rshape[0]; i++) {
-                    expected_index.push_back(1);
-                    expected_index.push_back(0);
-                    expected_index.push_back(3);
-                    expected_index.push_back(2);
-                    expected_index.push_back(4);
-                }
-                return expected_index;
-            }({128, 5})),
-            0,
-            "topk_min_sort_none"),
+        std::make_shared<TopKParams>(reference_tests::Tensor(ET,
+                                                              {128, 1000},
+                                                              [](std::vector<size_t> shape) -> std::vector<T> {
+                                                                  std::vector<T> data;
+                                                                  for (size_t i = 0; i < shape[0]; i++) {
+                                                                      for (size_t j = 0; j < shape[1]; j++) {
+                                                                          data.push_back(static_cast<T>(j));
+                                                                      }
+                                                                  }
+                                                                  return data;
+                                                              }({128, 1000})),
+                                      reference_tests::Tensor(ET2, {}, std::vector<T2>{5}),
+                                      1,
+                                      opset1::TopK::Mode::MIN,
+                                      opset1::TopK::SortType::NONE,
+                                      reference_tests::Tensor(ET,
+                                                              {128, 5},
+                                                              [](std::vector<size_t> rshape) -> std::vector<T> {
+                                                                  std::vector<T> expected_value;
+                                                                  for (size_t i = 0; i < rshape[0]; i++) {
+                                                                      expected_value.push_back(1);
+                                                                      expected_value.push_back(0);
+                                                                      expected_value.push_back(3);
+                                                                      expected_value.push_back(2);
+                                                                      expected_value.push_back(4);
+                                                                  }
+                                                                  return expected_value;
+                                                              }({128, 5})),
+                                      reference_tests::Tensor(ET_OUT,
+                                                              {128, 5},
+                                                              [](std::vector<size_t> rshape) -> std::vector<T_OUT> {
+                                                                  std::vector<T_OUT> expected_index;
+                                                                  for (size_t i = 0; i < rshape[0]; i++) {
+                                                                      expected_index.push_back(1);
+                                                                      expected_index.push_back(0);
+                                                                      expected_index.push_back(3);
+                                                                      expected_index.push_back(2);
+                                                                      expected_index.push_back(4);
+                                                                  }
+                                                                  return expected_index;
+                                                              }({128, 5})),
+                                      0,
+                                      "topk_min_sort_none"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {128, 1000}, [](std::vector<size_t> shape) -> std::vector<T> {
-                std::vector<T> data;
-                for (size_t i = 0; i < shape[0]; i++) {
-                    for (size_t j = 0; j < shape[1]; j++) {
-                        data.push_back(static_cast<T>(j));
-                    }
-                }
-                return data;
-            }({128, 1000})),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET,
+                                    {128, 1000},
+                                    [](std::vector<size_t> shape) -> std::vector<T> {
+                                        std::vector<T> data;
+                                        for (size_t i = 0; i < shape[0]; i++) {
+                                            for (size_t j = 0; j < shape[1]; j++) {
+                                                data.push_back(static_cast<T>(j));
+                                            }
+                                        }
+                                        return data;
+                                    }({128, 1000})),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{5}),
             1,
             opset1::TopK::Mode::MAX,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {128, 5}, [](std::vector<size_t> rshape, std::vector<size_t> shape) -> std::vector<T>{
-                std::vector<T> expected_value;
-                for (size_t i = 0; i < rshape[0]; i++) {
-                    for (size_t j = 0; j < rshape[1]; j++) {
-                        expected_value.push_back(static_cast<T>((shape[1] - j - 1)));
-                    }
-                }
-                return expected_value;
-            }({128, 5}, {128, 1000})),
-            reference_tests::Tensor(ET_OUT, {128, 5}, [](std::vector<size_t> rshape, std::vector<size_t> shape) -> std::vector<T_OUT>{
-                std::vector<T_OUT> expected_index;
-                for (size_t i = 0; i < rshape[0]; i++) {
-                    for (size_t j = 0; j < rshape[1]; j++) {
-                        expected_index.push_back(static_cast<T_OUT>(shape[1] - j - 1));
-                    }
-                }
-                return expected_index;
-            }({128, 5}, {128, 1000})),
+            reference_tests::Tensor(ET,
+                                    {128, 5},
+                                    [](std::vector<size_t> rshape, std::vector<size_t> shape) -> std::vector<T> {
+                                        std::vector<T> expected_value;
+                                        for (size_t i = 0; i < rshape[0]; i++) {
+                                            for (size_t j = 0; j < rshape[1]; j++) {
+                                                expected_value.push_back(static_cast<T>((shape[1] - j - 1)));
+                                            }
+                                        }
+                                        return expected_value;
+                                    }({128, 5}, {128, 1000})),
+            reference_tests::Tensor(ET_OUT,
+                                    {128, 5},
+                                    [](std::vector<size_t> rshape, std::vector<size_t> shape) -> std::vector<T_OUT> {
+                                        std::vector<T_OUT> expected_index;
+                                        for (size_t i = 0; i < rshape[0]; i++) {
+                                            for (size_t j = 0; j < rshape[1]; j++) {
+                                                expected_index.push_back(static_cast<T_OUT>(shape[1] - j - 1));
+                                            }
+                                        }
+                                        return expected_index;
+                                    }({128, 5}, {128, 1000})),
             0,
             "topk_max_sort_value"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {128, 1000}, [](std::vector<size_t> shape) -> std::vector<T> {
-                std::vector<T> data;
-                for (size_t i = 0; i < shape[0]; i++) {
-                    for (size_t j = 0; j < shape[1]; j++) {
-                        data.push_back(static_cast<T>(j));
-                    }
-                }
-                return data;
-            }({128, 1000})),
-            reference_tests::Tensor(ET2, {}, std::vector<T2>{5}),
-            1,
-            opset1::TopK::Mode::MIN,
-            opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {128, 5}, [](std::vector<size_t> rshape) -> std::vector<T>{
-                std::vector<T> expected_value;
-                for (size_t i = 0; i < rshape[0]; i++) {
-                    for (size_t j = 0; j < rshape[1]; j++) {
-                        expected_value.push_back(static_cast<T>(j));
-                    }
-                }
-                return expected_value;
-            }({128, 5})),
-            reference_tests::Tensor(ET_OUT, {128, 5}, [](std::vector<size_t> rshape) -> std::vector<T_OUT>{
-                std::vector<T_OUT> expected_index;
-                for (size_t i = 0; i < rshape[0]; i++) {
-                    for (size_t j = 0; j < rshape[1]; j++) {
-                        expected_index.push_back(static_cast<T_OUT>(j));
-                    }
-                }
-                return expected_index;
-            }({128, 5})),
-            0,
-            "topk_min_sort_value"),
+        std::make_shared<TopKParams>(reference_tests::Tensor(ET,
+                                                              {128, 1000},
+                                                              [](std::vector<size_t> shape) -> std::vector<T> {
+                                                                  std::vector<T> data;
+                                                                  for (size_t i = 0; i < shape[0]; i++) {
+                                                                      for (size_t j = 0; j < shape[1]; j++) {
+                                                                          data.push_back(static_cast<T>(j));
+                                                                      }
+                                                                  }
+                                                                  return data;
+                                                              }({128, 1000})),
+                                      reference_tests::Tensor(ET2, {}, std::vector<T2>{5}),
+                                      1,
+                                      opset1::TopK::Mode::MIN,
+                                      opset1::TopK::SortType::SORT_VALUES,
+                                      reference_tests::Tensor(ET,
+                                                              {128, 5},
+                                                              [](std::vector<size_t> rshape) -> std::vector<T> {
+                                                                  std::vector<T> expected_value;
+                                                                  for (size_t i = 0; i < rshape[0]; i++) {
+                                                                      for (size_t j = 0; j < rshape[1]; j++) {
+                                                                          expected_value.push_back(static_cast<T>(j));
+                                                                      }
+                                                                  }
+                                                                  return expected_value;
+                                                              }({128, 5})),
+                                      reference_tests::Tensor(ET_OUT,
+                                                              {128, 5},
+                                                              [](std::vector<size_t> rshape) -> std::vector<T_OUT> {
+                                                                  std::vector<T_OUT> expected_index;
+                                                                  for (size_t i = 0; i < rshape[0]; i++) {
+                                                                      for (size_t j = 0; j < rshape[1]; j++) {
+                                                                          expected_index.push_back(
+                                                                              static_cast<T_OUT>(j));
+                                                                      }
+                                                                  }
+                                                                  return expected_index;
+                                                              }({128, 5})),
+                                      0,
+                                      "topk_min_sort_value"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {128, 1000}, [](std::vector<size_t> shape) -> std::vector<T> {
-                std::vector<T> data;
-                for (size_t i = 0; i < shape[0]; i++) {
-                    for (size_t j = 0; j < shape[1]; j++) {
-                        data.push_back(static_cast<T>(j));
-                    }
-                }
-                return data;
-            }({128, 1000})),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET,
+                                    {128, 1000},
+                                    [](std::vector<size_t> shape) -> std::vector<T> {
+                                        std::vector<T> data;
+                                        for (size_t i = 0; i < shape[0]; i++) {
+                                            for (size_t j = 0; j < shape[1]; j++) {
+                                                data.push_back(static_cast<T>(j));
+                                            }
+                                        }
+                                        return data;
+                                    }({128, 1000})),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{5}),
             1,
             opset1::TopK::Mode::MAX,
             opset1::TopK::SortType::SORT_INDICES,
-            reference_tests::Tensor(ET, {128, 5}, [](std::vector<size_t> rshape, std::vector<size_t> shape) -> std::vector<T>{
-                std::vector<T> expected_value;
-                for (size_t i = 0; i < rshape[0]; i++) {
-                    expected_value.push_back(static_cast<T>(shape[1] - 5));
-                    expected_value.push_back(static_cast<T>(shape[1] - 4));
-                    expected_value.push_back(static_cast<T>(shape[1] - 3));
-                    expected_value.push_back(static_cast<T>(shape[1] - 2));
-                    expected_value.push_back(static_cast<T>(shape[1] - 1));
-                }
-                return expected_value;
-            }({128, 5}, {128, 1000})),
-            reference_tests::Tensor(ET_OUT, {128, 5}, [](std::vector<size_t> rshape, std::vector<size_t> shape) -> std::vector<T_OUT>{
-                std::vector<T_OUT> expected_index;
-                for (size_t i = 0; i < rshape[0]; i++) {
-                    expected_index.push_back(static_cast<T_OUT>(shape[1] - 5));
-                    expected_index.push_back(static_cast<T_OUT>(shape[1] - 4));
-                    expected_index.push_back(static_cast<T_OUT>(shape[1] - 3));
-                    expected_index.push_back(static_cast<T_OUT>(shape[1] - 2));
-                    expected_index.push_back(static_cast<T_OUT>(shape[1] - 1));
-                }
-                return expected_index;
-            }({128, 5}, {128, 1000})),
+            reference_tests::Tensor(ET,
+                                    {128, 5},
+                                    [](std::vector<size_t> rshape, std::vector<size_t> shape) -> std::vector<T> {
+                                        std::vector<T> expected_value;
+                                        for (size_t i = 0; i < rshape[0]; i++) {
+                                            expected_value.push_back(static_cast<T>(shape[1] - 5));
+                                            expected_value.push_back(static_cast<T>(shape[1] - 4));
+                                            expected_value.push_back(static_cast<T>(shape[1] - 3));
+                                            expected_value.push_back(static_cast<T>(shape[1] - 2));
+                                            expected_value.push_back(static_cast<T>(shape[1] - 1));
+                                        }
+                                        return expected_value;
+                                    }({128, 5}, {128, 1000})),
+            reference_tests::Tensor(ET_OUT,
+                                    {128, 5},
+                                    [](std::vector<size_t> rshape, std::vector<size_t> shape) -> std::vector<T_OUT> {
+                                        std::vector<T_OUT> expected_index;
+                                        for (size_t i = 0; i < rshape[0]; i++) {
+                                            expected_index.push_back(static_cast<T_OUT>(shape[1] - 5));
+                                            expected_index.push_back(static_cast<T_OUT>(shape[1] - 4));
+                                            expected_index.push_back(static_cast<T_OUT>(shape[1] - 3));
+                                            expected_index.push_back(static_cast<T_OUT>(shape[1] - 2));
+                                            expected_index.push_back(static_cast<T_OUT>(shape[1] - 1));
+                                        }
+                                        return expected_index;
+                                    }({128, 5}, {128, 1000})),
             0,
             "topk_max_sort_index"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {128, 1000}, [](std::vector<size_t> shape) -> std::vector<T> {
-                std::vector<T> data;
-                for (size_t i = 0; i < shape[0]; i++) {
-                    for (size_t j = 0; j < shape[1]; j++) {
-                        data.push_back(static_cast<T>(j));
-                    }
-                }
-                return data;
-            }({128, 1000})),
-            reference_tests::Tensor(ET2, {}, std::vector<T2>{5}),
-            1,
-            opset1::TopK::Mode::MIN,
-            opset1::TopK::SortType::SORT_INDICES,
-            reference_tests::Tensor(ET, {128, 5}, [](std::vector<size_t> rshape) -> std::vector<T>{
-                std::vector<T> expected_value;
-                for (size_t i = 0; i < rshape[0]; i++) {
-                    for (size_t j = 0; j < rshape[1]; j++) {
-                        expected_value.push_back(static_cast<T>(j));
-                    }
-                }
-                return expected_value;
-            }({128, 5})),
-            reference_tests::Tensor(ET_OUT, {128, 5}, [](std::vector<size_t> rshape) -> std::vector<T_OUT>{
-                std::vector<T_OUT> expected_index;
-                for (size_t i = 0; i < rshape[0]; i++) {
-                    for (size_t j = 0; j < rshape[1]; j++) {
-                        expected_index.push_back(static_cast<T_OUT>(j));
-                    }
-                }
-                return expected_index;
-            }({128, 5})),
-            0,
-            "topk_min_sort_index"),
+        std::make_shared<TopKParams>(reference_tests::Tensor(ET,
+                                                              {128, 1000},
+                                                              [](std::vector<size_t> shape) -> std::vector<T> {
+                                                                  std::vector<T> data;
+                                                                  for (size_t i = 0; i < shape[0]; i++) {
+                                                                      for (size_t j = 0; j < shape[1]; j++) {
+                                                                          data.push_back(static_cast<T>(j));
+                                                                      }
+                                                                  }
+                                                                  return data;
+                                                              }({128, 1000})),
+                                      reference_tests::Tensor(ET2, {}, std::vector<T2>{5}),
+                                      1,
+                                      opset1::TopK::Mode::MIN,
+                                      opset1::TopK::SortType::SORT_INDICES,
+                                      reference_tests::Tensor(ET,
+                                                              {128, 5},
+                                                              [](std::vector<size_t> rshape) -> std::vector<T> {
+                                                                  std::vector<T> expected_value;
+                                                                  for (size_t i = 0; i < rshape[0]; i++) {
+                                                                      for (size_t j = 0; j < rshape[1]; j++) {
+                                                                          expected_value.push_back(static_cast<T>(j));
+                                                                      }
+                                                                  }
+                                                                  return expected_value;
+                                                              }({128, 5})),
+                                      reference_tests::Tensor(ET_OUT,
+                                                              {128, 5},
+                                                              [](std::vector<size_t> rshape) -> std::vector<T_OUT> {
+                                                                  std::vector<T_OUT> expected_index;
+                                                                  for (size_t i = 0; i < rshape[0]; i++) {
+                                                                      for (size_t j = 0; j < rshape[1]; j++) {
+                                                                          expected_index.push_back(
+                                                                              static_cast<T_OUT>(j));
+                                                                      }
+                                                                  }
+                                                                  return expected_index;
+                                                              }({128, 5})),
+                                      0,
+                                      "topk_min_sort_index"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {5}, std::vector<T>{3, 1, 2, 5, 4}),
-            reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
-            0,
-            opset1::TopK::Mode::MAX,
-            opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {3}, std::vector<T>{5, 4, 3}),
-            reference_tests::Tensor(ET_OUT, {3}, std::vector<T_OUT>{3, 4, 0}),
-            0,
-            "topk_mode_sort_order"),
+        std::make_shared<TopKParams>(reference_tests::Tensor(ET, {5}, std::vector<T>{3, 1, 2, 5, 4}),
+                                      reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
+                                      0,
+                                      opset1::TopK::Mode::MAX,
+                                      opset1::TopK::SortType::SORT_VALUES,
+                                      reference_tests::Tensor(ET, {3}, std::vector<T>{5, 4, 3}),
+                                      reference_tests::Tensor(ET_OUT, {3}, std::vector<T_OUT>{3, 4, 0}),
+                                      0,
+                                      "topk_mode_sort_order"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {5}, std::vector<T>{3, 1, 2, 5, 4}),
-            reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
-            0,
-            opset1::TopK::Mode::MAX,
-            opset1::TopK::SortType::SORT_INDICES,
-            reference_tests::Tensor(ET, {3}, std::vector<T>{3, 5, 4}),
-            reference_tests::Tensor(ET_OUT, {3}, std::vector<T_OUT>{0, 3, 4}),
-            0,
-            "topk_mode_sort_order_1"),
+        std::make_shared<TopKParams>(reference_tests::Tensor(ET, {5}, std::vector<T>{3, 1, 2, 5, 4}),
+                                      reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
+                                      0,
+                                      opset1::TopK::Mode::MAX,
+                                      opset1::TopK::SortType::SORT_INDICES,
+                                      reference_tests::Tensor(ET, {3}, std::vector<T>{3, 5, 4}),
+                                      reference_tests::Tensor(ET_OUT, {3}, std::vector<T_OUT>{0, 3, 4}),
+                                      0,
+                                      "topk_mode_sort_order_1"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {5}, std::vector<T>{3, 1, 2, 5, 4}),
-            reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
-            0,
-            opset1::TopK::Mode::MIN,
-            opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {3}, std::vector<T>{1, 2, 3}),
-            reference_tests::Tensor(ET_OUT, {3}, std::vector<T_OUT>{1, 2, 0}),
-            0,
-            "topk_mode_sort_order_2"),
+        std::make_shared<TopKParams>(reference_tests::Tensor(ET, {5}, std::vector<T>{3, 1, 2, 5, 4}),
+                                      reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
+                                      0,
+                                      opset1::TopK::Mode::MIN,
+                                      opset1::TopK::SortType::SORT_VALUES,
+                                      reference_tests::Tensor(ET, {3}, std::vector<T>{1, 2, 3}),
+                                      reference_tests::Tensor(ET_OUT, {3}, std::vector<T_OUT>{1, 2, 0}),
+                                      0,
+                                      "topk_mode_sort_order_2"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {5}, std::vector<T>{3, 1, 2, 5, 4}),
-            reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
-            0,
-            opset1::TopK::Mode::MIN,
-            opset1::TopK::SortType::SORT_INDICES,
-            reference_tests::Tensor(ET, {3}, std::vector<T>{3, 1, 2}),
-            reference_tests::Tensor(ET_OUT, {3}, std::vector<T_OUT>{0, 1, 2}),
-            0,
-            "topk_mode_sort_order_3"),
+        std::make_shared<TopKParams>(reference_tests::Tensor(ET, {5}, std::vector<T>{3, 1, 2, 5, 4}),
+                                      reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
+                                      0,
+                                      opset1::TopK::Mode::MIN,
+                                      opset1::TopK::SortType::SORT_INDICES,
+                                      reference_tests::Tensor(ET, {3}, std::vector<T>{3, 1, 2}),
+                                      reference_tests::Tensor(ET_OUT, {3}, std::vector<T_OUT>{0, 1, 2}),
+                                      0,
+                                      "topk_mode_sort_order_3"),
     };
     return params;
 }
 
-std::vector<TopKParams> generateCombinedParamsMaxMinSort() {
-    std::vector<std::vector<TopKParams>> generatedParams{
+std::vector<TopKParamsPrt> generateCombinedParamsMaxMinSort() {
+    std::vector<std::vector<TopKParamsPrt>> generatedParams{
         generateParamsMaxMinSort<element::Type_t::i8, element::Type_t::i64, element::Type_t::i32>(),
         generateParamsMaxMinSort<element::Type_t::i16, element::Type_t::i64, element::Type_t::i32>(),
         generateParamsMaxMinSort<element::Type_t::i32, element::Type_t::i64, element::Type_t::i32>(),
@@ -543,7 +588,7 @@ std::vector<TopKParams> generateCombinedParamsMaxMinSort() {
         generateParamsMaxMinSort<element::Type_t::f32, element::Type_t::i64, element::Type_t::i32>(),
         generateParamsMaxMinSort<element::Type_t::f64, element::Type_t::i64, element::Type_t::i32>(),
     };
-    std::vector<TopKParams> combinedParams;
+    std::vector<TopKParamsPrt> combinedParams;
     for (auto& params : generatedParams)
         std::move(params.begin(), params.end(), std::back_inserter(combinedParams));
     return combinedParams;
@@ -557,18 +602,15 @@ public:
     void SetUp() override {
         const auto& params = GetParam();
         function = CreateFunction(params);
-        inputData = {params.A.data};
-        refOutData = {params.result0.data, params.result1.data};
+        inputData = {params->A.data};
+        refOutData = {params->result0.data, params->result1.data};
     }
 
 private:
-    static std::shared_ptr<Model> CreateFunction(const TopKParams& params) {
-        const auto A = std::make_shared<opset1::Parameter>(params.A.type,
-                                                           params.A.shape);
-        const auto k = opset1::Constant::create(params.k.type,
-                                                params.k.shape,
-                                                params.k.data.data());
-        const auto B = std::make_shared<opset1::TopK>(A, k, params.axis, params.mode, params.sort);
+    static std::shared_ptr<Model> CreateFunction(const TopKParamsPrt& params) {
+        const auto A = std::make_shared<opset1::Parameter>(params->A.type, params->A.shape);
+        const auto k = opset1::Constant::create(params->k.type, params->k.shape, params->k.data.data());
+        const auto B = std::make_shared<opset1::TopK>(A, k, params->axis, params->mode, params->sort);
         const auto f = std::make_shared<Model>(B->outputs(), ParameterVector{A});
         return f;
     }
@@ -578,8 +620,8 @@ TEST_P(ReferenceTopKTestBackend, CompareWithRefs) {
     Exec();
 }
 
-std::vector<TopKParams> generateCombinedParamsBackend() {
-    std::vector<std::vector<TopKParams>> generatedParams{
+std::vector<TopKParamsPrt> generateCombinedParamsBackend() {
+    std::vector<std::vector<TopKParamsPrt>> generatedParams{
         generateParamsMaxMinSort<element::Type_t::i8, element::Type_t::i64, element::Type_t::i32>(),
         generateParamsMaxMinSort<element::Type_t::i16, element::Type_t::i64, element::Type_t::i32>(),
         generateParamsMaxMinSort<element::Type_t::i32, element::Type_t::i64, element::Type_t::i32>(),
@@ -593,7 +635,7 @@ std::vector<TopKParams> generateCombinedParamsBackend() {
         generateParamsMaxMinSort<element::Type_t::f32, element::Type_t::i64, element::Type_t::i32>(),
         generateParamsMaxMinSort<element::Type_t::f64, element::Type_t::i64, element::Type_t::i32>(),
     };
-    std::vector<TopKParams> combinedParams;
+    std::vector<TopKParamsPrt> combinedParams;
     for (auto& params : generatedParams)
         std::move(params.begin(), params.end(), std::back_inserter(combinedParams));
     return combinedParams;
@@ -606,40 +648,37 @@ class ReferenceTopKTest1dMaxMin : public ReferenceTopKTest {
 public:
     void SetUp() override {
         const auto& params = GetParam();
-        function = CreateFunction(params, params.outIdx);
-        inputData = {params.A.data};
-        if (params.outIdx != 0) {
-            refOutData = {params.result1.data};
+        function = CreateFunction(params, params->outIdx);
+        inputData = {params->A.data};
+        if (params->outIdx != 0) {
+            refOutData = {params->result1.data};
         } else {
-            refOutData = {params.result0.data};
+            refOutData = {params->result0.data};
         }
     }
 
-    static std::string getTestCaseName(const testing::TestParamInfo<TopKParams>& obj) {
+    static std::string getTestCaseName(const testing::TestParamInfo<TopKParamsPrt>& obj) {
         const auto& param = obj.param;
         std::ostringstream result;
-        result << "aType=" << param.A.type;
-        result << "_aShape=" << param.A.shape;
-        result << "_kType=" << param.k.type;
-        result << "_kShape=" << param.k.shape;
-        result << "_axis=" << param.axis;
-        result << "_r0Type=" << param.result0.type;
-        result << "_r0Shape=" << param.result0.shape;
-        result << "_r1Type=" << param.result1.type;
-        result << "_r1Shape=" << param.result1.shape;
-        result << "_outIdx=" << param.outIdx;
-        result << "_=" << param.testcaseName;
+        result << "aType=" << param->A.type;
+        result << "_aShape=" << param->A.shape;
+        result << "_kType=" << param->k.type;
+        result << "_kShape=" << param->k.shape;
+        result << "_axis=" << param->axis;
+        result << "_r0Type=" << param->result0.type;
+        result << "_r0Shape=" << param->result0.shape;
+        result << "_r1Type=" << param->result1.type;
+        result << "_r1Shape=" << param->result1.shape;
+        result << "_outIdx=" << param->outIdx;
+        result << "_=" << param->testcaseName;
         return result.str();
     }
 
 private:
-    static std::shared_ptr<Model> CreateFunction(const TopKParams& params, size_t out_idx) {
-        const auto A = std::make_shared<opset1::Parameter>(params.A.type,
-                                                           params.A.shape);
-        const auto k = opset1::Constant::create(params.k.type,
-                                                params.k.shape,
-                                                params.k.data.data());
-        const auto B = std::make_shared<opset1::TopK>(A, k, params.axis, params.mode, params.sort);
+    static std::shared_ptr<Model> CreateFunction(const TopKParamsPrt& params, size_t out_idx) {
+        const auto A = std::make_shared<opset1::Parameter>(params->A.type, params->A.shape);
+        const auto k = opset1::Constant::create(params->k.type, params->k.shape, params->k.data.data());
+        const auto B = std::make_shared<opset1::TopK>(A, k, params->axis, params->mode, params->sort);
         const auto f = std::make_shared<Model>(OutputVector{B->output(out_idx)}, ParameterVector{A});
         return f;
     }
@@ -650,672 +689,506 @@ TEST_P(ReferenceTopKTest1dMaxMin, CompareWithRefs) {
 }
 
 template <element::Type_t ET, element::Type_t ET2, element::Type_t ET_OUT>
-std::vector<TopKParams> generateParams1dMaxMin() {
+std::vector<TopKParamsPrt> generateParams1dMaxMin() {
     using T = typename element_type_traits<ET>::value_type;
     using T2 = typename element_type_traits<ET2>::value_type;
     using T_OUT = typename element_type_traits<ET_OUT>::value_type;
-    std::vector<TopKParams> params {
-        TopKParams(
-            reference_tests::Tensor(ET, {6}, std::vector<T>{1, 2, 3, 4, 5, 6}),
-            reference_tests::Tensor(ET2, {}, std::vector<T2>{6}),
-            0,
-            opset1::TopK::Mode::MAX,
-            opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {6}, std::vector<T>{6, 5, 4, 3, 2, 1}),
-            reference_tests::Tensor(ET_OUT, {6}, std::vector<T_OUT>{5, 4, 3, 2, 1, 0}),
-            0,
-            "topk_1d_max_all"),
+    std::vector<TopKParamsPrt> params{
+        std::make_shared<TopKParams>(reference_tests::Tensor(ET, {6}, std::vector<T>{1, 2, 3, 4, 5, 6}),
+                                      reference_tests::Tensor(ET2, {}, std::vector<T2>{6}),
+                                      0,
+                                      opset1::TopK::Mode::MAX,
+                                      opset1::TopK::SortType::SORT_VALUES,
+                                      reference_tests::Tensor(ET, {6}, std::vector<T>{6, 5, 4, 3, 2, 1}),
+                                      reference_tests::Tensor(ET_OUT, {6}, std::vector<T_OUT>{5, 4, 3, 2, 1, 0}),
+                                      0,
+                                      "topk_1d_max_all"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {6}, std::vector<T>{1, 2, 3, 4, 5, 6}),
-            reference_tests::Tensor(ET2, {}, std::vector<T2>{6}),
-            0,
-            opset1::TopK::Mode::MAX,
-            opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {6}, std::vector<T>{6, 5, 4, 3, 2, 1}),
-            reference_tests::Tensor(ET_OUT, {6}, std::vector<T_OUT>{5, 4, 3, 2, 1, 0}),
-            1,
-            "topk_1d_max_all"),
+        std::make_shared<TopKParams>(reference_tests::Tensor(ET, {6}, std::vector<T>{1, 2, 3, 4, 5, 6}),
+                                      reference_tests::Tensor(ET2, {}, std::vector<T2>{6}),
+                                      0,
+                                      opset1::TopK::Mode::MAX,
+                                      opset1::TopK::SortType::SORT_VALUES,
+                                      reference_tests::Tensor(ET, {6}, std::vector<T>{6, 5, 4, 3, 2, 1}),
+                                      reference_tests::Tensor(ET_OUT, {6}, std::vector<T_OUT>{5, 4, 3, 2, 1, 0}),
+                                      1,
+                                      "topk_1d_max_all"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {6}, std::vector<T>{1, 2, 3, 4, 5, 6}),
-            reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
-            0,
-            opset1::TopK::Mode::MAX,
-            opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {3}, std::vector<T>{6, 5, 4}),
-            reference_tests::Tensor(ET_OUT, {3}, std::vector<T_OUT>{5, 4, 3}),
-            0,
-            "topk_1d_max_partial"),
+        std::make_shared<TopKParams>(reference_tests::Tensor(ET, {6}, std::vector<T>{1, 2, 3, 4, 5, 6}),
+                                      reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
+                                      0,
+                                      opset1::TopK::Mode::MAX,
+                                      opset1::TopK::SortType::SORT_VALUES,
+                                      reference_tests::Tensor(ET, {3}, std::vector<T>{6, 5, 4}),
+                                      reference_tests::Tensor(ET_OUT, {3}, std::vector<T_OUT>{5, 4, 3}),
+                                      0,
+                                      "topk_1d_max_partial"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {6}, std::vector<T>{1, 2, 3, 4, 5, 6}),
-            reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
-            0,
-            opset1::TopK::Mode::MAX,
-            opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {3}, std::vector<T>{6, 5, 4}),
-            reference_tests::Tensor(ET_OUT, {3}, std::vector<T_OUT>{5, 4, 3}),
-            1,
-            "topk_1d_max_partial"),
+        std::make_shared<TopKParams>(reference_tests::Tensor(ET, {6}, std::vector<T>{1, 2, 3, 4, 5, 6}),
+                                      reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
+                                      0,
+                                      opset1::TopK::Mode::MAX,
+                                      opset1::TopK::SortType::SORT_VALUES,
+                                      reference_tests::Tensor(ET, {3}, std::vector<T>{6, 5, 4}),
+                                      reference_tests::Tensor(ET_OUT, {3}, std::vector<T_OUT>{5, 4, 3}),
+                                      1,
+                                      "topk_1d_max_partial"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {6}, std::vector<T>{1, 2, 3, 4, 5, 6}),
-            reference_tests::Tensor(ET2, {}, std::vector<T2>{1}),
-            0,
-            opset1::TopK::Mode::MAX,
-            opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {1}, std::vector<T>{6}),
-            reference_tests::Tensor(ET_OUT, {1}, std::vector<T_OUT>{5}),
-            0,
-            "topk_1d_max_one"),
+        std::make_shared<TopKParams>(reference_tests::Tensor(ET, {6}, std::vector<T>{1, 2, 3, 4, 5, 6}),
+                                      reference_tests::Tensor(ET2, {}, std::vector<T2>{1}),
+                                      0,
+                                      opset1::TopK::Mode::MAX,
+                                      opset1::TopK::SortType::SORT_VALUES,
+                                      reference_tests::Tensor(ET, {1}, std::vector<T>{6}),
+                                      reference_tests::Tensor(ET_OUT, {1}, std::vector<T_OUT>{5}),
+                                      0,
+                                      "topk_1d_max_one"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {6}, std::vector<T>{1, 2, 3, 4, 5, 6}),
-            reference_tests::Tensor(ET2, {}, std::vector<T2>{1}),
-            0,
-            opset1::TopK::Mode::MAX,
-            opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {1}, std::vector<T>{6}),
-            reference_tests::Tensor(ET_OUT, {1}, std::vector<T_OUT>{5}),
-            1,
-            "topk_1d_max_one"),
+        std::make_shared<TopKParams>(reference_tests::Tensor(ET, {6}, std::vector<T>{1, 2, 3, 4, 5, 6}),
+                                      reference_tests::Tensor(ET2, {}, std::vector<T2>{1}),
+                                      0,
+                                      opset1::TopK::Mode::MAX,
+                                      opset1::TopK::SortType::SORT_VALUES,
+                                      reference_tests::Tensor(ET, {1}, std::vector<T>{6}),
+                                      reference_tests::Tensor(ET_OUT, {1}, std::vector<T_OUT>{5}),
+                                      1,
+                                      "topk_1d_max_one"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {6}, std::vector<T>{6, 5, 4, 3, 2, 1}),
-            reference_tests::Tensor(ET2, {}, std::vector<T2>{6}),
-            0,
-            opset1::TopK::Mode::MIN,
-            opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {6}, std::vector<T>{1, 2, 3, 4, 5, 6}),
-            reference_tests::Tensor(ET_OUT, {6}, std::vector<T_OUT>{5, 4, 3, 2, 1, 0}),
-            0,
-            "topk_1d_min_all"),
+        std::make_shared<TopKParams>(reference_tests::Tensor(ET, {6}, std::vector<T>{6, 5, 4, 3, 2, 1}),
+                                      reference_tests::Tensor(ET2, {}, std::vector<T2>{6}),
+                                      0,
+                                      opset1::TopK::Mode::MIN,
+                                      opset1::TopK::SortType::SORT_VALUES,
+                                      reference_tests::Tensor(ET, {6}, std::vector<T>{1, 2, 3, 4, 5, 6}),
+                                      reference_tests::Tensor(ET_OUT, {6}, std::vector<T_OUT>{5, 4, 3, 2, 1, 0}),
+                                      0,
+                                      "topk_1d_min_all"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {6}, std::vector<T>{6, 5, 4, 3, 2, 1}),
-            reference_tests::Tensor(ET2, {}, std::vector<T2>{6}),
-            0,
-            opset1::TopK::Mode::MIN,
-            opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {6}, std::vector<T>{1, 2, 3, 4, 5, 6}),
-            reference_tests::Tensor(ET_OUT, {6}, std::vector<T_OUT>{5, 4, 3, 2, 1, 0}),
-            1,
-            "topk_1d_min_all"),
+        std::make_shared<TopKParams>(reference_tests::Tensor(ET, {6}, std::vector<T>{6, 5, 4, 3, 2, 1}),
+                                      reference_tests::Tensor(ET2, {}, std::vector<T2>{6}),
+                                      0,
+                                      opset1::TopK::Mode::MIN,
+                                      opset1::TopK::SortType::SORT_VALUES,
+                                      reference_tests::Tensor(ET, {6}, std::vector<T>{1, 2, 3, 4, 5, 6}),
+                                      reference_tests::Tensor(ET_OUT, {6}, std::vector<T_OUT>{5, 4, 3, 2, 1, 0}),
+                                      1,
+                                      "topk_1d_min_all"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {6}, std::vector<T>{6, 5, 4, 3, 2, 1}),
-            reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
-            0,
-            opset1::TopK::Mode::MIN,
-            opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {3}, std::vector<T>{1, 2, 3}),
-            reference_tests::Tensor(ET_OUT, {3}, std::vector<T_OUT>{5, 4, 3}),
-            0,
-            "topk_1d_min_partial"),
+        std::make_shared<TopKParams>(reference_tests::Tensor(ET, {6}, std::vector<T>{6, 5, 4, 3, 2, 1}),
+                                      reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
+                                      0,
+                                      opset1::TopK::Mode::MIN,
+                                      opset1::TopK::SortType::SORT_VALUES,
+                                      reference_tests::Tensor(ET, {3}, std::vector<T>{1, 2, 3}),
+                                      reference_tests::Tensor(ET_OUT, {3}, std::vector<T_OUT>{5, 4, 3}),
+                                      0,
+                                      "topk_1d_min_partial"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {6}, std::vector<T>{6, 5, 4, 3, 2, 1}),
-            reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
-            0,
-            opset1::TopK::Mode::MIN,
-            opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {3}, std::vector<T>{1, 2, 3}),
-            reference_tests::Tensor(ET_OUT, {3}, std::vector<T_OUT>{5, 4, 3}),
-            1,
-            "topk_1d_min_partial"),
+        std::make_shared<TopKParams>(reference_tests::Tensor(ET, {6}, std::vector<T>{6, 5, 4, 3, 2, 1}),
+                                      reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
+                                      0,
+                                      opset1::TopK::Mode::MIN,
+                                      opset1::TopK::SortType::SORT_VALUES,
+                                      reference_tests::Tensor(ET, {3}, std::vector<T>{1, 2, 3}),
+                                      reference_tests::Tensor(ET_OUT, {3}, std::vector<T_OUT>{5, 4, 3}),
+                                      1,
+                                      "topk_1d_min_partial"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {6}, std::vector<T>{6, 5, 4, 3, 2, 1}),
-            reference_tests::Tensor(ET2, {}, std::vector<T2>{1}),
-            0,
-            opset1::TopK::Mode::MIN,
-            opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {1}, std::vector<T>{1}),
-            reference_tests::Tensor(ET_OUT, {1}, std::vector<T_OUT>{5}),
-            0,
-            "topk_1d_min_one"),
+        std::make_shared<TopKParams>(reference_tests::Tensor(ET, {6}, std::vector<T>{6, 5, 4, 3, 2, 1}),
+                                      reference_tests::Tensor(ET2, {}, std::vector<T2>{1}),
+                                      0,
+                                      opset1::TopK::Mode::MIN,
+                                      opset1::TopK::SortType::SORT_VALUES,
+                                      reference_tests::Tensor(ET, {1}, std::vector<T>{1}),
+                                      reference_tests::Tensor(ET_OUT, {1}, std::vector<T_OUT>{5}),
+                                      0,
+                                      "topk_1d_min_one"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {6}, std::vector<T>{6, 5, 4, 3, 2, 1}),
-            reference_tests::Tensor(ET2, {}, std::vector<T2>{1}),
-            0,
-            opset1::TopK::Mode::MIN,
-            opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {1}, std::vector<T>{1}),
-            reference_tests::Tensor(ET_OUT, {1}, std::vector<T_OUT>{5}),
-            1,
-            "topk_1d_min_one"),
+        std::make_shared<TopKParams>(reference_tests::Tensor(ET, {6}, std::vector<T>{6, 5, 4, 3, 2, 1}),
+                                      reference_tests::Tensor(ET2, {}, std::vector<T2>{1}),
+                                      0,
+                                      opset1::TopK::Mode::MIN,
+                                      opset1::TopK::SortType::SORT_VALUES,
+                                      reference_tests::Tensor(ET, {1}, std::vector<T>{1}),
+                                      reference_tests::Tensor(ET_OUT, {1}, std::vector<T_OUT>{5}),
+                                      1,
+                                      "topk_1d_min_one"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{
-                9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
             1,
             opset1::TopK::Mode::MAX,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{
-                10, 12, 9, 4, 8, 2, 11, 7, 6, 3, 5, 1
-            }),
-            reference_tests::Tensor(ET_OUT, {2, 3, 2}, std::vector<T_OUT>{
-                1, 1, 0, 2, 2, 0, 2, 2, 0, 1, 1, 0
-            }),
+            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{10, 12, 9, 4, 8, 2, 11, 7, 6, 3, 5, 1}),
+            reference_tests::Tensor(ET_OUT, {2, 3, 2}, std::vector<T_OUT>{1, 1, 0, 2, 2, 0, 2, 2, 0, 1, 1, 0}),
             0,
             "topk_3d_max_all"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{
-                9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
             1,
             opset1::TopK::Mode::MAX,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{
-                10, 12, 9, 4, 8, 2, 11, 7, 6, 3, 5, 1
-            }),
-            reference_tests::Tensor(ET_OUT, {2, 3, 2}, std::vector<T_OUT>{
-                1, 1, 0, 2, 2, 0, 2, 2, 0, 1, 1, 0
-            }),
+            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{10, 12, 9, 4, 8, 2, 11, 7, 6, 3, 5, 1}),
+            reference_tests::Tensor(ET_OUT, {2, 3, 2}, std::vector<T_OUT>{1, 1, 0, 2, 2, 0, 2, 2, 0, 1, 1, 0}),
             1,
             "topk_3d_max_all"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {2, 6, 3, 2, 4}, std::vector<T>{
-                  1,   73,  9,   81,  17,  89,  2,   74,  10,  82,  18,  90,  3,   75,  11,  83,  19,
-                  91,  4,   76,  12,  84,  20,  92,  145, 217, 153, 225, 161, 233, 146, 218, 154, 226,
-                  162, 234, 147, 219, 155, 227, 163, 235, 148, 220, 156, 228, 164, 236, 5,   77,  13,
-                  85,  21,  93,  6,   78,  14,  86,  22,  94,  7,   79,  15,  87,  23,  95,  8,   80,
-                  16,  88,  24,  96,  149, 221, 157, 229, 165, 27,  150, 222, 158, 230, 166, 23,  151,
-                  223, 159, 231, 17,  39,  2,   224, 160, 232, 168, 240, 25,  97,  33,  105, 41,  113,
-                  26,  98,  34,  106, 42,  114, 27,  99,  35,  107, 43,  115, 28,  100, 36,  108, 44,
-                  116, 169, 241, 177, 249, 185, 25,  170, 242, 178, 250, 186, 258, 171, 243, 179, 251,
-                  187, 259, 172, 24,  180, 252, 188, 260, 29,  101, 37,  109, 45,  117, 30,  102, 38,
-                  10,  46,  118, 31,  103, 39,  111, 47,  119, 32,  104, 40,  112, 48,  20,  173, 245,
-                  181, 253, 189, 261, 174, 246, 182, 254, 190, 262, 175, 27,  183, 255, 191, 263, 176,
-                  248, 184, 256, 192, 264, 49,  121, 57,  129, 65,  137, 50,  122, 58,  130, 66,  138,
-                  51,  123, 59,  131, 67,  139, 52,  124, 60,  132, 68,  140, 193, 265, 201, 273, 209,
-                  281, 194, 266, 202, 274, 210, 43,  115, 28,  100, 36,  108, 44,  116, 169, 241, 177,
-                  212, 284, 53,  125, 61,  133, 69,  141, 54,  126, 62,  134, 70,  142, 55,  127, 63,
-                  135, 71,  143, 56,  128, 64,  136, 72,  144, 197, 269, 205, 277, 213, 285, 198, 270,
-                  206, 278, 214, 286, 199, 271, 207, 279, 215, 287, 200, 272, 208, 280, 216, 288
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(
+                ET,
+                {2, 6, 3, 2, 4},
+                std::vector<T>{
+                    1,   73,  9,   81,  17,  89,  2,   74,  10,  82,  18,  90,  3,   75,  11,  83,  19,  91,  4,   76,
+                    12,  84,  20,  92,  145, 217, 153, 225, 161, 233, 146, 218, 154, 226, 162, 234, 147, 219, 155, 227,
+                    163, 235, 148, 220, 156, 228, 164, 236, 5,   77,  13,  85,  21,  93,  6,   78,  14,  86,  22,  94,
+                    7,   79,  15,  87,  23,  95,  8,   80,  16,  88,  24,  96,  149, 221, 157, 229, 165, 27,  150, 222,
+                    158, 230, 166, 23,  151, 223, 159, 231, 17,  39,  2,   224, 160, 232, 168, 240, 25,  97,  33,  105,
+                    41,  113, 26,  98,  34,  106, 42,  114, 27,  99,  35,  107, 43,  115, 28,  100, 36,  108, 44,  116,
+                    169, 241, 177, 249, 185, 25,  170, 242, 178, 250, 186, 258, 171, 243, 179, 251, 187, 259, 172, 24,
+                    180, 252, 188, 260, 29,  101, 37,  109, 45,  117, 30,  102, 38,  10,  46,  118, 31,  103, 39,  111,
+                    47,  119, 32,  104, 40,  112, 48,  20,  173, 245, 181, 253, 189, 261, 174, 246, 182, 254, 190, 262,
+                    175, 27,  183, 255, 191, 263, 176, 248, 184, 256, 192, 264, 49,  121, 57,  129, 65,  137, 50,  122,
+                    58,  130, 66,  138, 51,  123, 59,  131, 67,  139, 52,  124, 60,  132, 68,  140, 193, 265, 201, 273,
+                    209, 281, 194, 266, 202, 274, 210, 43,  115, 28,  100, 36,  108, 44,  116, 169, 241, 177, 212, 284,
+                    53,  125, 61,  133, 69,  141, 54,  126, 62,  134, 70,  142, 55,  127, 63,  135, 71,  143, 56,  128,
+                    64,  136, 72,  144, 197, 269, 205, 277, 213, 285, 198, 270, 206, 278, 214, 286, 199, 271, 207, 279,
+                    215, 287, 200, 272, 208, 280, 216, 288}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{2}),
             1,
             opset1::TopK::Mode::MAX,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {2, 2, 3, 2, 4}, std::vector<T>{
-                169, 241, 177, 249, 185, 233, 170, 242, 178, 250, 186, 258, 171, 243, 179, 251,
-                187, 259, 172, 224, 180, 252, 188, 260, 149, 221, 157, 229, 165, 113, 150, 222,
-                158, 230, 166, 234, 151, 223, 159, 231, 163, 235, 148, 220, 160, 232, 168, 240,
-                197, 269, 205, 277, 213, 285, 198, 270, 206, 278, 214, 286, 199, 271, 207, 279,
-                215, 287, 200, 272, 241, 280, 216, 288, 193, 265, 201, 273, 209, 281, 194, 266,
-                202, 274, 210, 262, 175, 127, 183, 255, 191, 263, 176, 248, 208, 256, 212, 284
-            }),
-            reference_tests::Tensor(ET_OUT, {2, 2, 3, 2, 4}, std::vector<T_OUT>{
-                5, 5, 5, 5, 5, 1, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 3, 5, 5, 5, 5,
-                3, 3, 3, 3, 3, 4, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 1, 1, 1, 1, 3, 3, 3, 3,
-                5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 3, 5, 5, 5,
-                3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 4, 1, 1, 1, 1, 1, 1, 5, 1, 3, 3
-            }),
+            reference_tests::Tensor(
+                ET,
+                {2, 2, 3, 2, 4},
+                std::vector<T>{169, 241, 177, 249, 185, 233, 170, 242, 178, 250, 186, 258, 171, 243, 179, 251,
+                               187, 259, 172, 224, 180, 252, 188, 260, 149, 221, 157, 229, 165, 113, 150, 222,
+                               158, 230, 166, 234, 151, 223, 159, 231, 163, 235, 148, 220, 160, 232, 168, 240,
+                               197, 269, 205, 277, 213, 285, 198, 270, 206, 278, 214, 286, 199, 271, 207, 279,
+                               215, 287, 200, 272, 241, 280, 216, 288, 193, 265, 201, 273, 209, 281, 194, 266,
+                               202, 274, 210, 262, 175, 127, 183, 255, 191, 263, 176, 248, 208, 256, 212, 284}),
+            reference_tests::Tensor(
+                ET_OUT,
+                {2, 2, 3, 2, 4},
+                std::vector<T_OUT>{5, 5, 5, 5, 5, 1, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 3, 5, 5, 5, 5,
+                                   3, 3, 3, 3, 3, 4, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 1, 1, 1, 1, 3, 3, 3, 3,
+                                   5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 3, 5, 5, 5,
+                                   3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 4, 1, 1, 1, 1, 1, 1, 5, 1, 3, 3}),
             0,
             "topk_5d_max_partial"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {2, 6, 3, 2, 4}, std::vector<T>{
-                  1,   73,  9,   81,  17,  89,  2,   74,  10,  82,  18,  90,  3,   75,  11,  83,  19,
-                  91,  4,   76,  12,  84,  20,  92,  145, 217, 153, 225, 161, 233, 146, 218, 154, 226,
-                  162, 234, 147, 219, 155, 227, 163, 235, 148, 220, 156, 228, 164, 236, 5,   77,  13,
-                  85,  21,  93,  6,   78,  14,  86,  22,  94,  7,   79,  15,  87,  23,  95,  8,   80,
-                  16,  88,  24,  96,  149, 221, 157, 229, 165, 27,  150, 222, 158, 230, 166, 23,  151,
-                  223, 159, 231, 17,  39,  2,   224, 160, 232, 168, 240, 25,  97,  33,  105, 41,  113,
-                  26,  98,  34,  106, 42,  114, 27,  99,  35,  107, 43,  115, 28,  100, 36,  108, 44,
-                  116, 169, 241, 177, 249, 185, 25,  170, 242, 178, 250, 186, 258, 171, 243, 179, 251,
-                  187, 259, 172, 24,  180, 252, 188, 260, 29,  101, 37,  109, 45,  117, 30,  102, 38,
-                  10,  46,  118, 31,  103, 39,  111, 47,  119, 32,  104, 40,  112, 48,  20,  173, 245,
-                  181, 253, 189, 261, 174, 246, 182, 254, 190, 262, 175, 27,  183, 255, 191, 263, 176,
-                  248, 184, 256, 192, 264, 49,  121, 57,  129, 65,  137, 50,  122, 58,  130, 66,  138,
-                  51,  123, 59,  131, 67,  139, 52,  124, 60,  132, 68,  140, 193, 265, 201, 273, 209,
-                  281, 194, 266, 202, 274, 210, 43,  115, 28,  100, 36,  108, 44,  116, 169, 241, 177,
-                  212, 284, 53,  125, 61,  133, 69,  141, 54,  126, 62,  134, 70,  142, 55,  127, 63,
-                  135, 71,  143, 56,  128, 64,  136, 72,  144, 197, 269, 205, 277, 213, 285, 198, 270,
-                  206, 278, 214, 286, 199, 271, 207, 279, 215, 287, 200, 272, 208, 280, 216, 288
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(
+                ET,
+                {2, 6, 3, 2, 4},
+                std::vector<T>{
+                    1,   73,  9,   81,  17,  89,  2,   74,  10,  82,  18,  90,  3,   75,  11,  83,  19,  91,  4,   76,
+                    12,  84,  20,  92,  145, 217, 153, 225, 161, 233, 146, 218, 154, 226, 162, 234, 147, 219, 155, 227,
+                    163, 235, 148, 220, 156, 228, 164, 236, 5,   77,  13,  85,  21,  93,  6,   78,  14,  86,  22,  94,
+                    7,   79,  15,  87,  23,  95,  8,   80,  16,  88,  24,  96,  149, 221, 157, 229, 165, 27,  150, 222,
+                    158, 230, 166, 23,  151, 223, 159, 231, 17,  39,  2,   224, 160, 232, 168, 240, 25,  97,  33,  105,
+                    41,  113, 26,  98,  34,  106, 42,  114, 27,  99,  35,  107, 43,  115, 28,  100, 36,  108, 44,  116,
+                    169, 241, 177, 249, 185, 25,  170, 242, 178, 250, 186, 258, 171, 243, 179, 251, 187, 259, 172, 24,
+                    180, 252, 188, 260, 29,  101, 37,  109, 45,  117, 30,  102, 38,  10,  46,  118, 31,  103, 39,  111,
+                    47,  119, 32,  104, 40,  112, 48,  20,  173, 245, 181, 253, 189, 261, 174, 246, 182, 254, 190, 262,
+                    175, 27,  183, 255, 191, 263, 176, 248, 184, 256, 192, 264, 49,  121, 57,  129, 65,  137, 50,  122,
+                    58,  130, 66,  138, 51,  123, 59,  131, 67,  139, 52,  124, 60,  132, 68,  140, 193, 265, 201, 273,
+                    209, 281, 194, 266, 202, 274, 210, 43,  115, 28,  100, 36,  108, 44,  116, 169, 241, 177, 212, 284,
+                    53,  125, 61,  133, 69,  141, 54,  126, 62,  134, 70,  142, 55,  127, 63,  135, 71,  143, 56,  128,
+                    64,  136, 72,  144, 197, 269, 205, 277, 213, 285, 198, 270, 206, 278, 214, 286, 199, 271, 207, 279,
+                    215, 287, 200, 272, 208, 280, 216, 288}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{2}),
             1,
             opset1::TopK::Mode::MAX,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {2, 2, 3, 2, 4}, std::vector<T>{
-                169, 241, 177, 249, 185, 233, 170, 242, 178, 250, 186, 258, 171, 243, 179, 251,
-                187, 259, 172, 224, 180, 252, 188, 260, 149, 221, 157, 229, 165, 113, 150, 222,
-                158, 230, 166, 234, 151, 223, 159, 231, 163, 235, 148, 220, 160, 232, 168, 240,
-                197, 269, 205, 277, 213, 285, 198, 270, 206, 278, 214, 286, 199, 271, 207, 279,
-                215, 287, 200, 272, 241, 280, 216, 288, 193, 265, 201, 273, 209, 281, 194, 266,
-                202, 274, 210, 262, 175, 127, 183, 255, 191, 263, 176, 248, 208, 256, 212, 284
-            }),
-            reference_tests::Tensor(ET_OUT, {2, 2, 3, 2, 4}, std::vector<T_OUT>{
-                5, 5, 5, 5, 5, 1, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 3, 5, 5, 5, 5,
-                3, 3, 3, 3, 3, 4, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 1, 1, 1, 1, 3, 3, 3, 3,
-                5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 3, 5, 5, 5,
-                3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 4, 1, 1, 1, 1, 1, 1, 5, 1, 3, 3
-            }),
+            reference_tests::Tensor(
+                ET,
+                {2, 2, 3, 2, 4},
+                std::vector<T>{169, 241, 177, 249, 185, 233, 170, 242, 178, 250, 186, 258, 171, 243, 179, 251,
+                               187, 259, 172, 224, 180, 252, 188, 260, 149, 221, 157, 229, 165, 113, 150, 222,
+                               158, 230, 166, 234, 151, 223, 159, 231, 163, 235, 148, 220, 160, 232, 168, 240,
+                               197, 269, 205, 277, 213, 285, 198, 270, 206, 278, 214, 286, 199, 271, 207, 279,
+                               215, 287, 200, 272, 241, 280, 216, 288, 193, 265, 201, 273, 209, 281, 194, 266,
+                               202, 274, 210, 262, 175, 127, 183, 255, 191, 263, 176, 248, 208, 256, 212, 284}),
+            reference_tests::Tensor(
+                ET_OUT,
+                {2, 2, 3, 2, 4},
+                std::vector<T_OUT>{5, 5, 5, 5, 5, 1, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 3, 5, 5, 5, 5,
+                                   3, 3, 3, 3, 3, 4, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 1, 1, 1, 1, 3, 3, 3, 3,
+                                   5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 3, 5, 5, 5,
+                                   3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 4, 1, 1, 1, 1, 1, 1, 5, 1, 3, 3}),
             1,
             "topk_5d_max_partial"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{
-                9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{2}),
             1,
             opset1::TopK::Mode::MAX,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {2, 2, 2}, std::vector<T>{
-                10, 12, 9, 4, 11, 7, 6, 3
-            }),
-            reference_tests::Tensor(ET_OUT, {2, 2, 2}, std::vector<T_OUT>{
-                1, 1, 0, 2, 2, 2, 0, 1
-            }),
+            reference_tests::Tensor(ET, {2, 2, 2}, std::vector<T>{10, 12, 9, 4, 11, 7, 6, 3}),
+            reference_tests::Tensor(ET_OUT, {2, 2, 2}, std::vector<T_OUT>{1, 1, 0, 2, 2, 2, 0, 1}),
             0,
             "topk_3d_max_partial"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{
-                9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{2}),
             1,
             opset1::TopK::Mode::MAX,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {2, 2, 2}, std::vector<T>{
-                10, 12, 9, 4, 11, 7, 6, 3
-            }),
-            reference_tests::Tensor(ET_OUT, {2, 2, 2}, std::vector<T_OUT>{
-                1, 1, 0, 2, 2, 2, 0, 1
-            }),
+            reference_tests::Tensor(ET, {2, 2, 2}, std::vector<T>{10, 12, 9, 4, 11, 7, 6, 3}),
+            reference_tests::Tensor(ET_OUT, {2, 2, 2}, std::vector<T_OUT>{1, 1, 0, 2, 2, 2, 0, 1}),
             1,
             "topk_3d_max_partial"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{
-                9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{1}),
             1,
             opset1::TopK::Mode::MAX,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {2, 1, 2}, std::vector<T>{
-                10, 12, 11, 7
-            }),
-            reference_tests::Tensor(ET_OUT, {2, 1, 2}, std::vector<T_OUT>{
-                1, 1, 2, 2
-            }),
+            reference_tests::Tensor(ET, {2, 1, 2}, std::vector<T>{10, 12, 11, 7}),
+            reference_tests::Tensor(ET_OUT, {2, 1, 2}, std::vector<T_OUT>{1, 1, 2, 2}),
             0,
             "topk_3d_max_one"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{
-                9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{1}),
             1,
             opset1::TopK::Mode::MAX,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {2, 1, 2}, std::vector<T>{
-                10, 12, 11, 7
-            }),
-            reference_tests::Tensor(ET_OUT, {2, 1, 2}, std::vector<T_OUT>{
-                1, 1, 2, 2
-            }),
+            reference_tests::Tensor(ET, {2, 1, 2}, std::vector<T>{10, 12, 11, 7}),
+            reference_tests::Tensor(ET_OUT, {2, 1, 2}, std::vector<T_OUT>{1, 1, 2, 2}),
             1,
             "topk_3d_max_one"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{
-                12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
             1,
             opset1::TopK::Mode::MIN,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{
-                8, 2, 10, 4, 12, 9, 5, 1, 6, 3, 11, 7
-            }),
-            reference_tests::Tensor(ET_OUT, {2, 3, 2}, std::vector<T_OUT>{
-                2, 0, 1, 2, 0, 1, 1, 0, 0, 1, 2, 2
-            }),
+            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{8, 2, 10, 4, 12, 9, 5, 1, 6, 3, 11, 7}),
+            reference_tests::Tensor(ET_OUT, {2, 3, 2}, std::vector<T_OUT>{2, 0, 1, 2, 0, 1, 1, 0, 0, 1, 2, 2}),
             0,
             "topk_3d_min_all"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{
-                12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
             1,
             opset1::TopK::Mode::MIN,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{
-                8, 2, 10, 4, 12, 9, 5, 1, 6, 3, 11, 7
-            }),
-            reference_tests::Tensor(ET_OUT, {2, 3, 2}, std::vector<T_OUT>{
-                2, 0, 1, 2, 0, 1, 1, 0, 0, 1, 2, 2
-            }),
+            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{8, 2, 10, 4, 12, 9, 5, 1, 6, 3, 11, 7}),
+            reference_tests::Tensor(ET_OUT, {2, 3, 2}, std::vector<T_OUT>{2, 0, 1, 2, 0, 1, 1, 0, 0, 1, 2, 2}),
             1,
             "topk_3d_min_all"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{
-                12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{2}),
             1,
             opset1::TopK::Mode::MIN,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {2, 2, 2}, std::vector<T>{
-                8, 2, 10, 4, 5, 1, 6, 3
-            }),
-            reference_tests::Tensor(ET_OUT, {2, 2, 2}, std::vector<T_OUT>{
-                2, 0, 1, 2, 1, 0, 0, 1
-            }),
+            reference_tests::Tensor(ET, {2, 2, 2}, std::vector<T>{8, 2, 10, 4, 5, 1, 6, 3}),
+            reference_tests::Tensor(ET_OUT, {2, 2, 2}, std::vector<T_OUT>{2, 0, 1, 2, 1, 0, 0, 1}),
             0,
             "topk_3d_min_partial"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{
-                12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{2}),
             1,
             opset1::TopK::Mode::MIN,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {2, 2, 2}, std::vector<T>{
-                8, 2, 10, 4, 5, 1, 6, 3
-            }),
-            reference_tests::Tensor(ET_OUT, {2, 2, 2}, std::vector<T_OUT>{
-                2, 0, 1, 2, 1, 0, 0, 1
-            }),
+            reference_tests::Tensor(ET, {2, 2, 2}, std::vector<T>{8, 2, 10, 4, 5, 1, 6, 3}),
+            reference_tests::Tensor(ET_OUT, {2, 2, 2}, std::vector<T_OUT>{2, 0, 1, 2, 1, 0, 0, 1}),
             1,
             "topk_3d_min_partial"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{
-                12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{1}),
             1,
             opset1::TopK::Mode::MIN,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {2, 1, 2}, std::vector<T>{
-                8, 2, 5, 1
-            }),
-            reference_tests::Tensor(ET_OUT, {2, 1, 2}, std::vector<T_OUT>{
-                2, 0, 1, 0
-            }),
+            reference_tests::Tensor(ET, {2, 1, 2}, std::vector<T>{8, 2, 5, 1}),
+            reference_tests::Tensor(ET_OUT, {2, 1, 2}, std::vector<T_OUT>{2, 0, 1, 0}),
             0,
             "topk_3d_min_one"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{
-                12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{1}),
             1,
             opset1::TopK::Mode::MIN,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {2, 1, 2}, std::vector<T>{
-                8, 2, 5, 1
-            }),
-            reference_tests::Tensor(ET_OUT, {2, 1, 2}, std::vector<T_OUT>{
-                2, 0, 1, 0
-            }),
+            reference_tests::Tensor(ET, {2, 1, 2}, std::vector<T>{8, 2, 5, 1}),
+            reference_tests::Tensor(ET_OUT, {2, 1, 2}, std::vector<T_OUT>{2, 0, 1, 0}),
             1,
             "topk_3d_min_one"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{
-                9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{4}),
             0,
             opset1::TopK::Mode::MAX,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{
-                12, 11, 10, 9, 8, 7, 6, 2, 5, 3, 1, 4
-            }),
-            reference_tests::Tensor(ET_OUT, {4, 3}, std::vector<T_OUT>{
-                1, 3, 0, 0, 1, 3, 2, 0, 2, 3, 2, 1
-            }),
+            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{12, 11, 10, 9, 8, 7, 6, 2, 5, 3, 1, 4}),
+            reference_tests::Tensor(ET_OUT, {4, 3}, std::vector<T_OUT>{1, 3, 0, 0, 1, 3, 2, 0, 2, 3, 2, 1}),
             0,
             "topk_2d_max_all"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{
-                9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{4}),
             0,
             opset1::TopK::Mode::MAX,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{
-                12, 11, 10, 9, 8, 7, 6, 2, 5, 3, 1, 4
-            }),
-            reference_tests::Tensor(ET_OUT, {4, 3}, std::vector<T_OUT>{
-                1, 3, 0, 0, 1, 3, 2, 0, 2, 3, 2, 1
-            }),
+            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{12, 11, 10, 9, 8, 7, 6, 2, 5, 3, 1, 4}),
+            reference_tests::Tensor(ET_OUT, {4, 3}, std::vector<T_OUT>{1, 3, 0, 0, 1, 3, 2, 0, 2, 3, 2, 1}),
             1,
             "topk_2d_max_all"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{
-                9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{2}),
             0,
             opset1::TopK::Mode::MAX,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {2, 3}, std::vector<T>{
-                12, 11, 10, 9, 8, 7
-            }),
-            reference_tests::Tensor(ET_OUT, {2, 3}, std::vector<T_OUT>{
-                1, 3, 0, 0, 1, 3
-            }),
+            reference_tests::Tensor(ET, {2, 3}, std::vector<T>{12, 11, 10, 9, 8, 7}),
+            reference_tests::Tensor(ET_OUT, {2, 3}, std::vector<T_OUT>{1, 3, 0, 0, 1, 3}),
             0,
             "topk_2d_max_partial"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{
-                9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{2}),
             0,
             opset1::TopK::Mode::MAX,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {2, 3}, std::vector<T>{
-                12, 11, 10, 9, 8, 7
-            }),
-            reference_tests::Tensor(ET_OUT, {2, 3}, std::vector<T_OUT>{
-                1, 3, 0, 0, 1, 3
-            }),
+            reference_tests::Tensor(ET, {2, 3}, std::vector<T>{12, 11, 10, 9, 8, 7}),
+            reference_tests::Tensor(ET_OUT, {2, 3}, std::vector<T_OUT>{1, 3, 0, 0, 1, 3}),
             1,
             "topk_2d_max_partial"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{
-                9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{1}),
             0,
             opset1::TopK::Mode::MAX,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {1, 3}, std::vector<T>{
-                12, 11, 10
-            }),
-            reference_tests::Tensor(ET_OUT, {1, 3}, std::vector<T_OUT>{
-                1, 3, 0
-            }),
+            reference_tests::Tensor(ET, {1, 3}, std::vector<T>{12, 11, 10}),
+            reference_tests::Tensor(ET_OUT, {1, 3}, std::vector<T_OUT>{1, 3, 0}),
             0,
             "topk_2d_max_one"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{
-                9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{1}),
             0,
             opset1::TopK::Mode::MAX,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {1, 3}, std::vector<T>{
-                12, 11, 10
-            }),
-            reference_tests::Tensor(ET_OUT, {1, 3}, std::vector<T_OUT>{
-                1, 3, 0
-            }),
+            reference_tests::Tensor(ET, {1, 3}, std::vector<T>{12, 11, 10}),
+            reference_tests::Tensor(ET_OUT, {1, 3}, std::vector<T_OUT>{1, 3, 0}),
             1,
             "topk_2d_max_one"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {2, 4}, std::vector<T>{
-                1, 3, 2, 4, 1, 3, 3, 2
-            }),
-            reference_tests::Tensor(ET2, {}, std::vector<T2>{1}),
-            1,
-            opset1::TopK::Mode::MAX,
-            opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {2, 1}, std::vector<T>{
-                4, 3
-            }),
-            reference_tests::Tensor(ET_OUT, {2, 1}, std::vector<T_OUT>{
-                3, 1
-            }),
-            0,
-            "topk_2d_max_one_with_equal_values"),
+        std::make_shared<TopKParams>(reference_tests::Tensor(ET, {2, 4}, std::vector<T>{1, 3, 2, 4, 1, 3, 3, 2}),
+                                      reference_tests::Tensor(ET2, {}, std::vector<T2>{1}),
+                                      1,
+                                      opset1::TopK::Mode::MAX,
+                                      opset1::TopK::SortType::SORT_VALUES,
+                                      reference_tests::Tensor(ET, {2, 1}, std::vector<T>{4, 3}),
+                                      reference_tests::Tensor(ET_OUT, {2, 1}, std::vector<T_OUT>{3, 1}),
+                                      0,
+                                      "topk_2d_max_one_with_equal_values"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {2, 4}, std::vector<T>{
-                1, 3, 2, 4, 1, 3, 3, 2
-            }),
-            reference_tests::Tensor(ET2, {}, std::vector<T2>{1}),
-            1,
-            opset1::TopK::Mode::MAX,
-            opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {2, 1}, std::vector<T>{
-                4, 3
-            }),
-            reference_tests::Tensor(ET_OUT, {2, 1}, std::vector<T_OUT>{
-                3, 1
-            }),
-            1,
-            "topk_2d_max_one_with_equal_values"),
+        std::make_shared<TopKParams>(reference_tests::Tensor(ET, {2, 4}, std::vector<T>{1, 3, 2, 4, 1, 3, 3, 2}),
+                                      reference_tests::Tensor(ET2, {}, std::vector<T2>{1}),
+                                      1,
+                                      opset1::TopK::Mode::MAX,
+                                      opset1::TopK::SortType::SORT_VALUES,
+                                      reference_tests::Tensor(ET, {2, 1}, std::vector<T>{4, 3}),
+                                      reference_tests::Tensor(ET_OUT, {2, 1}, std::vector<T_OUT>{3, 1}),
+                                      1,
+                                      "topk_2d_max_one_with_equal_values"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{
-                12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{4}),
             0,
             opset1::TopK::Mode::MIN,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{
-                3, 1, 4, 6, 2, 5, 9, 8, 7, 12, 11, 10
-            }),
-            reference_tests::Tensor(ET_OUT, {4, 3}, std::vector<T_OUT>{
-                3, 2, 1, 2, 0, 2, 1, 1, 3, 0, 3, 0
-            }),
+            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{3, 1, 4, 6, 2, 5, 9, 8, 7, 12, 11, 10}),
+            reference_tests::Tensor(ET_OUT, {4, 3}, std::vector<T_OUT>{3, 2, 1, 2, 0, 2, 1, 1, 3, 0, 3, 0}),
             0,
             "topk_2d_min_all"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{
-                12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{4}),
             0,
             opset1::TopK::Mode::MIN,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{
-                3, 1, 4, 6, 2, 5, 9, 8, 7, 12, 11, 10
-            }),
-            reference_tests::Tensor(ET_OUT, {4, 3}, std::vector<T_OUT>{
-                3, 2, 1, 2, 0, 2, 1, 1, 3, 0, 3, 0
-            }),
+            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{3, 1, 4, 6, 2, 5, 9, 8, 7, 12, 11, 10}),
+            reference_tests::Tensor(ET_OUT, {4, 3}, std::vector<T_OUT>{3, 2, 1, 2, 0, 2, 1, 1, 3, 0, 3, 0}),
             1,
             "topk_2d_min_all"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{
-                12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{2}),
             0,
             opset1::TopK::Mode::MIN,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {2, 3}, std::vector<T>{
-                3, 1, 4, 6, 2, 5
-            }),
-            reference_tests::Tensor(ET_OUT, {2, 3}, std::vector<T_OUT>{
-                3, 2, 1, 2, 0, 2
-            }),
+            reference_tests::Tensor(ET, {2, 3}, std::vector<T>{3, 1, 4, 6, 2, 5}),
+            reference_tests::Tensor(ET_OUT, {2, 3}, std::vector<T_OUT>{3, 2, 1, 2, 0, 2}),
             0,
             "topk_2d_min_partial"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{
-                12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{2}),
             0,
             opset1::TopK::Mode::MIN,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {2, 3}, std::vector<T>{
-                3, 1, 4, 6, 2, 5
-            }),
-            reference_tests::Tensor(ET_OUT, {2, 3}, std::vector<T_OUT>{
-                3, 2, 1, 2, 0, 2
-            }),
+            reference_tests::Tensor(ET, {2, 3}, std::vector<T>{3, 1, 4, 6, 2, 5}),
+            reference_tests::Tensor(ET_OUT, {2, 3}, std::vector<T_OUT>{3, 2, 1, 2, 0, 2}),
             1,
             "topk_2d_min_partial"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{
-                12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{1}),
             0,
             opset1::TopK::Mode::MIN,
             opset1::TopK::SortType::NONE,
-            reference_tests::Tensor(ET, {1, 3}, std::vector<T>{
-                3, 1, 4
-            }),
-            reference_tests::Tensor(ET_OUT, {1, 3}, std::vector<T_OUT>{
-                3, 2, 1
-            }),
+            reference_tests::Tensor(ET, {1, 3}, std::vector<T>{3, 1, 4}),
+            reference_tests::Tensor(ET_OUT, {1, 3}, std::vector<T_OUT>{3, 2, 1}),
             0,
             "topk_2d_min_one"),
 
-        TopKParams(
-            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{
-                12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{1}),
             0,
             opset1::TopK::Mode::MIN,
             opset1::TopK::SortType::NONE,
-            reference_tests::Tensor(ET, {1, 3}, std::vector<T>{
-                3, 1, 4
-            }),
-            reference_tests::Tensor(ET_OUT, {1, 3}, std::vector<T_OUT>{
-                3, 2, 1
-            }),
+            reference_tests::Tensor(ET, {1, 3}, std::vector<T>{3, 1, 4}),
+            reference_tests::Tensor(ET_OUT, {1, 3}, std::vector<T_OUT>{3, 2, 1}),
             1,
             "topk_2d_min_one"),
     };
     return params;
 }
 
-std::vector<TopKParams> generateCombinedParams1dMaxMin() {
-    std::vector<std::vector<TopKParams>> generatedParams{
+std::vector<TopKParamsPrt> generateCombinedParams1dMaxMin() {
+    std::vector<std::vector<TopKParamsPrt>> generatedParams{
         generateParams1dMaxMin<element::Type_t::i16, element::Type_t::i64, element::Type_t::i32>(),
         generateParams1dMaxMin<element::Type_t::i32, element::Type_t::i64, element::Type_t::i32>(),
         generateParams1dMaxMin<element::Type_t::i64, element::Type_t::i64, element::Type_t::i32>(),
@@ -1327,7 +1200,7 @@ std::vector<TopKParams> generateCombinedParams1dMaxMin() {
         generateParams1dMaxMin<element::Type_t::f32, element::Type_t::i64, element::Type_t::i32>(),
         generateParams1dMaxMin<element::Type_t::f64, element::Type_t::i64, element::Type_t::i32>(),
     };
-    std::vector<TopKParams> combinedParams;
+    std::vector<TopKParamsPrt> combinedParams;
     for (auto& params : generatedParams)
         std::move(params.begin(), params.end(), std::back_inserter(combinedParams));
     return combinedParams;
@@ -1338,18 +1211,10 @@ INSTANTIATE_TEST_SUITE_P(smoke_TopK_With_Hardcoded_Refs, ReferenceTopKTest1dMaxM
 
 class ReferenceTopKTestInt64 : public ReferenceTopKTest1dMaxMin {
 private:
-    static std::shared_ptr<Model> CreateFunction(const TopKParams& params, size_t out_idx) {
-        const auto A = std::make_shared<opset1::Parameter>(params.A.type,
-                                                           params.A.shape);
-        const auto k = opset1::Constant::create(params.k.type,
-                                                params.k.shape,
-                                                params.k.data.data());
-        const auto B = std::make_shared<opset1::TopK>(A,
-                                                      k,
-                                                      params.axis,
-                                                      params.mode,
-                                                      params.sort,
-                                                      element::i64);
+    static std::shared_ptr<Model> CreateFunction(const TopKParamsPrt& params, size_t out_idx) {
+        const auto A = std::make_shared<opset1::Parameter>(params->A.type, params->A.shape);
+        const auto k = opset1::Constant::create(params->k.type, params->k.shape, params->k.data.data());
+        const auto B = std::make_shared<opset1::TopK>(A, k, params->axis, params->mode, params->sort, element::i64);
         const auto f = std::make_shared<Model>(OutputVector{B->output(out_idx)}, ParameterVector{A});
         return f;
     }
@@ -1360,52 +1225,40 @@ TEST_P(ReferenceTopKTestInt64, CompareWithRefs) {
 }
 
 template <element::Type_t ET, element::Type_t ET2, element::Type_t ET_OUT>
-std::vector<TopKParams> generateParamsInt64() {
+std::vector<TopKParamsPrt> generateParamsInt64() {
     using T = typename element_type_traits<ET>::value_type;
     using T2 = typename element_type_traits<ET2>::value_type;
     using T_OUT = typename element_type_traits<ET_OUT>::value_type;
-    std::vector<TopKParams> params {
-        TopKParams(
-            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{
-                9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+    std::vector<TopKParamsPrt> params{
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
             1,
             opset1::TopK::Mode::MAX,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{
-                10, 12, 9, 4, 8, 2, 11, 7, 6, 3, 5, 1
-            }),
-            reference_tests::Tensor(ET_OUT, {2, 3, 2}, std::vector<T_OUT>{
-                1, 1, 0, 2, 2, 0, 2, 2, 0, 1, 1, 0
-            }),
+            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{10, 12, 9, 4, 8, 2, 11, 7, 6, 3, 5, 1}),
+            reference_tests::Tensor(ET_OUT, {2, 3, 2}, std::vector<T_OUT>{1, 1, 0, 2, 2, 0, 2, 2, 0, 1, 1, 0}),
             0,
             "topk_int64"),
-        TopKParams(
-            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{
-                9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7
-            }),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{9, 2, 10, 12, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
             1,
             opset1::TopK::Mode::MAX,
             opset1::TopK::SortType::SORT_VALUES,
-            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{
-                10, 12, 9, 4, 8, 2, 11, 7, 6, 3, 5, 1
-            }),
-            reference_tests::Tensor(ET_OUT, {2, 3, 2}, std::vector<T_OUT>{
-                1, 1, 0, 2, 2, 0, 2, 2, 0, 1, 1, 0
-            }),
+            reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{10, 12, 9, 4, 8, 2, 11, 7, 6, 3, 5, 1}),
+            reference_tests::Tensor(ET_OUT, {2, 3, 2}, std::vector<T_OUT>{1, 1, 0, 2, 2, 0, 2, 2, 0, 1, 1, 0}),
             1,
             "topk_int64"),
     };
     return params;
 }
 
-std::vector<TopKParams> generateCombinedParamsInt64() {
-    std::vector<std::vector<TopKParams>> generatedParams{
+std::vector<TopKParamsPrt> generateCombinedParamsInt64() {
+    std::vector<std::vector<TopKParamsPrt>> generatedParams{
         generateParamsInt64<element::Type_t::f32, element::Type_t::i64, element::Type_t::i32>(),
     };
-    std::vector<TopKParams> combinedParams;
+    std::vector<TopKParamsPrt> combinedParams;
     for (auto& params : generatedParams)
         std::move(params.begin(), params.end(), std::back_inserter(combinedParams));
     return combinedParams;
@@ -1419,18 +1272,15 @@ public:
     void SetUp() override {
         const auto& params = GetParam();
         function = CreateFunction(params);
-        inputData = {params.A.data};
-        refOutData = {params.result1.data};
+        inputData = {params->A.data};
+        refOutData = {params->result1.data};
     }
 
 private:
-    static std::shared_ptr<Model> CreateFunction(const TopKParams& params) {
-        const auto A = std::make_shared<opset1::Parameter>(params.A.type,
-                                                           params.A.shape);
-        const auto k = opset1::Constant::create(params.k.type,
-                                                params.k.shape,
-                                                params.k.data.data());
-        const auto B = std::make_shared<opset1::TopK>(A, k, params.axis, params.mode, params.sort);
+    static std::shared_ptr<Model> CreateFunction(const TopKParamsPrt& params) {
+        const auto A = std::make_shared<opset1::Parameter>(params->A.type, params->A.shape);
+        const auto k = opset1::Constant::create(params->k.type, params->k.shape, params->k.data.data());
+        const auto B = std::make_shared<opset1::TopK>(A, k, params->axis, params->mode, params->sort);
         const auto f = std::make_shared<Model>(OutputVector{B->output(1)}, ParameterVector{A});
         return f;
     }
@@ -1441,12 +1291,12 @@ TEST_P(ReferenceTopKTestSingleOutput, CompareWithRefs) {
 }
 
 template <element::Type_t ET, element::Type_t ET2, element::Type_t ET_OUT>
-std::vector<TopKParams> generateParamsSingleOutput() {
+std::vector<TopKParamsPrt> generateParamsSingleOutput() {
     using T = typename element_type_traits<ET>::value_type;
     using T2 = typename element_type_traits<ET2>::value_type;
     using T_OUT = typename element_type_traits<ET_OUT>::value_type;
-    std::vector<TopKParams> params {
-        TopKParams(
+    std::vector<TopKParamsPrt> params{
+        std::make_shared<TopKParams>(
             reference_tests::Tensor(ET, {2, 3, 2}, std::vector<T>{12, 2, 10, 9, 8, 4, 6, 1, 5, 3, 11, 7}),
             reference_tests::Tensor(ET2, {}, std::vector<T2>{2}),
             1,
@@ -1460,8 +1310,8 @@ std::vector<TopKParams> generateParamsSingleOutput() {
     return params;
 }
 
-std::vector<TopKParams> generateCombinedParamsSingleOutput() {
-    std::vector<std::vector<TopKParams>> generatedParams{
+std::vector<TopKParamsPrt> generateCombinedParamsSingleOutput() {
+    std::vector<std::vector<TopKParamsPrt>> generatedParams{
         generateParamsSingleOutput<element::Type_t::i8, element::Type_t::i64, element::Type_t::i32>(),
         generateParamsSingleOutput<element::Type_t::i16, element::Type_t::i64, element::Type_t::i32>(),
         generateParamsSingleOutput<element::Type_t::i32, element::Type_t::i64, element::Type_t::i32>(),
@@ -1475,7 +1325,7 @@ std::vector<TopKParams> generateCombinedParamsSingleOutput() {
         generateParamsSingleOutput<element::Type_t::f32, element::Type_t::i64, element::Type_t::i32>(),
         generateParamsSingleOutput<element::Type_t::f64, element::Type_t::i64, element::Type_t::i32>(),
     };
-    std::vector<TopKParams> combinedParams;
+    std::vector<TopKParamsPrt> combinedParams;
     for (auto& params : generatedParams)
         std::move(params.begin(), params.end(), std::back_inserter(combinedParams));
     return combinedParams;
@@ -1506,9 +1356,8 @@ TEST(ReferenceTopKTestInvalid, topk_v1_invalid_k) {
 
 class ReferenceTopKTestResnet50V3 : public ReferenceTopKTestResnet50 {
 private:
-    static std::shared_ptr<Model> CreateFunction(const TopKParamsResnet50& params) {
-        const auto A = std::make_shared<opset1::Parameter>(params.A.type,
-                                                           params.A.shape);
+    static std::shared_ptr<Model> CreateFunction(const TopKParamsResnet50Ptr& params) {
+        const auto A = std::make_shared<opset1::Parameter>(params->A.type, params->A.shape);
         const auto B = std::make_shared<opset3::TopK>(A,
                                                       opset1::Constant::create(element::i64, {}, {5}),
                                                       1,
@@ -1533,18 +1382,17 @@ TEST_P(ReferenceTopKTestResnet50V3, CompareWithRefs) {
     Exec();
 }
 
-INSTANTIATE_TEST_SUITE_P(smoke_TopK_With_Hardcoded_Refs, ReferenceTopKTestResnet50V3,
-    testing::ValuesIn(generateCombinedParamsResnet50()), ReferenceTopKTestResnet50V3::getTestCaseName);
+INSTANTIATE_TEST_SUITE_P(smoke_TopK_With_Hardcoded_Refs,
+                         ReferenceTopKTestResnet50V3,
+                         testing::ValuesIn(generateCombinedParamsResnet50()),
+                         ReferenceTopKTestResnet50V3::getTestCaseName);
 
 class ReferenceTopKTestMaxMinSortV3 : public ReferenceTopKTestMaxMinSort {
 private:
-    static std::shared_ptr<Model> CreateFunction(const TopKParams& params) {
-        const auto A = std::make_shared<opset1::Parameter>(params.A.type,
-                                                           params.A.shape);
-        const auto k = opset1::Constant::create(params.k.type,
-                                                params.k.shape,
-                                                params.k.data.data());
-        const auto B = std::make_shared<opset3::TopK>(A, k, params.axis, params.mode, params.sort);
+    static std::shared_ptr<Model> CreateFunction(const TopKParamsPrt& params) {
+        const auto A = std::make_shared<opset1::Parameter>(params->A.type, params->A.shape);
+        const auto k = opset1::Constant::create(params->k.type, params->k.shape, params->k.data.data());
+        const auto B = std::make_shared<opset3::TopK>(A, k, params->axis, params->mode, params->sort);
         const auto f = std::make_shared<Model>(B->outputs(), ParameterVector{A});
         return f;
     }
@@ -1559,13 +1407,10 @@ INSTANTIATE_TEST_SUITE_P(smoke_TopK_With_Hardcoded_Refs, ReferenceTopKTestMaxMin
 
 class ReferenceTopKTestBackendV3 : public ReferenceTopKTestBackend {
 private:
-    static std::shared_ptr<Model> CreateFunction(const TopKParams& params) {
-        const auto A = std::make_shared<opset1::Parameter>(params.A.type,
-                                                           params.A.shape);
-        const auto k = opset1::Constant::create(params.k.type,
-                                                params.k.shape,
-                                                params.k.data.data());
-        const auto B = std::make_shared<opset3::TopK>(A, k, params.axis, params.mode, params.sort);
+    static std::shared_ptr<Model> CreateFunction(const TopKParamsPrt& params) {
+        const auto A = std::make_shared<opset1::Parameter>(params->A.type, params->A.shape);
+        const auto k = opset1::Constant::create(params->k.type, params->k.shape, params->k.data.data());
+        const auto B = std::make_shared<opset3::TopK>(A, k, params->axis, params->mode, params->sort);
         const auto f = std::make_shared<Model>(B->outputs(), ParameterVector{A});
         return f;
     }
@@ -1580,13 +1425,10 @@ INSTANTIATE_TEST_SUITE_P(smoke_TopK_With_Hardcoded_Refs, ReferenceTopKTestBacken
 
 class ReferenceTopKTest1dMaxMinV3 : public ReferenceTopKTest1dMaxMin {
 private:
-    static std::shared_ptr<Model> CreateFunction(const TopKParams& params, size_t out_idx) {
-        const auto A = std::make_shared<opset1::Parameter>(params.A.type,
-                                                           params.A.shape);
-        const auto k = opset1::Constant::create(params.k.type,
-                                                params.k.shape,
-                                                params.k.data.data());
-        const auto B = std::make_shared<opset3::TopK>(A, k, params.axis, params.mode, params.sort);
+    static std::shared_ptr<Model> CreateFunction(const TopKParamsPrt& params, size_t out_idx) {
+        const auto A = std::make_shared<opset1::Parameter>(params->A.type, params->A.shape);
+        const auto k = opset1::Constant::create(params->k.type, params->k.shape, params->k.data.data());
+        const auto B = std::make_shared<opset3::TopK>(A, k, params->axis, params->mode, params->sort);
         const auto f = std::make_shared<Model>(OutputVector{B->output(out_idx)}, ParameterVector{A});
         return f;
     }
@@ -1601,18 +1443,10 @@ INSTANTIATE_TEST_SUITE_P(smoke_TopK_With_Hardcoded_Refs, ReferenceTopKTest1dMaxM
 
 class ReferenceTopKTestInt64V3 : public ReferenceTopKTestInt64 {
 private:
-    static std::shared_ptr<Model> CreateFunction(const TopKParams& params, size_t out_idx) {
-        const auto A = std::make_shared<opset1::Parameter>(params.A.type,
-                                                           params.A.shape);
-        const auto k = opset1::Constant::create(params.k.type,
-                                                params.k.shape,
-                                                params.k.data.data());
-        const auto B = std::make_shared<opset3::TopK>(A,
-                                                      k,
-                                                      params.axis,
-                                                      params.mode,
-                                                      params.sort,
-                                                      element::i64);
+    static std::shared_ptr<Model> CreateFunction(const TopKParamsPrt& params, size_t out_idx) {
+        const auto A = std::make_shared<opset1::Parameter>(params->A.type, params->A.shape);
+        const auto k = opset1::Constant::create(params->k.type, params->k.shape, params->k.data.data());
+        const auto B = std::make_shared<opset3::TopK>(A, k, params->axis, params->mode, params->sort, element::i64);
         const auto f = std::make_shared<Model>(OutputVector{B->output(out_idx)}, ParameterVector{A});
         return f;
     }
@@ -1627,13 +1461,10 @@ INSTANTIATE_TEST_SUITE_P(smoke_TopK_With_Hardcoded_Refs, ReferenceTopKTestInt64V
 
 class ReferenceTopKTestSingleOutputV3 : public ReferenceTopKTestSingleOutput {
 private:
-    static std::shared_ptr<Model> CreateFunction(const TopKParams& params) {
-        const auto A = std::make_shared<opset1::Parameter>(params.A.type,
-                                                           params.A.shape);
-        const auto k = opset1::Constant::create(params.k.type,
-                                                params.k.shape,
-                                                params.k.data.data());
-        const auto B = std::make_shared<opset3::TopK>(A, k, params.axis, params.mode, params.sort);
+    static std::shared_ptr<Model> CreateFunction(const TopKParamsPrt& params) {
+        const auto A = std::make_shared<opset1::Parameter>(params->A.type, params->A.shape);
+        const auto k = opset1::Constant::create(params->k.type, params->k.shape, params->k.data.data());
+        const auto B = std::make_shared<opset3::TopK>(A, k, params->axis, params->mode, params->sort);
         const auto f = std::make_shared<Model>(OutputVector{B->output(1)}, ParameterVector{A});
         return f;
     }
@@ -1668,24 +1499,29 @@ public:
     void SetUp() override {
         const auto& params = GetParam();
         function = CreateFunction(params);
-        inputData = {params.A.data};
+        inputData = {params->A.data};
         refOutData = {
-            params.result0.data,  // stable output values
-            params.result1.data,  // stable output indices
-            params.result0.data   // unstable output values
-                                  // unstable output indices need not be compared, by definition these might differ for
-                                  // equal data values
+            params->result0.data,  // stable output values
+            params->result1.data,  // stable output indices
+            params->result0.data   // unstable output values
+                                   // unstable output indices need not be compared, by definition these might differ for
+                                   // equal data values
         };
     }
 
 private:
-    static std::shared_ptr<Model> CreateFunction(const TopKParams& params) {
-        const auto A = std::make_shared<opset11::Parameter>(params.A.type, params.A.shape);
-        const auto k = opset11::Constant::create(params.k.type, params.k.shape, params.k.data.data());
+    static std::shared_ptr<Model> CreateFunction(const TopKParamsPrt& params) {
+        const auto A = std::make_shared<opset11::Parameter>(params->A.type, params->A.shape);
+        const auto k = opset11::Constant::create(params->k.type, params->k.shape, params->k.data.data());
         const auto topk_stable =
-            std::make_shared<opset11::TopK>(A, k, params.axis, params.mode, params.sort, params.result1.type, true);
-        const auto topk_unstable =
-            std::make_shared<opset11::TopK>(A, k, params.axis, params.mode, params.sort, params.result1.type, false);
+            std::make_shared<opset11::TopK>(A, k, params->axis, params->mode, params->sort, params->result1.type, true);
+        const auto topk_unstable = std::make_shared<opset11::TopK>(A,
+                                                                   k,
+                                                                   params->axis,
+                                                                   params->mode,
+                                                                   params->sort,
+                                                                   params->result1.type,
+                                                                   false);
 
         return std::make_shared<Model>(
             OutputVector{topk_stable->output(0), topk_stable->output(1), topk_unstable->output(0)},
@@ -1698,50 +1534,53 @@ TEST_P(ReferenceTopKv11StableTest, CompareWithRefs) {
 }
 
 template <element::Type_t ET, element::Type_t ET2, element::Type_t ET_OUT>
-std::vector<TopKParams> generateParamsForStableTest() {
+std::vector<TopKParamsPrt> generateParamsForStableTest() {
     using T = typename element_type_traits<ET>::value_type;
     using T2 = typename element_type_traits<ET2>::value_type;
     using T_OUT = typename element_type_traits<ET_OUT>::value_type;
-    std::vector<TopKParams> params{
-        TopKParams(reference_tests::Tensor(ET, {2, 7}, std::vector<T>{5, 4, 3, 1, 7, 1, 3, 2, 1, 2, 5, 1, 7, 3}),
-                   reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
-                   1,
-                   opset1::TopK::Mode::MIN,
-                   opset1::TopK::SortType::SORT_VALUES,
-                   reference_tests::Tensor(ET, {2, 3}, std::vector<T>{1, 1, 3, 1, 1, 2}),
-                   reference_tests::Tensor(ET_OUT, {2, 3}, std::vector<T_OUT>{3, 5, 2, 1, 4, 0}),
-                   0,
-                   "repeated_values"),
-        TopKParams(reference_tests::Tensor(ET,
-                                           {7, 3},
-                                           std::vector<T>{
-                                               5, 7, 1, 7, 9, 1, 5, 7, 2, 2, 8, 2, 7, 7, 5, 8, 1, 4, 2, 2, 3,
-                                           }),
-                   reference_tests::Tensor(ET2, {}, std::vector<T2>{4}),
-                   0,
-                   opset1::TopK::Mode::MAX,
-                   opset1::TopK::SortType::SORT_VALUES,
-                   reference_tests::Tensor(ET, {4, 3}, std::vector<T>{8, 9, 5, 7, 8, 4, 7, 7, 3, 5, 7, 2}),
-                   reference_tests::Tensor(ET_OUT, {4, 3}, std::vector<T_OUT>{5, 1, 4, 1, 3, 5, 4, 0, 6, 0, 2, 2}),
-                   0,
-                   "repeated_values"),
-        TopKParams(reference_tests::Tensor(ET,
-                                           {2, 3, 3},
-                                           std::vector<T>{1, 3, 3, 1, 2, 4, 2, 2, 3, 7, 7, 1, 7, 9, 7, 5, 7, 7}),
-                   reference_tests::Tensor(ET2, {}, std::vector<T2>{2}),
-                   1,
-                   opset1::TopK::Mode::MIN,
-                   opset1::TopK::SortType::SORT_VALUES,
-                   reference_tests::Tensor(ET, {2, 2, 3}, std::vector<T>{1, 2, 3, 1, 2, 3, 5, 7, 1, 7, 7, 7}),
-                   reference_tests::Tensor(ET_OUT, {2, 2, 3}, std::vector<T_OUT>{0, 1, 0, 1, 2, 2, 2, 0, 0, 0, 2, 1}),
-                   0,
-                   "repeated_values"),
+    std::vector<TopKParamsPrt> params{
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET, {2, 7}, std::vector<T>{5, 4, 3, 1, 7, 1, 3, 2, 1, 2, 5, 1, 7, 3}),
+            reference_tests::Tensor(ET2, {}, std::vector<T2>{3}),
+            1,
+            opset1::TopK::Mode::MIN,
+            opset1::TopK::SortType::SORT_VALUES,
+            reference_tests::Tensor(ET, {2, 3}, std::vector<T>{1, 1, 3, 1, 1, 2}),
+            reference_tests::Tensor(ET_OUT, {2, 3}, std::vector<T_OUT>{3, 5, 2, 1, 4, 0}),
+            0,
+            "repeated_values"),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET,
+                                    {7, 3},
+                                    std::vector<T>{
+                                        5, 7, 1, 7, 9, 1, 5, 7, 2, 2, 8, 2, 7, 7, 5, 8, 1, 4, 2, 2, 3,
+                                    }),
+            reference_tests::Tensor(ET2, {}, std::vector<T2>{4}),
+            0,
+            opset1::TopK::Mode::MAX,
+            opset1::TopK::SortType::SORT_VALUES,
+            reference_tests::Tensor(ET, {4, 3}, std::vector<T>{8, 9, 5, 7, 8, 4, 7, 7, 3, 5, 7, 2}),
+            reference_tests::Tensor(ET_OUT, {4, 3}, std::vector<T_OUT>{5, 1, 4, 1, 3, 5, 4, 0, 6, 0, 2, 2}),
+            0,
+            "repeated_values"),
+        std::make_shared<TopKParams>(
+            reference_tests::Tensor(ET,
+                                    {2, 3, 3},
+                                    std::vector<T>{1, 3, 3, 1, 2, 4, 2, 2, 3, 7, 7, 1, 7, 9, 7, 5, 7, 7}),
+            reference_tests::Tensor(ET2, {}, std::vector<T2>{2}),
+            1,
+            opset1::TopK::Mode::MIN,
+            opset1::TopK::SortType::SORT_VALUES,
+            reference_tests::Tensor(ET, {2, 2, 3}, std::vector<T>{1, 2, 3, 1, 2, 3, 5, 7, 1, 7, 7, 7}),
+            reference_tests::Tensor(ET_OUT, {2, 2, 3}, std::vector<T_OUT>{0, 1, 0, 1, 2, 2, 2, 0, 0, 0, 2, 1}),
+            0,
+            "repeated_values"),
     };
     return params;
 }
 
-std::vector<TopKParams> generateCombinedParamsForStableTest() {
-    std::vector<std::vector<TopKParams>> generatedParams{
+std::vector<TopKParamsPrt> generateCombinedParamsForStableTest() {
+    std::vector<std::vector<TopKParamsPrt>> generatedParams{
         generateParamsForStableTest<element::Type_t::i32, element::Type_t::i32, element::Type_t::i32>(),
         generateParamsForStableTest<element::Type_t::i64, element::Type_t::i64, element::Type_t::i64>(),
         generateParamsForStableTest<element::Type_t::u32, element::Type_t::i64, element::Type_t::i32>(),
@@ -1749,7 +1588,7 @@ std::vector<TopKParams> generateCombinedParamsForStableTest() {
         generateParamsForStableTest<element::Type_t::f16, element::Type_t::i64, element::Type_t::i32>(),
         generateParamsForStableTest<element::Type_t::f32, element::Type_t::i32, element::Type_t::i32>(),
     };
-    std::vector<TopKParams> combinedParams;
+    std::vector<TopKParamsPrt> combinedParams;
     for (auto& params : generatedParams)
         std::move(params.begin(), params.end(), std::back_inserter(combinedParams));
     return combinedParams;
