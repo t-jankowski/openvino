@@ -3,11 +3,11 @@
 //
 
 // clang-format off
-#include "openvino/op/ops.hpp"
 #include "ov_ops/nms_static_shape_ie.hpp"
 // clang-format on
 
 #include <memory>
+#include "openvino/op/matrix_nms.hpp"
 
 namespace ov {
 namespace op {
