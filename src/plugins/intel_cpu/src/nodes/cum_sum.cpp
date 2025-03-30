@@ -9,15 +9,14 @@
 
 #include "openvino/core/parallel.hpp"
 #include "openvino/core/type/float16.hpp"
-#include "openvino/opsets/opset1.hpp"
-#include "openvino/opsets/opset3.hpp"
 #include "utils/bfloat16.hpp"
+#include "openvino/op/cum_sum.hpp"
 
 namespace ov::intel_cpu::node {
 
 bool CumSum::isSupportedOperation(const std::shared_ptr<const ov::Node>& op, std::string& errorMessage) noexcept {
     try {
-        const auto cumsum = ov::as_type_ptr<const ov::opset3::CumSum>(op);
+        const auto cumsum = ov::as_type_ptr<const ov::op::v0::CumSum>(op);
         if (!cumsum) {
             errorMessage = "Only opset3 CumSum operation is supported";
             return false;
@@ -46,7 +45,7 @@ CumSum::CumSum(const std::shared_ptr<ov::Node>& op, const GraphContext::CPtr& co
         THROW_CPU_NODE_ERR("doesn't support 'data' input tensor with rank: ", numOfDims);
     }
 
-    const auto cumsum = ov::as_type_ptr<const ov::opset3::CumSum>(op);
+    const auto cumsum = ov::as_type_ptr<const ov::op::v0::CumSum>(op);
     if (cumsum == nullptr) {
         THROW_CPU_NODE_ERR("is not an instance of CumSum from opset3.");
     }
@@ -283,3 +282,4 @@ void CumSum::executeDynamicImpl(const dnnl::stream& strm) {
 }
 
 }  // namespace ov::intel_cpu::node
+

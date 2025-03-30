@@ -6,6 +6,7 @@
 
 #include "openvino/op/col2im.hpp"
 #include "openvino/reference/col2im.hpp"
+#include "openvino/op/col2im.hpp"
 
 namespace ov::intel_cpu::node {
 Col2Im::Col2Im(const std::shared_ptr<ov::Node>& op, const GraphContext::CPtr& context)
@@ -34,7 +35,7 @@ bool Col2Im::isSupportedOperation(const std::shared_ptr<const ov::Node>& op, std
 }
 
 void Col2Im::getSupportedDescriptors() {
-    // Validation is already done in the ov::opset15::Col2Im.
+    // Validation is already done in the ov::op::v15::Col2Im.
 }
 
 void Col2Im::initSupportedPrimitiveDescriptors() {
@@ -106,3 +107,4 @@ void Col2Im::execute(const dnnl::stream& strm) {
               OV_CASE2(ov::element::u8, ov::element::i32, uint8_t, int32_t))
 }
 }  // namespace ov::intel_cpu::node
+

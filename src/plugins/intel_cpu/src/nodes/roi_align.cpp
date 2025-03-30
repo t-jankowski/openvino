@@ -6,7 +6,6 @@
 
 #include <cmath>
 #include <memory>
-#include <openvino/opsets/opset9.hpp>
 #include <string>
 #include <utils/bfloat16.hpp>
 #include <vector>
@@ -18,6 +17,7 @@
 #include "onednn/dnnl.h"
 #include "openvino/core/parallel.hpp"
 #include "selective_build.h"
+#include "openvino/op/roi_align.hpp"
 
 using namespace dnnl;
 using namespace dnnl::impl;
@@ -28,8 +28,8 @@ using namespace Xbyak;
 
 namespace ov::intel_cpu::node {
 
-using ngPoolingMode = ov::opset9::ROIAlign::PoolingMode;
-using ngAlignedMode = ov::opset9::ROIAlign::AlignedMode;
+using ngPoolingMode = ov::op::v9::ROIAlign::PoolingMode;
+using ngAlignedMode = ov::op::v9::ROIAlign::AlignedMode;
 #if defined(OPENVINO_ARCH_X86_64)
 #    define GET_OFF(field) offsetof(jit_roi_align_call_args, field)
 
@@ -673,7 +673,7 @@ private:
 #endif
 bool ROIAlign::isSupportedOperation(const std::shared_ptr<const ov::Node>& op, std::string& errorMessage) noexcept {
     try {
-        auto roiAlign = ov::as_type_ptr<const ov::opset9::ROIAlign>(op);
+        auto roiAlign = ov::as_type_ptr<const ov::op::v9::ROIAlign>(op);
         if (!roiAlign) {
             errorMessage = "Only opset9 ROIAlign operation is supported";
             return false;
@@ -701,7 +701,7 @@ ROIAlign::ROIAlign(const std::shared_ptr<ov::Node>& op, const GraphContext::CPtr
     : Node(op, context, NgraphShapeInferFactory(op)) {
     std::string errorMessage;
     if (isSupportedOperation(op, errorMessage)) {
-        auto roiAlign = ov::as_type_ptr<const ov::opset9::ROIAlign>(op);
+        auto roiAlign = ov::as_type_ptr<const ov::op::v9::ROIAlign>(op);
         pooledH = roiAlign->get_pooled_h();
         pooledW = roiAlign->get_pooled_w();
         spatialScale = roiAlign->get_spatial_scale();
@@ -1205,3 +1205,4 @@ void ROIAlign::executeDynamicImpl(const dnnl::stream& strm) {
 }
 
 }  // namespace ov::intel_cpu::node
+

@@ -6,6 +6,7 @@
 
 #include "openvino/op/search_sorted.hpp"
 #include "openvino/reference/search_sorted.hpp"
+#include "openvino/op/search_sorted.hpp"
 
 namespace ov::intel_cpu::node {
 SearchSorted::SearchSorted(const std::shared_ptr<ov::Node>& op, const GraphContext::CPtr& context)
@@ -31,7 +32,7 @@ bool SearchSorted::isSupportedOperation(const std::shared_ptr<const ov::Node>& o
 }
 
 void SearchSorted::getSupportedDescriptors() {
-    // Validation is already done in the ov::opset15::SearchSorted.
+    // Validation is already done in the ov::op::v15::SearchSorted.
 }
 
 void SearchSorted::initSupportedPrimitiveDescriptors() {
@@ -122,3 +123,4 @@ void SearchSorted::execute(const dnnl::stream& strm) {
 #undef CASE
 }
 }  // namespace ov::intel_cpu::node
+

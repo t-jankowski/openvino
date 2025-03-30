@@ -4,17 +4,17 @@
 
 #include "experimental_detectron_priorgridgenerator.h"
 
-#include <openvino/opsets/opset6.hpp>
 #include <string>
 
 #include "openvino/core/parallel.hpp"
+#include "openvino/op/experimental_detectron_prior_grid_generator.hpp"
 
 namespace ov::intel_cpu::node {
 
 bool ExperimentalDetectronPriorGridGenerator::isSupportedOperation(const std::shared_ptr<const ov::Node>& op,
                                                                    std::string& errorMessage) noexcept {
     try {
-        const auto priorGridGen = ov::as_type_ptr<const ov::opset6::ExperimentalDetectronPriorGridGenerator>(op);
+        const auto priorGridGen = ov::as_type_ptr<const ov::op::v6::ExperimentalDetectronPriorGridGenerator>(op);
         if (!priorGridGen) {
             errorMessage = "Only opset6 ExperimentalDetectronPriorGridGenerator operation is supported";
             return false;
@@ -33,7 +33,7 @@ ExperimentalDetectronPriorGridGenerator::ExperimentalDetectronPriorGridGenerator
         OPENVINO_THROW_NOT_IMPLEMENTED(errorMessage);
     }
 
-    const auto priorGridGen = ov::as_type_ptr<const ov::opset6::ExperimentalDetectronPriorGridGenerator>(op);
+    const auto priorGridGen = ov::as_type_ptr<const ov::op::v6::ExperimentalDetectronPriorGridGenerator>(op);
     if (getOriginalInputsNumber() != 3 || getOriginalOutputsNumber() != 1) {
         THROW_CPU_NODE_ERR("has incorrect number of input/output edges!");
     }
@@ -96,3 +96,4 @@ bool ExperimentalDetectronPriorGridGenerator::needPrepareParams() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

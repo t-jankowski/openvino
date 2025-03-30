@@ -11,8 +11,8 @@
 
 #include "dnnl_types.h"
 #include "openvino/core/parallel.hpp"
-#include "openvino/opsets/opset1.hpp"
 #include "shape_inference/custom/priorbox.hpp"
+#include "openvino/op/prior_box.hpp"
 
 namespace ov::intel_cpu::node {
 namespace {
@@ -28,7 +28,7 @@ float clip_less(float x, float threshold) {
 
 bool PriorBox::isSupportedOperation(const std::shared_ptr<const ov::Node>& op, std::string& errorMessage) noexcept {
     try {
-        const auto priorBox = ov::as_type_ptr<const ov::opset1::PriorBox>(op);
+        const auto priorBox = ov::as_type_ptr<const ov::op::v0::PriorBox>(op);
         if (!priorBox) {
             errorMessage = "Only opset1 PriorBox operation is supported";
             return false;
@@ -46,8 +46,8 @@ PriorBox::PriorBox(const std::shared_ptr<ov::Node>& op, const GraphContext::CPtr
         OPENVINO_THROW_NOT_IMPLEMENTED(errorMessage);
     }
 
-    const auto priorBox = ov::as_type_ptr<const ov::opset1::PriorBox>(op);
-    const ov::opset1::PriorBox::Attributes& attrs = priorBox->get_attrs();
+    const auto priorBox = ov::as_type_ptr<const ov::op::v0::PriorBox>(op);
+    const ov::op::v0::PriorBox::Attributes& attrs = priorBox->get_attrs();
     offset = attrs.offset;
     step = attrs.step;
     min_size = attrs.min_size;
@@ -85,7 +85,7 @@ PriorBox::PriorBox(const std::shared_ptr<ov::Node>& op, const GraphContext::CPtr
         }
     }
 
-    number_of_priors = ov::opset1::PriorBox::number_of_priors(attrs);
+    number_of_priors = ov::op::v0::PriorBox::number_of_priors(attrs);
 
     if (attrs.variance.size() == 1 || attrs.variance.size() == 4) {
         for (float i : attrs.variance) {
@@ -312,3 +312,4 @@ bool PriorBox::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

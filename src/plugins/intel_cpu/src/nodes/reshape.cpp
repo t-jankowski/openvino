@@ -7,9 +7,11 @@
 #include "common/cpu_memcpy.h"
 #include "dnnl_extension_utils.h"
 #include "dnnl_types.h"
-#include "openvino/opsets/opset1.hpp"
 #include "shape_inference/custom/reshape.hpp"
 #include "utils.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/squeeze.hpp"
+#include "openvino/op/unsqueeze.hpp"
 
 using namespace dnnl;
 
@@ -17,8 +19,8 @@ namespace ov::intel_cpu::node {
 
 bool Reshape::isSupportedOperation(const std::shared_ptr<const ov::Node>& op, std::string& errorMessage) noexcept {
     try {
-        if (!ov::as_type_ptr<const ov::opset1::Reshape>(op) && !ov::as_type_ptr<const ov::opset1::Squeeze>(op) &&
-            !ov::as_type_ptr<const ov::opset1::Unsqueeze>(op)) {
+        if (!ov::as_type_ptr<const ov::op::v1::Reshape>(op) && !ov::as_type_ptr<const ov::op::v0::Squeeze>(op) &&
+            !ov::as_type_ptr<const ov::op::v0::Unsqueeze>(op)) {
             errorMessage = "Only opset1 Reshape, Squeeze, Unsqueeze operations are supported";
             return false;
         }
@@ -42,14 +44,14 @@ Reshape::Reshape(const std::shared_ptr<ov::Node>& op, const GraphContext::CPtr& 
             }
         };
 
-        if (ov::as_type_ptr<const ov::opset1::Reshape>(op)) {
+        if (ov::as_type_ptr<const ov::op::v1::Reshape>(op)) {
             checkSecondInput(op, "Reshape");
-        } else if (ov::as_type_ptr<const ov::opset1::Squeeze>(op)) {
+        } else if (ov::as_type_ptr<const ov::op::v0::Squeeze>(op)) {
             if (op->get_input_size() == 1) {
                 THROW_CPU_NODE_ERR("has inputs num equal 1");
             }
             checkSecondInput(op, "Squeeze");
-        } else if (ov::as_type_ptr<const ov::opset1::Unsqueeze>(op)) {
+        } else if (ov::as_type_ptr<const ov::op::v0::Unsqueeze>(op)) {
             checkSecondInput(op, "Unsqueeze");
         } else {
             THROW_CPU_NODE_ERR("Unsupported operation type via reshape node");
@@ -160,3 +162,4 @@ bool Reshape::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

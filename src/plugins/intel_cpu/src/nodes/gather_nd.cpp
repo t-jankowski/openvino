@@ -5,7 +5,6 @@
 #include "gather_nd.h"
 
 #include <cmath>
-#include <openvino/opsets/opset8.hpp>
 #include <string>
 #include <vector>
 
@@ -13,6 +12,7 @@
 #include "dnnl_types.h"
 #include "openvino/core/parallel.hpp"
 #include "utils/general_utils.h"
+#include "openvino/op/gather_nd.hpp"
 
 namespace ov::intel_cpu::node {
 
@@ -262,3 +262,4 @@ bool GatherND::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

@@ -4,8 +4,8 @@
 
 #include "priorbox_clustered.hpp"
 
-#include "openvino/opsets/opset1.hpp"
 #include "utils.hpp"
+#include "openvino/op/prior_box_clustered.hpp"
 
 namespace ov::intel_cpu::node {
 
@@ -25,7 +25,7 @@ Result PriorBoxClusteredShapeInfer::infer(const std::vector<std::reference_wrapp
 }
 
 ShapeInferPtr PriorBoxClusteredShapeInferFactory::makeShapeInfer() const {
-    auto priorBox = ov::as_type_ptr<const ov::opset1::PriorBoxClustered>(m_op);
+    auto priorBox = ov::as_type_ptr<const ov::op::v0::PriorBoxClustered>(m_op);
     if (!priorBox) {
         OPENVINO_THROW("Unexpected op type in PriorBoxClustered shape inference factory: ", m_op->get_type_name());
     }
@@ -35,3 +35,4 @@ ShapeInferPtr PriorBoxClusteredShapeInferFactory::makeShapeInfer() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

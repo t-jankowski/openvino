@@ -5,15 +5,15 @@
 #include "log_softmax.h"
 
 #include <cmath>
-#include <openvino/opsets/opset5.hpp>
 
 #include "openvino/core/parallel.hpp"
+#include "openvino/op/log_softmax.hpp"
 
 namespace ov::intel_cpu::node {
 
 bool LogSoftmax::isSupportedOperation(const std::shared_ptr<const ov::Node>& op, std::string& errorMessage) noexcept {
     try {
-        const auto logSoftMax = ov::as_type_ptr<const ov::opset5::LogSoftmax>(op);
+        const auto logSoftMax = ov::as_type_ptr<const ov::op::v5::LogSoftmax>(op);
         if (!logSoftMax) {
             errorMessage = "Only opset5 LogSoftmax operation is supported";
             return false;
@@ -31,7 +31,7 @@ LogSoftmax::LogSoftmax(const std::shared_ptr<ov::Node>& op, const GraphContext::
         OPENVINO_THROW_NOT_IMPLEMENTED(errorMessage);
     }
 
-    const auto logSoftMax = ov::as_type_ptr<const ov::opset5::LogSoftmax>(op);
+    const auto logSoftMax = ov::as_type_ptr<const ov::op::v5::LogSoftmax>(op);
     if (logSoftMax == nullptr) {
         THROW_CPU_NODE_ERR("is not an instance of LogSoftmax from opset5.");
     }
@@ -143,3 +143,4 @@ bool LogSoftmax::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

@@ -4,16 +4,16 @@
 
 #include "reorg_yolo.h"
 
-#include <openvino/opsets/opset2.hpp>
 #include <string>
 
 #include "openvino/core/parallel.hpp"
+#include "openvino/op/reorg_yolo.hpp"
 
 namespace ov::intel_cpu::node {
 
 bool ReorgYolo::isSupportedOperation(const std::shared_ptr<const ov::Node>& op, std::string& errorMessage) noexcept {
     try {
-        const auto reorgYolo = ov::as_type_ptr<const ov::opset2::ReorgYolo>(op);
+        const auto reorgYolo = ov::as_type_ptr<const ov::op::v0::ReorgYolo>(op);
         if (!reorgYolo) {
             errorMessage = "Only opset2 ReorgYolo operation is supported";
             return false;
@@ -35,7 +35,7 @@ ReorgYolo::ReorgYolo(const std::shared_ptr<ov::Node>& op, const GraphContext::CP
         THROW_CPU_NODE_ERR("has incorrect number of input/output edges!");
     }
 
-    const auto reorgYolo = ov::as_type_ptr<const ov::opset2::ReorgYolo>(op);
+    const auto reorgYolo = ov::as_type_ptr<const ov::op::v0::ReorgYolo>(op);
     const auto strides = reorgYolo->get_strides();
     if (strides.empty()) {
         THROW_CPU_NODE_ERR("has empty strides");
@@ -96,3 +96,4 @@ bool ReorgYolo::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

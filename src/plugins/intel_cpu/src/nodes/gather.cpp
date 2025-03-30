@@ -10,7 +10,6 @@
 #include <memory>
 #include <openvino/op/constant.hpp>
 #include <openvino/op/gather.hpp>
-#include <openvino/opsets/opset1.hpp>
 #include <string>
 #include <vector>
 
@@ -22,6 +21,8 @@
 #include "shape_inference/custom/gather.hpp"
 #include "utils/general_utils.h"
 #include "utils/ngraph_utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/gather.hpp"
 
 using namespace dnnl::impl::cpu;
 
@@ -981,3 +982,4 @@ void Gather::resolveInPlaceEdges(Edge::LOOK look) {
 }
 
 }  // namespace ov::intel_cpu::node
+

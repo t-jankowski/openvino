@@ -6,6 +6,7 @@
 
 #include "openvino/op/string_tensor_pack.hpp"
 #include "openvino/reference/string_tensor_pack.hpp"
+#include "openvino/op/string_tensor_pack.hpp"
 
 namespace ov::intel_cpu::node {
 StringTensorPack::StringTensorPack(const std::shared_ptr<ov::Node>& op, const GraphContext::CPtr& context)
@@ -30,7 +31,7 @@ bool StringTensorPack::isSupportedOperation(const std::shared_ptr<const ov::Node
 }
 
 void StringTensorPack::getSupportedDescriptors() {
-    // Validation is already done in the ov::opset15::StringTensorPack
+    // Validation is already done in the ov::op::v15::StringTensorPack
 }
 
 void StringTensorPack::initSupportedPrimitiveDescriptors() {
@@ -95,3 +96,4 @@ void StringTensorPack::execute(const dnnl::stream& strm) {
               OV_CASE(ov::element::i64, int64_t))
 }
 }  // namespace ov::intel_cpu::node
+

@@ -4,8 +4,8 @@
 
 #include "priorbox.hpp"
 
-#include "openvino/opsets/opset1.hpp"
 #include "utils.hpp"
+#include "openvino/op/prior_box.hpp"
 
 namespace ov::intel_cpu::node {
 
@@ -25,12 +25,13 @@ Result PriorBoxShapeInfer::infer(const std::vector<std::reference_wrapper<const 
 }
 
 ShapeInferPtr PriorBoxShapeInferFactory::makeShapeInfer() const {
-    auto priorBox = ov::as_type_ptr<const ov::opset1::PriorBox>(m_op);
+    auto priorBox = ov::as_type_ptr<const ov::op::v0::PriorBox>(m_op);
     if (!priorBox) {
         OPENVINO_THROW("Unexpected op type in PriorBox shape inference factory: ", m_op->get_type_name());
     }
     const auto& attrs = priorBox->get_attrs();
-    auto number_of_priors = ov::opset1::PriorBox::number_of_priors(attrs);
+    auto number_of_priors = ov::op::v0::PriorBox::number_of_priors(attrs);
     return std::make_shared<PriorBoxShapeInfer>(number_of_priors);
 }
 }  // namespace ov::intel_cpu::node
+

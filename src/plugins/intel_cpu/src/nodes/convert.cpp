@@ -6,8 +6,8 @@
 
 #include "common/blocked_desc_creator.h"
 #include "dnnl_extension_utils.h"
-#include "openvino/opsets/opset1.hpp"
 #include "shape_inference/shape_inference_pass_through.hpp"
+#include "openvino/op/convert.hpp"
 
 using namespace dnnl;
 
@@ -15,7 +15,7 @@ namespace ov::intel_cpu::node {
 
 bool Convert::isSupportedOperation(const std::shared_ptr<const ov::Node>& op, std::string& errorMessage) noexcept {
     try {
-        const auto convert = ov::as_type_ptr<const ov::opset1::Convert>(op);
+        const auto convert = ov::as_type_ptr<const ov::op::v0::Convert>(op);
         if (!convert) {
             errorMessage = "Only opset1 Convert operation is supported";
             return false;
@@ -41,7 +41,7 @@ Convert::Convert(const std::shared_ptr<ov::Node>& op, const GraphContext::CPtr& 
         OPENVINO_THROW_NOT_IMPLEMENTED(errorMessage);
     }
 
-    auto convert = ov::as_type_ptr<const ov::opset1::Convert>(op);
+    auto convert = ov::as_type_ptr<const ov::op::v0::Convert>(op);
     convertParams.origPrc = convert->get_destination_type();
 }
 
@@ -198,3 +198,4 @@ bool Convert::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

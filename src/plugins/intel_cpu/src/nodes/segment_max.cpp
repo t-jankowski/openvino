@@ -6,6 +6,7 @@
 
 #include "openvino/op/segment_max.hpp"
 #include "openvino/reference/segment_max.hpp"
+#include "openvino/op/segment_max.hpp"
 
 namespace ov::intel_cpu::node {
 SegmentMax::SegmentMax(const std::shared_ptr<ov::Node>& op, const GraphContext::CPtr& context)
@@ -30,7 +31,7 @@ bool SegmentMax::isSupportedOperation(const std::shared_ptr<const ov::Node>& op,
 }
 
 void SegmentMax::getSupportedDescriptors() {
-    // Validation is already done in the ov::opset16::SegmentMax
+    // Validation is already done in the ov::op::v16::SegmentMax
 }
 
 void SegmentMax::initSupportedPrimitiveDescriptors() {
@@ -151,3 +152,4 @@ void SegmentMax::execute(const dnnl::stream& strm) {
               OV_CASE(ov::element::i64, int64_t))
 }
 }  // namespace ov::intel_cpu::node
+

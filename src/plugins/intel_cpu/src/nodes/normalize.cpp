@@ -20,11 +20,12 @@
 #include "memory_desc/dnnl_blocked_memory_desc.h"
 #include "nodes/common/cpu_convert.h"
 #include "openvino/core/parallel.hpp"
-#include "openvino/opsets/opset1.hpp"
 #include "selective_build.h"
 #include "utils/bfloat16.hpp"
 #include "utils/cpu_utils.hpp"
 #include "utils/general_utils.h"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/normalize_l2.hpp"
 
 using namespace dnnl;
 
@@ -1601,3 +1602,4 @@ bool NormalizeL2::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

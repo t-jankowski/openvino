@@ -23,14 +23,13 @@
 #include "fake_quantize.h"
 #include "onednn/dnnl.h"
 #include "openvino/core/parallel.hpp"
-#include "openvino/opsets/opset1.hpp"
-#include "openvino/opsets/opset11.hpp"
-#include "openvino/opsets/opset4.hpp"
 #include "shape_inference/shape_inference.hpp"
 #include "shape_inference/static_shape.hpp"
 #include "utils/bfloat16.hpp"
 #include "utils/cpu_utils.hpp"
 #include "utils/ngraph_utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/interpolate.hpp"
 
 using namespace dnnl;
 
@@ -1872,7 +1871,7 @@ class InterpolateShapeInferFactory : public ShapeInferFactory {
 public:
     InterpolateShapeInferFactory(std::shared_ptr<ov::Node> op) : m_op(std::move(op)) {}
     [[nodiscard]] ShapeInferPtr makeShapeInfer() const override {
-        if (auto interp4 = ov::as_type_ptr<ov::opset4::Interpolate>(m_op)) {
+        if (auto interp4 = ov::as_type_ptr<ov::op::v4::Interpolate>(m_op)) {
             const auto& attr = interp4->get_attrs();
             const auto is_supported_mode = (attr.shape_calculation_mode == ngInterpShapeCalcMode::SCALES) ||
                                            (attr.shape_calculation_mode == ngInterpShapeCalcMode::SIZES);
@@ -1899,7 +1898,7 @@ Interpolate::Interpolate(const std::shared_ptr<ov::Node>& op, const GraphContext
     std::string errorMessage;
     if (isSupportedOperation(op, errorMessage)) {
         dataRank = getInputShapeAtPort(DATA_ID).getRank();
-        if (const auto interp = ov::as_type_ptr<const ov::opset4::Interpolate>(op)) {
+        if (const auto interp = ov::as_type_ptr<const ov::op::v4::Interpolate>(op)) {
             is_version11 = false;
             const auto numInputs = inputShapes.size();
             if (numInputs != 3 && numInputs != 4) {
@@ -4327,3 +4326,4 @@ bool Interpolate::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

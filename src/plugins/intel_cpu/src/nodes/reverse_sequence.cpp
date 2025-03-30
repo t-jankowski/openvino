@@ -8,14 +8,14 @@
 #include <vector>
 
 #include "openvino/core/parallel.hpp"
-#include "openvino/opsets/opset1.hpp"
+#include "openvino/op/reverse_sequence.hpp"
 
 namespace ov::intel_cpu::node {
 
 bool ReverseSequence::isSupportedOperation(const std::shared_ptr<const ov::Node>& op,
                                            std::string& errorMessage) noexcept {
     try {
-        const auto revSeq = ov::as_type_ptr<const ov::opset1::ReverseSequence>(op);
+        const auto revSeq = ov::as_type_ptr<const ov::op::v0::ReverseSequence>(op);
         if (!revSeq) {
             errorMessage = "Only opset1 ReverseSequence operation is supported";
             return false;
@@ -33,7 +33,7 @@ ReverseSequence::ReverseSequence(const std::shared_ptr<ov::Node>& op, const Grap
         OPENVINO_THROW_NOT_IMPLEMENTED(errorMessage);
     }
 
-    const auto revSeq = ov::as_type_ptr<const ov::opset1::ReverseSequence>(op);
+    const auto revSeq = ov::as_type_ptr<const ov::op::v0::ReverseSequence>(op);
     if (revSeq == nullptr) {
         THROW_CPU_NODE_ERR("is not an instance of ReverseSequence from opset1.");
     }
@@ -209,3 +209,4 @@ bool ReverseSequence::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

@@ -16,8 +16,8 @@
 #include "emitters/plugin/x64/jit_bf16_emitters.hpp"
 #include "nodes/common/blocked_desc_creator.h"
 #include "openvino/core/parallel.hpp"
-#include "openvino/opsets/opset1.hpp"
 #include "utils/bfloat16.hpp"
+#include "openvino/op/region_yolo.hpp"
 
 using namespace dnnl::impl;
 using namespace dnnl::impl::cpu;
@@ -244,7 +244,7 @@ private:
 
 bool RegionYolo::isSupportedOperation(const std::shared_ptr<const ov::Node>& op, std::string& errorMessage) noexcept {
     try {
-        const auto regionYolo = ov::as_type_ptr<const ov::opset1::RegionYolo>(op);
+        const auto regionYolo = ov::as_type_ptr<const ov::op::v0::RegionYolo>(op);
         if (!regionYolo) {
             errorMessage = "Only opset1 RegionYolo operation is supported";
             return false;
@@ -270,7 +270,7 @@ RegionYolo::RegionYolo(const std::shared_ptr<ov::Node>& op, const GraphContext::
         THROW_CPU_NODE_ERR("has incorrect number of input/output edges!");
     }
 
-    const auto regionYolo = ov::as_type_ptr<const ov::opset1::RegionYolo>(op);
+    const auto regionYolo = ov::as_type_ptr<const ov::op::v0::RegionYolo>(op);
     classes = regionYolo->get_num_classes();
     coords = regionYolo->get_num_coords();
     num = regionYolo->get_num_regions();
@@ -465,3 +465,4 @@ bool RegionYolo::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

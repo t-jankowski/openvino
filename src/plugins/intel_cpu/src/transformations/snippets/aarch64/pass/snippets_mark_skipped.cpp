@@ -11,6 +11,27 @@
 #include "transformations/utils/utils.hpp"
 #include "utils/cpu_utils.hpp"
 #include "utils/general_utils.h"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/assign.hpp"
+#include "openvino/op/binary_convolution.hpp"
+#include "openvino/op/clamp.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/elu.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/if.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/max_pool.hpp"
+#include "openvino/op/normalize_l2.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/read_value.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/sigmoid.hpp"
+#include "openvino/op/tanh.hpp"
 
 namespace ov::intel_cpu {
 
@@ -225,8 +246,8 @@ auto is_skipped_op(const std::shared_ptr<ov::Node>& op) -> bool {
 }
 
 bool isSuitableMatMulWithConstantPath(const std::shared_ptr<Node>& node) {
-    return ov::is_type<ov::opset1::MatMul>(node) &&
-           !ov::is_type<ov::opset1::Constant>(node->get_input_node_shared_ptr(1)) &&
+    return ov::is_type<ov::op::v0::MatMul>(node) &&
+           !ov::is_type<ov::op::v0::Constant>(node->get_input_node_shared_ptr(1)) &&
            ov::op::util::is_on_constant_path(node->input_value(1));
 }
 
@@ -305,3 +326,4 @@ bool SnippetsMarkSkipped::run_on_model(const std::shared_ptr<ov::Model>& m) {
 }
 
 }  // namespace ov::intel_cpu
+

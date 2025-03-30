@@ -12,8 +12,8 @@
 #include "common/primitive_hashing_utils.hpp"
 #include "cpu/x64/jit_generator.hpp"
 #include "dnnl_extension_utils.h"
-#include "openvino/opsets/opset1.hpp"
 #include "utils/general_utils.h"
+#include "openvino/op/depth_to_space.hpp"
 
 using namespace dnnl::impl;
 
@@ -45,7 +45,7 @@ bool DepthToSpace::DepthToSpaceAttrs::operator==(const DepthToSpaceAttrs& rhs) c
 
 bool DepthToSpace::isSupportedOperation(const std::shared_ptr<const ov::Node>& op, std::string& errorMessage) noexcept {
     try {
-        auto depthToSpace = ov::as_type_ptr<const ov::opset1::DepthToSpace>(op);
+        auto depthToSpace = ov::as_type_ptr<const ov::op::v0::DepthToSpace>(op);
         if (!depthToSpace) {
             errorMessage = "Only opset1 DepthToSpace operation is supported";
             return false;
@@ -73,7 +73,7 @@ DepthToSpace::DepthToSpace(const std::shared_ptr<ov::Node>& op, const GraphConte
         THROW_CPU_NODE_ERR("has incorrect number of input/output edges!");
     }
 
-    auto depthToSpace = ov::as_type_ptr<const ov::opset1::DepthToSpace>(op);
+    auto depthToSpace = ov::as_type_ptr<const ov::op::v0::DepthToSpace>(op);
     if (!depthToSpace) {
         THROW_CPU_NODE_ERR("supports only opset1");
     }
@@ -334,3 +334,4 @@ bool DepthToSpace::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

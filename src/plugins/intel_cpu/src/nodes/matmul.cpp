@@ -19,9 +19,9 @@
 #include "memory_desc/cpu_blocked_memory_desc.h"
 #include "memory_desc/cpu_memory_desc_utils.h"
 #include "memory_desc/dnnl_blocked_memory_desc.h"
-#include "openvino/opsets/opset1.hpp"
 #include "shape_inference/custom/matmul.hpp"
 #include "utils/general_utils.h"
+#include "openvino/op/matmul.hpp"
 using namespace dnnl;
 
 namespace ov::intel_cpu::node {
@@ -84,7 +84,7 @@ bool MatMul::canBeExecutedInInt8() const {
 
 bool MatMul::isSupportedOperation(const std::shared_ptr<const ov::Node>& op, std::string& errorMessage) noexcept {
     try {
-        const auto matMul = ov::as_type_ptr<const ov::opset1::MatMul>(op);
+        const auto matMul = ov::as_type_ptr<const ov::op::v0::MatMul>(op);
         if (!matMul) {
             errorMessage = "Only opset1 MatMul operation is supported";
             return false;
@@ -119,7 +119,7 @@ MatMul::MatMul(const std::shared_ptr<ov::Node>& op, const GraphContext::CPtr& co
         OPENVINO_THROW_NOT_IMPLEMENTED(errorMessage);
     }
 
-    const auto matMul = ov::as_type_ptr<const ov::opset1::MatMul>(op);
+    const auto matMul = ov::as_type_ptr<const ov::op::v0::MatMul>(op);
 
     if (!matMul) {
         OPENVINO_THROW_NOT_IMPLEMENTED("Operation with name ",
@@ -743,3 +743,4 @@ bool MatMul::isExecutable() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

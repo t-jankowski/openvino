@@ -7,6 +7,7 @@
 #include "openvino/op/string_tensor_unpack.hpp"
 #include "openvino/reference/string_tensor_unpack.hpp"
 #include "shape_inference/shape_inference_internal_dyn.hpp"
+#include "openvino/op/string_tensor_unpack.hpp"
 
 namespace ov::intel_cpu::node {
 StringTensorUnpack::StringTensorUnpack(const std::shared_ptr<ov::Node>& op, const GraphContext::CPtr& context)
@@ -31,7 +32,7 @@ bool StringTensorUnpack::isSupportedOperation(const std::shared_ptr<const ov::No
 }
 
 void StringTensorUnpack::getSupportedDescriptors() {
-    // Validation is already done in the ov::opset15::StringTensorUnpack
+    // Validation is already done in the ov::op::v15::StringTensorUnpack
 }
 
 void StringTensorUnpack::initSupportedPrimitiveDescriptors() {
@@ -75,3 +76,4 @@ void StringTensorUnpack::execute(const dnnl::stream& strm) {
                                         stringCount);
 }
 }  // namespace ov::intel_cpu::node
+

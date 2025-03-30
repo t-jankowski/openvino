@@ -7,13 +7,13 @@
 #include <string>
 
 #include "openvino/core/parallel.hpp"
-#include "openvino/opsets/opset1.hpp"
+#include "openvino/op/grn.hpp"
 
 namespace ov::intel_cpu::node {
 
 bool GRN::isSupportedOperation(const std::shared_ptr<const ov::Node>& op, std::string& errorMessage) noexcept {
     try {
-        const auto grn = ov::as_type_ptr<const ov::opset1::GRN>(op);
+        const auto grn = ov::as_type_ptr<const ov::op::v0::GRN>(op);
         if (!grn) {
             errorMessage = "Only opset1 GRN operation is supported";
             return false;
@@ -31,7 +31,7 @@ GRN::GRN(const std::shared_ptr<ov::Node>& op, const GraphContext::CPtr& context)
         OPENVINO_THROW_NOT_IMPLEMENTED(errorMessage);
     }
 
-    const auto grn = ov::as_type_ptr<const ov::opset1::GRN>(op);
+    const auto grn = ov::as_type_ptr<const ov::op::v0::GRN>(op);
     if (grn == nullptr) {
         THROW_CPU_NODE_ERR("is not an instance of GRN from opset1.");
     }
@@ -122,3 +122,4 @@ bool GRN::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

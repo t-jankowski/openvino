@@ -4,9 +4,9 @@
 
 #include "matmul.hpp"
 
-#include "openvino/opsets/opset1.hpp"
 #include "shape_inference/shape_inference.hpp"
 #include "utils.hpp"
+#include "openvino/op/matmul.hpp"
 
 namespace ov::intel_cpu::node {
 
@@ -63,7 +63,7 @@ Result MMShapeInfer::infer(const std::vector<std::reference_wrapper<const Vector
 }
 
 ShapeInferPtr MMShapeInferFactory::makeShapeInfer() const {
-    if (const auto matmul = ov::as_type_ptr<const ov::opset1::MatMul>(m_op)) {
+    if (const auto matmul = ov::as_type_ptr<const ov::op::v0::MatMul>(m_op)) {
         const auto input_rank0 = matmul->get_input_partial_shape(0).rank().get_length();
         const auto input_rank1 = matmul->get_input_partial_shape(1).rank().get_length();
 
@@ -78,3 +78,4 @@ ShapeInferPtr MMShapeInferFactory::makeShapeInfer() const {
     OPENVINO_THROW("Unexpected operation type in the MatMul shape inference factory");
 }
 }  // namespace ov::intel_cpu::node
+

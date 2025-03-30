@@ -6,7 +6,6 @@
 
 #include <cmath>
 #include <memory>
-#include <openvino/opsets/opset7.hpp>
 #include <string>
 #include <vector>
 
@@ -16,6 +15,8 @@
 #include "openvino/core/parallel.hpp"
 #include "utils/general_utils.h"
 #include "utils/ngraph_utils.hpp"
+#include "openvino/op/dft.hpp"
+#include "openvino/op/idft.hpp"
 
 using namespace dnnl::impl;
 using namespace dnnl::impl::cpu::x64;
@@ -615,3 +616,4 @@ void DFT::createJITKernels(bool hasDFT, bool hasFFT) {
 #endif
 }
 }  // namespace ov::intel_cpu::node
+

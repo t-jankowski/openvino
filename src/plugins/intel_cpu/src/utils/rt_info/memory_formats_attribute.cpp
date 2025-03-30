@@ -5,7 +5,6 @@
 #include "memory_formats_attribute.hpp"
 
 #include "openvino/core/node.hpp"
-#include "openvino/opsets/opset1.hpp"
 
 namespace ov::intel_cpu {
 
@@ -34,3 +33,4 @@ std::string getOutputMemoryFormats(const std::shared_ptr<ov::Node>& node) {
 }
 
 }  // namespace ov::intel_cpu
+

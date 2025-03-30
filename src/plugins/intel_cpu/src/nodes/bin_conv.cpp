@@ -18,9 +18,9 @@
 #include "eltwise.h"
 #include "fake_quantize.h"
 #include "openvino/core/parallel.hpp"
-#include "openvino/opsets/opset1.hpp"
 #include "utils/general_utils.h"
 #include "utils/ngraph_utils.hpp"
+#include "openvino/op/binary_convolution.hpp"
 
 // WA for xbyak.h
 #ifdef _WIN32
@@ -938,7 +938,7 @@ bool BinaryConvolution::isSupportedOperation(const std::shared_ptr<const ov::Nod
             return false;
         }
 
-        const auto binConv = ov::as_type_ptr<const ov::opset1::BinaryConvolution>(op);
+        const auto binConv = ov::as_type_ptr<const ov::op::v1::BinaryConvolution>(op);
         if (!binConv) {
             errorMessage = "Only opset1 BinaryConvolution operation is supported";
             return false;
@@ -957,7 +957,7 @@ BinaryConvolution::BinaryConvolution(const std::shared_ptr<ov::Node>& op, const 
     : Node(op, context, NgraphShapeInferFactory(op)) {
     std::string errorMessage;
     if (isSupportedOperation(op, errorMessage)) {
-        const auto binConv = ov::as_type_ptr<const ov::opset1::BinaryConvolution>(op);
+        const auto binConv = ov::as_type_ptr<const ov::op::v1::BinaryConvolution>(op);
 
         pad_value = binConv->get_pad_value();
         for (uint64_t i : binConv->get_strides()) {
@@ -1431,3 +1431,4 @@ bool BinaryConvolution::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

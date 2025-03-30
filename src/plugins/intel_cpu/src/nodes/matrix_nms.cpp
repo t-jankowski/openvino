@@ -11,10 +11,10 @@
 #include <vector>
 
 #include "openvino/core/parallel.hpp"
-#include "openvino/opsets/opset8.hpp"
 #include "ov_ops/nms_static_shape_ie.hpp"
 #include "shape_inference/shape_inference_internal_dyn.hpp"
 #include "utils/general_utils.h"
+#include "openvino/op/matrix_nms.hpp"
 
 namespace ov::intel_cpu::node {
 
@@ -469,3 +469,4 @@ void MatrixNms::checkPrecision(const ov::element::Type prec,
 }
 
 }  // namespace ov::intel_cpu::node
+

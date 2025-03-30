@@ -13,7 +13,7 @@
 #include "dnnl_extension_utils.h"
 #include "dnnl_types.h"
 #include "memory_desc/dnnl_blocked_memory_desc.h"
-#include "openvino/opsets/opset1.hpp"
+#include "openvino/op/softmax.hpp"
 
 using namespace dnnl;
 
@@ -56,7 +56,7 @@ bool SoftmaxKey::operator==(const SoftmaxKey& rhs) const {
 
 bool SoftMax::isSupportedOperation(const std::shared_ptr<const ov::Node>& op, std::string& errorMessage) noexcept {
     try {
-        if (!ov::as_type_ptr<const ov::opset1::Softmax>(op)) {
+        if (!ov::as_type_ptr<const ov::op::v1::Softmax>(op)) {
             errorMessage = "Only opset1 Softmax operation is supported";
             return false;
         }
@@ -243,3 +243,4 @@ void SoftMax::executeDynamicImpl(const dnnl::stream& strm) {
 }
 
 }  // namespace ov::intel_cpu::node
+

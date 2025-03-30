@@ -12,6 +12,43 @@
 #include "transformations/utils/utils.hpp"
 #include "utils/cpu_utils.hpp"
 #include "utils/general_utils.h"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/avg_pool.hpp"
+#include "openvino/op/binary_convolution.hpp"
+#include "openvino/op/clamp.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/divide.hpp"
+#include "openvino/op/elu.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/gelu.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/hsigmoid.hpp"
+#include "openvino/op/hswish.hpp"
+#include "openvino/op/if.hpp"
+#include "openvino/op/interpolate.hpp"
+#include "openvino/op/lstm_cell.hpp"
+#include "openvino/op/mvn.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/max_pool.hpp"
+#include "openvino/op/mish.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/normalize_l2.hpp"
+#include "openvino/op/prelu.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/round.hpp"
+#include "openvino/op/sigmoid.hpp"
+#include "openvino/op/sqrt.hpp"
+#include "openvino/op/subtract.hpp"
+#include "openvino/op/swish.hpp"
+#include "openvino/op/tanh.hpp"
 
 namespace ov::intel_cpu {
 
@@ -125,7 +162,7 @@ bool canBePerformedAsScaleShift(const std::shared_ptr<const Node>& node, const i
 
     // Prelu and MulAdd are still ignored
     // isConvertablePowerStatic() is ignored
-    return ov::is_type_any_of<ov::opset1::Add, ov::opset1::Multiply, ov::opset1::Subtract, ov::opset1::Divide>(node) &&
+    return ov::is_type_any_of<ov::op::v1::Add, ov::op::v1::Multiply, ov::op::v1::Subtract, ov::op::v1::Divide>(node) &&
            isBroadcastableToDataInput();
 }
 
@@ -183,10 +220,10 @@ bool isSuitableMiscParent(const std::shared_ptr<const Node>& node) {
                                                      ov::op::v4::Interpolate,
                                                      ov::op::v0::LSTMCell,
                                                      ov::op::v4::LSTMCell,
-                                                     ov::opset1::ConvolutionBackpropData,
+                                                     ov::op::v1::ConvolutionBackpropData,
                                                      ov::op::util::ArithmeticReductionKeepDims,
-                                                     ov::opset1::GroupConvolutionBackpropData,
-                                                     ov::opset1::AvgPool,
+                                                     ov::op::v1::GroupConvolutionBackpropData,
+                                                     ov::op::v1::AvgPool,
                                                      ov::op::v14::AvgPool>(node);
     // has a single output, connected to a single child
     const auto out = node->outputs();
@@ -274,8 +311,8 @@ bool isSuitableChildForFusingMatMul(const std::shared_ptr<const Node>& node,
                                     NodeFusingType& updatedChainType,
                                     int& fusingAxis) {
     // Firsly check for Bias and DQScales fusion
-    const bool is_bias = ov::is_type<ov::opset1::Add>(node);
-    const bool is_dq_scales = ov::is_type<ov::opset1::Multiply>(node) && canMatMulBeExecutedInI8;
+    const bool is_bias = ov::is_type<ov::op::v1::Add>(node);
+    const bool is_dq_scales = ov::is_type<ov::op::v1::Multiply>(node) && canMatMulBeExecutedInI8;
     if (is_bias || is_dq_scales) {
         for (const auto& in : node->inputs()) {
             const auto& parent_out = in.get_source_output();
@@ -440,8 +477,8 @@ bool isSuitableReduceChild(const std::shared_ptr<const Node>& node, const int ch
     return isSuitableChildForFusingSimple(node, channelAxis);
 }
 bool isSuitableMatMulWithConstantPath(const std::shared_ptr<Node>& node) {
-    return ov::is_type<ov::opset1::MatMul>(node) &&
-           !ov::is_type<ov::opset1::Constant>(node->get_input_node_shared_ptr(1)) &&
+    return ov::is_type<ov::op::v0::MatMul>(node) &&
+           !ov::is_type<ov::op::v0::Constant>(node->get_input_node_shared_ptr(1)) &&
            ov::op::util::is_on_constant_path(node->input_value(1));
 }
 // Continue fusing chain of the passed type if the node has one child
@@ -607,3 +644,4 @@ bool SnippetsMarkSkipped::run_on_model(const std::shared_ptr<ov::Model>& m) {
 }
 
 }  // namespace ov::intel_cpu
+

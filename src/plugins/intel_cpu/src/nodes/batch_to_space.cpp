@@ -4,7 +4,6 @@
 
 #include "batch_to_space.h"
 
-#include <openvino/opsets/opset2.hpp>
 #include <string>
 #include <vector>
 
@@ -12,12 +11,13 @@
 #include "nodes/common/blocked_desc_creator.h"
 #include "openvino/core/parallel.hpp"
 #include "selective_build.h"
+#include "openvino/op/batch_to_space.hpp"
 
 namespace ov::intel_cpu::node {
 
 bool BatchToSpace::isSupportedOperation(const std::shared_ptr<const ov::Node>& op, std::string& errorMessage) noexcept {
     try {
-        const auto batchToSpace = ov::as_type_ptr<const ov::opset2::BatchToSpace>(op);
+        const auto batchToSpace = ov::as_type_ptr<const ov::op::v1::BatchToSpace>(op);
         if (!batchToSpace) {
             errorMessage = "Only opset2 BatchToSpace operation is supported";
             return false;
@@ -267,3 +267,4 @@ bool BatchToSpace::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

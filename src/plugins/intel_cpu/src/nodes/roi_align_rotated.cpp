@@ -4,16 +4,17 @@
 
 #include "roi_align_rotated.h"
 
-#include <openvino/opsets/opset15.hpp>
 
 #include "common/cpu_convert.h"
 #include "openvino/reference/roi_align.hpp"
+#include "openvino/op/roi_align.hpp"
+#include "openvino/op/roi_align_rotated.hpp"
 
 namespace ov::intel_cpu::node {
 
 ROIAlignRotated::ROIAlignRotated(const std::shared_ptr<ov::Node>& op, const GraphContext::CPtr& context)
     : Node(op, context, NgraphShapeInferFactory(op)) {
-    const auto roiAlign = ov::as_type_ptr<const ov::opset15::ROIAlignRotated>(op);
+    const auto roiAlign = ov::as_type_ptr<const ov::op::v15::ROIAlignRotated>(op);
     pooledH = roiAlign->get_pooled_h();
     pooledW = roiAlign->get_pooled_w();
     spatialScale = roiAlign->get_spatial_scale();
@@ -103,3 +104,4 @@ void ROIAlignRotated::execute(const dnnl::stream&) {
 }
 
 }  // namespace ov::intel_cpu::node
+

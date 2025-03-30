@@ -10,13 +10,13 @@
 #include <vector>
 
 #include "openvino/core/parallel.hpp"
-#include "openvino/opsets/opset3.hpp"
+#include "openvino/op/bucketize.hpp"
 
 namespace ov::intel_cpu::node {
 
 bool Bucketize::isSupportedOperation(const std::shared_ptr<const ov::Node>& op, std::string& errorMessage) noexcept {
     try {
-        const auto bucketsize = ov::as_type_ptr<const ov::opset3::Bucketize>(op);
+        const auto bucketsize = ov::as_type_ptr<const ov::op::v3::Bucketize>(op);
         if (!bucketsize) {
             errorMessage = "Only opset3 Bucketize operation is supported";
             return false;
@@ -34,7 +34,7 @@ Bucketize::Bucketize(const std::shared_ptr<ov::Node>& op, const GraphContext::CP
         OPENVINO_THROW_NOT_IMPLEMENTED(errorMessage);
     }
 
-    const auto bucketsize = ov::as_type_ptr<const ov::opset3::Bucketize>(op);
+    const auto bucketsize = ov::as_type_ptr<const ov::op::v3::Bucketize>(op);
     if (bucketsize == nullptr) {
         THROW_CPU_NODE_ERR("is not an instance of Bucketize from opset3.");
     }
@@ -256,3 +256,4 @@ bool Bucketize::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

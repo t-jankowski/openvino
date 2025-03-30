@@ -13,7 +13,8 @@
 #include "common/primitive_hashing_utils.hpp"
 #include "dnnl_extension_utils.h"
 #include "memory_desc/dnnl_blocked_memory_desc.h"
-#include "openvino/opsets/opset1.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/lrn.hpp"
 
 namespace ov::intel_cpu::node {
 namespace {
@@ -63,7 +64,7 @@ bool LrnKey::operator==(const LrnKey& rhs) const {
 
 bool Lrn::isSupportedOperation(const std::shared_ptr<const ov::Node>& op, std::string& errorMessage) noexcept {
     try {
-        auto lrn = ov::as_type_ptr<const ov::opset1::LRN>(op);
+        auto lrn = ov::as_type_ptr<const ov::op::v0::LRN>(op);
         if (!lrn) {
             errorMessage = "Only opset1 LRN operation is supported";
             return false;
@@ -74,7 +75,7 @@ bool Lrn::isSupportedOperation(const std::shared_ptr<const ov::Node>& op, std::s
             errorMessage = "Doesn't support 'data' input with rank: " + std::to_string(dataDims.size());
             return false;
         }
-        auto axesNode = ov::as_type_ptr<const ov::opset1::Constant>(lrn->get_input_node_shared_ptr(1));
+        auto axesNode = ov::as_type_ptr<const ov::op::v0::Constant>(lrn->get_input_node_shared_ptr(1));
         if (!axesNode) {
             errorMessage = "Only Constant operation on 'axis' input is supported";
             return false;
@@ -111,9 +112,9 @@ Lrn::Lrn(const std::shared_ptr<ov::Node>& op, const GraphContext::CPtr& context)
     : Node(op, context, PassThroughShapeInferFactory()) {
     std::string errorMessage;
     if (isSupportedOperation(op, errorMessage)) {
-        auto lrn = ov::as_type_ptr<const ov::opset1::LRN>(op);
+        auto lrn = ov::as_type_ptr<const ov::op::v0::LRN>(op);
         auto axes =
-            ov::as_type_ptr<const ov::opset1::Constant>(lrn->get_input_node_shared_ptr(1))->cast_vector<int64_t>();
+            ov::as_type_ptr<const ov::op::v0::Constant>(lrn->get_input_node_shared_ptr(1))->cast_vector<int64_t>();
         bool isAcrossMaps = (axes.size() == 1 && axes[0] == 1);
         alg = isAcrossMaps ? dnnl::algorithm::lrn_across_channels : dnnl::algorithm::lrn_within_channel;
         alpha = static_cast<float>(lrn->get_alpha());
@@ -258,3 +259,4 @@ void Lrn::executeDynamicImpl(const dnnl::stream& strm) {
 }
 
 }  // namespace ov::intel_cpu::node
+

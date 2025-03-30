@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <cmath>
 #include <memory>
-#include <openvino/opsets/opset2.hpp>
 #include <string>
 #include <vector>
 
@@ -19,6 +18,7 @@
 #include "openvino/core/parallel.hpp"
 #include "selective_build.h"
 #include "utils/bfloat16.hpp"
+#include "openvino/op/roi_pooling.hpp"
 
 using namespace dnnl;
 using namespace dnnl::impl;
@@ -385,7 +385,7 @@ bool jit_roi_pooling_params::operator==(const jit_roi_pooling_params& rhs) const
 
 bool ROIPooling::isSupportedOperation(const std::shared_ptr<const ov::Node>& op, std::string& errorMessage) noexcept {
     try {
-        auto roiPooling = ov::as_type_ptr<const ov::opset2::ROIPooling>(op);
+        auto roiPooling = ov::as_type_ptr<const ov::op::v0::ROIPooling>(op);
         if (!roiPooling) {
             errorMessage = "Only opset2 ROIPooling operation is supported";
             return false;
@@ -408,7 +408,7 @@ ROIPooling::ROIPooling(const std::shared_ptr<ov::Node>& op, const GraphContext::
         OPENVINO_THROW_NOT_IMPLEMENTED(errorMessage);
     }
 
-    auto roiPooling = ov::as_type_ptr<const ov::opset2::ROIPooling>(op);
+    auto roiPooling = ov::as_type_ptr<const ov::op::v0::ROIPooling>(op);
     refParams.pooled_h = roiPooling->get_output_roi()[0];
     refParams.pooled_w = roiPooling->get_output_roi()[1];
     refParams.spatial_scale = roiPooling->get_spatial_scale();
@@ -995,3 +995,4 @@ bool ROIPooling::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

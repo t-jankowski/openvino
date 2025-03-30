@@ -22,10 +22,11 @@
 #include "dnnl_types.h"
 #include "memory_desc/dnnl_blocked_memory_desc.h"
 #include "openvino/core/parallel.hpp"
-#include "openvino/opsets/opset1.hpp"
 #include "utils/cpu_utils.hpp"
 #include "utils/general_utils.h"
 #include "utils/ngraph_utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
 
 // Quantization ranges validation is switched off by default in order to avoid regressions on user side
 // #define VALIDATE_QUANTIZATION_RANGES
@@ -1002,7 +1003,7 @@ private:
 #endif
 bool FakeQuantize::isSupportedOperation(const std::shared_ptr<const ov::Node>& op, std::string& errorMessage) noexcept {
     try {
-        const auto fq = ov::as_type_ptr<const ov::opset1::FakeQuantize>(op);
+        const auto fq = ov::as_type_ptr<const ov::op::v0::FakeQuantize>(op);
         if (!fq) {
             errorMessage = "Only opset1 FakeQuantize operation is supported";
             return false;
@@ -1020,7 +1021,7 @@ bool FakeQuantize::isSupportedOperation(const std::shared_ptr<const ov::Node>& o
             }
         }
         for (size_t i = 1; i < fq->get_input_size(); i++) {
-            if (!ov::as_type_ptr<const ov::opset1::Constant>(fq->get_input_node_shared_ptr(i))) {
+            if (!ov::as_type_ptr<const ov::op::v0::Constant>(fq->get_input_node_shared_ptr(i))) {
                 errorMessage = "Has non const 'range' input on " + std::to_string(i) + " port";
                 return false;
             }
@@ -1102,7 +1103,7 @@ FakeQuantize::FakeQuantize(const std::shared_ptr<ov::Node>& op, const GraphConte
     std::string errorMessage;
     if (isSupportedOperation(op, errorMessage)) {
         algorithm = Algorithm::FQCommon;
-        const auto fq = ov::as_type_ptr<const ov::opset1::FakeQuantize>(op);
+        const auto fq = ov::as_type_ptr<const ov::op::v0::FakeQuantize>(op);
 
         levels = fq->get_levels();
         if (levels <= 1) {
@@ -1172,16 +1173,16 @@ FakeQuantize::FakeQuantize(const std::shared_ptr<ov::Node>& op, const GraphConte
             THROW_CPU_NODE_ERR("has different quantization axis size on 'data' and 'range' inputs");
         }
 
-        const auto inputLowNode = ov::as_type_ptr<const ov::opset1::Constant>(fq->get_input_node_shared_ptr(1));
+        const auto inputLowNode = ov::as_type_ptr<const ov::op::v0::Constant>(fq->get_input_node_shared_ptr(1));
         auto inputLowData = inputLowNode->cast_vector<float>();
 
-        const auto inputHighNode = ov::as_type_ptr<const ov::opset1::Constant>(fq->get_input_node_shared_ptr(2));
+        const auto inputHighNode = ov::as_type_ptr<const ov::op::v0::Constant>(fq->get_input_node_shared_ptr(2));
         auto inputHighData = inputHighNode->cast_vector<float>();
 
-        const auto outputLowNode = ov::as_type_ptr<const ov::opset1::Constant>(fq->get_input_node_shared_ptr(3));
+        const auto outputLowNode = ov::as_type_ptr<const ov::op::v0::Constant>(fq->get_input_node_shared_ptr(3));
         auto outputLowData = outputLowNode->cast_vector<float>();
 
-        const auto outputHighNode = ov::as_type_ptr<const ov::opset1::Constant>(fq->get_input_node_shared_ptr(4));
+        const auto outputHighNode = ov::as_type_ptr<const ov::op::v0::Constant>(fq->get_input_node_shared_ptr(4));
         auto outputHighData = outputHighNode->cast_vector<float>();
 
         binarization = levels == 2;
@@ -2414,3 +2415,4 @@ bool FakeQuantize::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

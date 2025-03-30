@@ -22,7 +22,6 @@
 #include "nodes/scaled_attn.h"
 #include "nodes/transpose.h"
 #include "onednn/dnnl.h"
-#include "openvino/opsets/opset1.hpp"
 #include "utils/cpu_utils.hpp"
 #include "utils/debug_capabilities.h"
 #include "utils/general_utils.h"
@@ -46,6 +45,10 @@
 #include "cpu/x64/cpu_isa_traits.hpp"
 #include "itt.h"
 #include "memory_desc/cpu_memory_desc_utils.h"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/unsqueeze.hpp"
 
 using namespace dnnl;
 using namespace ov::intel_cpu::node;
@@ -446,12 +449,12 @@ void GraphOptimizer::FuseConvolutionMatMulDeconvAndBias(Graph& graph) {
                     const VectorDims flattenShape = {biasOutputShape.getElementsCount()};
                     // Construct Ngraph Reshape node and CPU Reshape node.
                     auto reshapeConstInput =
-                        std::make_shared<ov::opset1::Constant>(ov::element::i32, ov::Shape{1}, flattenShape);
+                        std::make_shared<ov::op::v0::Constant>(ov::element::i32, ov::Shape{1}, flattenShape);
                     auto reshapeDummyInput =
-                        std::make_shared<ov::opset1::Parameter>(biasNode->getOriginalOutputPrecisionAtPort(0),
+                        std::make_shared<ov::op::v0::Parameter>(biasNode->getOriginalOutputPrecisionAtPort(0),
                                                                 biasOutputShape.toPartialShape());
                     const auto reshape =
-                        std::make_shared<ov::opset1::Reshape>(reshapeDummyInput, reshapeConstInput, false);
+                        std::make_shared<ov::op::v1::Reshape>(reshapeDummyInput, reshapeConstInput, false);
                     reshape->set_friendly_name(biasNode->getName() + "_flatten_reshape");
                     const auto cpuReshapeNode =
                         std::make_shared<ov::intel_cpu::node::Reshape>(reshape, graph.getGraphContext());
@@ -3036,9 +3039,9 @@ void GraphOptimizer::reshapeRnnSeq(Graph& graph) {
             auto childNode = edge->getChild();
 
             const auto secondInput =
-                std::make_shared<ov::opset1::Constant>(ov::element::i32, ov::Shape{1}, std::vector<int>{1});
-            const auto unsqueeze = std::make_shared<ov::opset1::Unsqueeze>(
-                std::make_shared<ov::opset1::Parameter>(parentNode->getOriginalOutputPrecisionAtPort(0),
+                std::make_shared<ov::op::v0::Constant>(ov::element::i32, ov::Shape{1}, std::vector<int>{1});
+            const auto unsqueeze = std::make_shared<ov::op::v0::Unsqueeze>(
+                std::make_shared<ov::op::v0::Parameter>(parentNode->getOriginalOutputPrecisionAtPort(0),
                                                         parentNode->getOutputShapeAtPort(0).toPartialShape()),
                 secondInput);
             unsqueeze->set_friendly_name(parentNode->getName() + "_abc_a1bc_" + std::to_string(j));
@@ -3388,3 +3391,4 @@ void GraphOptimizer::DropRedundantMemoryOutput(Graph& graph) {
 }  // namespace ov::intel_cpu
 
 // NOLINTEND(modernize-loop-convert)
+

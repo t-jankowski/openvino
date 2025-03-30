@@ -7,9 +7,9 @@
 #include <string>
 
 #include "openvino/core/parallel.hpp"
-#include "openvino/opsets/opset1.hpp"
 #include "shape_inference/shape_inference_internal_dyn.hpp"
 #include "utils/general_utils.h"
+#include "openvino/op/range.hpp"
 
 namespace ov::intel_cpu::node {
 
@@ -164,3 +164,4 @@ bool Range::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

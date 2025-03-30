@@ -6,12 +6,12 @@
 
 #include <algorithm>
 #include <cmath>
-#include <openvino/opsets/opset6.hpp>
 #include <string>
 #include <vector>
 
 #include "common/cpu_memcpy.h"
 #include "openvino/core/parallel.hpp"
+#include "openvino/op/experimental_detectron_roi_feature.hpp"
 
 namespace ov::intel_cpu::node {
 namespace {
@@ -271,7 +271,7 @@ bool ExperimentalDetectronROIFeatureExtractor::isSupportedOperation(const std::s
                                                                     std::string& errorMessage) noexcept {
     try {
         const auto roiFeatureExtractor =
-            ov::as_type_ptr<const ov::opset6::ExperimentalDetectronROIFeatureExtractor>(op);
+            ov::as_type_ptr<const ov::op::v6::ExperimentalDetectronROIFeatureExtractor>(op);
         if (!roiFeatureExtractor) {
             errorMessage = "Only opset6 ExperimentalDetectronROIFeatureExtractor operation is supported";
             return false;
@@ -290,7 +290,7 @@ ExperimentalDetectronROIFeatureExtractor::ExperimentalDetectronROIFeatureExtract
         OPENVINO_THROW_NOT_IMPLEMENTED(errorMessage);
     }
 
-    const auto roiFeatureExtractor = ov::as_type_ptr<const ov::opset6::ExperimentalDetectronROIFeatureExtractor>(op);
+    const auto roiFeatureExtractor = ov::as_type_ptr<const ov::op::v6::ExperimentalDetectronROIFeatureExtractor>(op);
     const auto& attr = roiFeatureExtractor->get_attrs();
     output_dim_ = attr.output_size;
     pyramid_scales_ = attr.pyramid_scales;
@@ -379,3 +379,4 @@ bool ExperimentalDetectronROIFeatureExtractor::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

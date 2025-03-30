@@ -11,24 +11,25 @@
 #include "dnnl_types.h"
 #include "nodes/common/blocked_desc_creator.h"
 #include "openvino/core/parallel.hpp"
-#include "openvino/opsets/opset1.hpp"
 #include "selective_build.h"
 #include "shape_inference/custom/one_hot.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/one_hot.hpp"
 
 namespace ov::intel_cpu::node {
 
 bool OneHot::isSupportedOperation(const std::shared_ptr<const ov::Node>& op, std::string& errorMessage) noexcept {
     try {
-        const auto oneHot = ov::as_type_ptr<const ov::opset1::OneHot>(op);
+        const auto oneHot = ov::as_type_ptr<const ov::op::v1::OneHot>(op);
         if (!oneHot) {
             errorMessage = "Only opset1 OneHot operation is supported";
             return false;
         }
-        if (ov::as_type_ptr<const ov::opset1::Constant>(oneHot->get_input_node_shared_ptr(ON_VALUE_ID)) == nullptr) {
+        if (ov::as_type_ptr<const ov::op::v0::Constant>(oneHot->get_input_node_shared_ptr(ON_VALUE_ID)) == nullptr) {
             errorMessage = "Only const 'on_value' input is supported";
             return false;
         }
-        if (ov::as_type_ptr<const ov::opset1::Constant>(oneHot->get_input_node_shared_ptr(OFF_VALUEAXES_ID)) ==
+        if (ov::as_type_ptr<const ov::op::v0::Constant>(oneHot->get_input_node_shared_ptr(OFF_VALUEAXES_ID)) ==
             nullptr) {
             errorMessage = "Only const 'off_value' input is supported";
             return false;
@@ -46,8 +47,8 @@ OneHot::OneHot(const std::shared_ptr<ov::Node>& op, const GraphContext::CPtr& co
         OPENVINO_THROW_NOT_IMPLEMENTED(errorMessage);
     }
 
-    const auto oneHot = ov::as_type_ptr<const ov::opset1::OneHot>(op);
-    const auto depthNode = ov::as_type_ptr<const ov::opset1::Constant>(oneHot->get_input_node_shared_ptr(DEPTH_ID));
+    const auto oneHot = ov::as_type_ptr<const ov::op::v1::OneHot>(op);
+    const auto depthNode = ov::as_type_ptr<const ov::op::v0::Constant>(oneHot->get_input_node_shared_ptr(DEPTH_ID));
     if (depthNode) {
         depth = depthNode->cast_vector<uint32_t>()[0];
     }
@@ -162,3 +163,4 @@ bool OneHot::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

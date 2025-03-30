@@ -10,8 +10,8 @@
 
 #include "common/cpu_memcpy.h"
 #include "openvino/core/parallel.hpp"
-#include "openvino/opsets/opset1.hpp"
 #include "utils/general_utils.h"
+#include "openvino/op/gather_elements.hpp"
 
 namespace ov::intel_cpu::node {
 
@@ -154,3 +154,4 @@ bool GatherElements::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

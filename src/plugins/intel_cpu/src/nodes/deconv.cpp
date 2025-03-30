@@ -18,7 +18,6 @@
 #include "input.h"
 #include "memory_desc/dnnl_blocked_memory_desc.h"
 #include "openvino/core/parallel.hpp"
-#include "openvino/opsets/opset1.hpp"
 #include "openvino/runtime/make_tensor.hpp"
 #include "shape_inference/shape_inference.hpp"
 #include "utils/cpu_utils.hpp"
@@ -32,6 +31,9 @@
 #include <oneapi/dnnl/dnnl.hpp>
 #include <string>
 #include <vector>
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/group_conv.hpp"
 
 using namespace dnnl;
 
@@ -1307,3 +1309,4 @@ void Deconvolution::initSupportedPrimitiveDescriptors() {
 }
 
 }  // namespace ov::intel_cpu::node
+

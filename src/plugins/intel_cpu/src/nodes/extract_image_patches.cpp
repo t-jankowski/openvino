@@ -12,7 +12,7 @@
 #include "common/primitive_hashing_utils.hpp"
 #include "cpu/x64/jit_generator.hpp"
 #include "openvino/core/parallel.hpp"
-#include "openvino/opsets/opset3.hpp"
+#include "openvino/op/extractimagepatches.hpp"
 
 using namespace dnnl::impl::cpu;
 using namespace dnnl::impl::cpu::x64;
@@ -301,7 +301,7 @@ private:
 bool ExtractImagePatches::isSupportedOperation(const std::shared_ptr<const ov::Node>& op,
                                                std::string& errorMessage) noexcept {
     try {
-        auto extImgPatcher = ov::as_type_ptr<const ov::opset3::ExtractImagePatches>(op);
+        auto extImgPatcher = ov::as_type_ptr<const ov::op::v3::ExtractImagePatches>(op);
         if (!extImgPatcher) {
             errorMessage = "Only opset3 ExtractImagePatches operation is supported";
             return false;
@@ -365,7 +365,7 @@ ExtractImagePatches::ExtractImagePatches(const std::shared_ptr<ov::Node>& op, co
         OPENVINO_THROW_NOT_IMPLEMENTED(errorMessage);
     }
 
-    auto extImgPatcher = ov::as_type_ptr<const ov::opset3::ExtractImagePatches>(op);
+    auto extImgPatcher = ov::as_type_ptr<const ov::op::v3::ExtractImagePatches>(op);
 
     if (inputShapes.size() != 1 || outputShapes.size() != 1) {
         THROW_CPU_NODE_ERR("has incorrect number of input or output edges!",
@@ -698,3 +698,4 @@ bool ExtractImagePatches::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

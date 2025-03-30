@@ -4,8 +4,8 @@
 
 #include "shapeof.h"
 
-#include "openvino/opsets/opset1.hpp"
 #include "shape_inference/custom/shapeof.hpp"
+#include "openvino/op/shape_of.hpp"
 
 namespace ov::intel_cpu::node {
 
@@ -96,3 +96,4 @@ bool ShapeOf::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

@@ -32,7 +32,6 @@
 #include "openvino/op/bitwise_or.hpp"
 #include "openvino/op/bitwise_right_shift.hpp"
 #include "openvino/op/bitwise_xor.hpp"
-#include "openvino/opsets/opset1.hpp"
 #include "pooling.h"
 #include "selective_build.h"
 #include "shape_inference/custom/eltwise.hpp"
@@ -43,6 +42,58 @@
 #include "utils/cpu_utils.hpp"
 #include "utils/general_utils.h"
 #include "utils/ngraph_utils.hpp"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/bitwise_and.hpp"
+#include "openvino/op/bitwise_left_shift.hpp"
+#include "openvino/op/bitwise_not.hpp"
+#include "openvino/op/bitwise_or.hpp"
+#include "openvino/op/bitwise_right_shift.hpp"
+#include "openvino/op/bitwise_xor.hpp"
+#include "openvino/op/ceiling.hpp"
+#include "openvino/op/clamp.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/divide.hpp"
+#include "openvino/op/elu.hpp"
+#include "openvino/op/equal.hpp"
+#include "openvino/op/erf.hpp"
+#include "openvino/op/exp.hpp"
+#include "openvino/op/floor.hpp"
+#include "openvino/op/floor_mod.hpp"
+#include "openvino/op/gelu.hpp"
+#include "openvino/op/greater.hpp"
+#include "openvino/op/greater_eq.hpp"
+#include "openvino/op/hsigmoid.hpp"
+#include "openvino/op/hswish.hpp"
+#include "openvino/op/is_finite.hpp"
+#include "openvino/op/is_inf.hpp"
+#include "openvino/op/is_nan.hpp"
+#include "openvino/op/less.hpp"
+#include "openvino/op/less_eq.hpp"
+#include "openvino/op/log.hpp"
+#include "openvino/op/logical_and.hpp"
+#include "openvino/op/logical_not.hpp"
+#include "openvino/op/logical_or.hpp"
+#include "openvino/op/logical_xor.hpp"
+#include "openvino/op/maximum.hpp"
+#include "openvino/op/minimum.hpp"
+#include "openvino/op/mish.hpp"
+#include "openvino/op/mod.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/negative.hpp"
+#include "openvino/op/not_equal.hpp"
+#include "openvino/op/prelu.hpp"
+#include "openvino/op/power.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/round.hpp"
+#include "openvino/op/select.hpp"
+#include "openvino/op/sigmoid.hpp"
+#include "openvino/op/softplus.hpp"
+#include "openvino/op/softsign.hpp"
+#include "openvino/op/sqrt.hpp"
+#include "openvino/op/squared_difference.hpp"
+#include "openvino/op/subtract.hpp"
+#include "openvino/op/tanh.hpp"
 
 #if defined(OPENVINO_ARCH_ARM64)
 #    include "cpu/aarch64/cpu_isa_traits.hpp"
@@ -73,8 +124,8 @@ using namespace dnnl::impl::cpu::aarch64;
 namespace ov::intel_cpu::node {
 
 Eltwise::BroadcastingPolicy Eltwise::determineBroadcastingPolicy(const std::shared_ptr<ov::Node>& op) {
-    const auto const1 = ov::as_type_ptr<ov::opset1::Constant>(op->get_input_node_shared_ptr(0));
-    const auto const2 = ov::as_type_ptr<ov::opset1::Constant>(op->get_input_node_shared_ptr(1));
+    const auto const1 = ov::as_type_ptr<ov::op::v0::Constant>(op->get_input_node_shared_ptr(0));
+    const auto const2 = ov::as_type_ptr<ov::op::v0::Constant>(op->get_input_node_shared_ptr(1));
     int constPort = -1;
     if (const2) {
         constPort = 1;
@@ -2493,3 +2544,4 @@ ov::element::Type Eltwise::getRuntimePrecision() const {
     return getMaxPrecision(inputPrecisions);
 }
 }  // namespace ov::intel_cpu::node
+

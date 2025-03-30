@@ -10,9 +10,12 @@
 #include "common/cpu_memcpy.h"
 #include "input.h"
 #include "openvino/core/parallel.hpp"
-#include "openvino/opsets/opset1.hpp"
 #include "shape_inference/custom/strided_slice.hpp"
 #include "slice_shape_inference_utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/slice.hpp"
+#include "openvino/op/slice_scatter.hpp"
+#include "openvino/op/strided_slice.hpp"
 
 using namespace dnnl;
 
@@ -142,7 +145,7 @@ StridedSlice::StridedSlice(const std::shared_ptr<ov::Node>& op, const GraphConte
             return;
         }
 
-        const auto constNode = ov::as_type_ptr<const ov::opset1::Constant>(op->get_input_node_shared_ptr(type));
+        const auto constNode = ov::as_type_ptr<const ov::op::v0::Constant>(op->get_input_node_shared_ptr(type));
         parameter = constNode->cast_vector<int>();
 
         auto size = constNode->get_shape()[0];
@@ -867,3 +870,4 @@ void StridedSlice::StridedSliceCommonExecutor::exec(const std::vector<MemoryCPtr
 }
 
 }  // namespace ov::intel_cpu::node
+

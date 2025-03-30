@@ -5,7 +5,6 @@
 #include "roll.h"
 
 #include <cmath>
-#include <openvino/opsets/opset7.hpp>
 #include <string>
 #include <vector>
 
@@ -14,6 +13,7 @@
 #include "onednn/dnnl.h"
 #include "openvino/core/parallel.hpp"
 #include "utils/general_utils.h"
+#include "openvino/op/roll.hpp"
 
 using namespace dnnl;
 
@@ -21,7 +21,7 @@ namespace ov::intel_cpu::node {
 
 bool Roll::isSupportedOperation(const std::shared_ptr<const ov::Node>& op, std::string& errorMessage) noexcept {
     try {
-        const auto interp = ov::as_type_ptr<const ov::opset7::Roll>(op);
+        const auto interp = ov::as_type_ptr<const ov::op::v7::Roll>(op);
         if (!interp) {
             errorMessage = "Only opset7 Roll operation is supported";
             return false;
@@ -245,3 +245,4 @@ bool Roll::created() const {
 constexpr std::array<size_t, 3> Roll::supportedPrecisionSizes;
 
 }  // namespace ov::intel_cpu::node
+

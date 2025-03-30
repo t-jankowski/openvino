@@ -5,7 +5,6 @@
 #include "adaptive_pooling.h"
 
 #include <cmath>
-#include <openvino/opsets/opset8.hpp>
 #include <string>
 #include <utils/bfloat16.hpp>
 #include <vector>
@@ -17,6 +16,8 @@
 #include "selective_build.h"
 #include "shape_inference/custom/adaptive_pooling.hpp"
 #include "utils/general_utils.h"
+#include "openvino/op/adaptive_avg_pool.hpp"
+#include "openvino/op/adaptive_max_pool.hpp"
 
 using namespace dnnl;
 using namespace dnnl::impl::cpu::x64;
@@ -27,13 +28,13 @@ bool AdaptivePooling::isSupportedOperation(const std::shared_ptr<const ov::Node>
                                            std::string& errorMessage) noexcept {
     try {
         if (one_of(op->get_type_info(), ov::op::v8::AdaptiveAvgPool::get_type_info_static())) {
-            auto adaPool = ov::as_type_ptr<const ov::opset8::AdaptiveAvgPool>(op);
+            auto adaPool = ov::as_type_ptr<const ov::op::v8::AdaptiveAvgPool>(op);
             if (!adaPool) {
                 errorMessage = "Only opset8 AdaptiveAvgPooling operation is supported";
                 return false;
             }
         } else if (one_of(op->get_type_info(), ov::op::v8::AdaptiveMaxPool::get_type_info_static())) {
-            auto adaPool = ov::as_type_ptr<const ov::opset8::AdaptiveMaxPool>(op);
+            auto adaPool = ov::as_type_ptr<const ov::op::v8::AdaptiveMaxPool>(op);
             if (!adaPool) {
                 errorMessage = "Only opset8 AdaptiveMaxPooling operation is supported";
                 return false;
@@ -286,3 +287,4 @@ inline void AdaptivePooling::setBinBorders(size_t* startPtr,
 }
 
 }  // namespace ov::intel_cpu::node
+

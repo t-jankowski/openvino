@@ -7,8 +7,8 @@
 #include <cmath>
 #include <string>
 #include <vector>
+#include "openvino/op/embedding_segments_sum.hpp"
 
-#include "openvino/opsets/opset3.hpp"
 
 namespace ov::intel_cpu::node {
 
@@ -183,3 +183,4 @@ bool EmbeddingSegmentsSum::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

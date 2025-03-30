@@ -6,7 +6,6 @@
 
 #include <algorithm>
 #include <memory>
-#include <openvino/opsets/opset6.hpp>
 #include <string>
 #include <vector>
 
@@ -24,6 +23,8 @@
 #include "openvino/core/parallel.hpp"
 #include "utils/bfloat16.hpp"
 #include "utils/cpu_utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/mvn.hpp"
 
 using namespace dnnl;
 
@@ -2979,3 +2980,4 @@ bool MVN::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+

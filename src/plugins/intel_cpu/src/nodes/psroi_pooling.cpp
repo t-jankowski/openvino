@@ -12,10 +12,11 @@
 #include "dnnl_types.h"
 #include "nodes/common/blocked_desc_creator.h"
 #include "openvino/core/parallel.hpp"
-#include "openvino/opsets/opset1.hpp"
 #include "selective_build.h"
 #include "utils/bfloat16.hpp"
 #include "utils/ngraph_utils.hpp"
+#include "openvino/op/deformable_psroi_pooling.hpp"
+#include "openvino/op/psroi_pooling.hpp"
 
 using namespace dnnl;
 using namespace dnnl::impl;
@@ -30,8 +31,8 @@ bool PSROIPooling::isSupportedOperation(const std::shared_ptr<const ov::Node>& o
             errorMessage = "Doesn't support op with dynamic shapes";
             return false;
         }
-        const auto psroi = ov::as_type_ptr<const ov::opset1::PSROIPooling>(op);
-        const auto defPsroi = ov::as_type_ptr<const ov::opset1::DeformablePSROIPooling>(op);
+        const auto psroi = ov::as_type_ptr<const ov::op::v0::PSROIPooling>(op);
+        const auto defPsroi = ov::as_type_ptr<const ov::op::v1::DeformablePSROIPooling>(op);
         if (!psroi && !defPsroi) {
             errorMessage = "Only opset1 PSROIPooling and DeformablePSROIPooling operations are supported";
             return false;
@@ -64,8 +65,8 @@ PSROIPooling::PSROIPooling(const std::shared_ptr<ov::Node>& op, const GraphConte
         OPENVINO_THROW_NOT_IMPLEMENTED(errorMessage);
     }
 
-    const auto psroi = ov::as_type_ptr<const ov::opset1::PSROIPooling>(op);
-    const auto defPsroi = ov::as_type_ptr<const ov::opset1::DeformablePSROIPooling>(op);
+    const auto psroi = ov::as_type_ptr<const ov::op::v0::PSROIPooling>(op);
+    const auto defPsroi = ov::as_type_ptr<const ov::op::v1::DeformablePSROIPooling>(op);
 
     noTrans = op->get_input_size() == 2;
     if (op->get_input_shape(0).size() != 4) {
@@ -641,3 +642,4 @@ bool PSROIPooling::created() const {
 }
 
 }  // namespace ov::intel_cpu::node
+
