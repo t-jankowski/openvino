@@ -17,6 +17,10 @@
 #include "ov_lpt_models/common/dequantization_operations.hpp"
 #include "ov_lpt_models/fold_fake_quantize.hpp"
 #include "simple_low_precision_transformer.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace testing;
 using namespace ov;
@@ -248,3 +252,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_LPT,
                          FoldFakeQuantizeInTransformations,
                          ::testing::ValuesIn(testValues),
                          FoldFakeQuantizeInTransformations::getTestCaseName);
+

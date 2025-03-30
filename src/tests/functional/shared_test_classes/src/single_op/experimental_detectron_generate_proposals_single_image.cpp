@@ -3,6 +3,10 @@
 //
 
 #include "shared_test_classes/single_op/experimental_detectron_generate_proposals_single_image.hpp"
+#include "openvino/op/experimental_detectron_generate_proposals.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/experimental_detectron_generate_proposals.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -76,3 +80,5 @@ void ExperimentalDetectronGenerateProposalsSingleImageLayerTest::SetUp() {
 }
 } // namespace test
 } // namespace ov
+
+

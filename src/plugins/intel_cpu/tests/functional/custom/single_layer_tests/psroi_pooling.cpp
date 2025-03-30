@@ -5,6 +5,10 @@
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
 #include "utils/filter_cpu_info.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/psroi_pooling.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace CPUTestUtils;
 
@@ -173,3 +177,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_PSROIPoolingBilinearLayoutTest,
 }  // namespace
 }  // namespace test
 }  // namespace ov
+

@@ -27,6 +27,10 @@
 
 #include "custom/subgraph_tests/include/undefined_et.hpp"
 #include "utils/precision_support.h"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/logical_not.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/random_uniform.hpp"
 
 namespace ov {
 namespace test {
@@ -178,3 +182,4 @@ TEST_P(UndefinedEtSubgraphTest, CompareWithRefs) {
 
 }  // namespace test
 }  // namespace ov
+

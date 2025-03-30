@@ -12,6 +12,8 @@
 
 #include <thread>
 #include <condition_variable>
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {

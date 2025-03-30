@@ -8,6 +8,10 @@
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
 #include "utils/filter_cpu_info.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/topk.hpp"
 
 using namespace CPUTestUtils;
 using namespace ov::test;
@@ -414,3 +418,4 @@ INSTANTIATE_TEST_SUITE_P(
     TopKLayerCPUTest::getTestCaseName);
 
 }  // namespace
+

@@ -5,8 +5,9 @@
 #include <gtest/gtest.h>
 
 #include "utils.hpp"
-#include "openvino/opsets/opset9.hpp"
 #include "grid_sample_shape_inference.hpp"
+#include "openvino/op/grid_sample.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -17,7 +18,7 @@ TEST_F(GridSampleStaticShapeInferenceTest, GridSample) {
     const auto data = std::make_shared<ov::op::v0::Parameter>(element::i32, PartialShape{-1, -1, -1, -1});
     const auto grid = std::make_shared<ov::op::v0::Parameter>(element::f32, PartialShape{-1, -1, -1, -1});
 
-    op = make_op(data, grid, opset9::GridSample::Attributes{});
+    op = make_op(data, grid, op::v9::GridSample::Attributes{});
 
     input_shapes = {StaticShape{2, 3, 4, 8}, StaticShape{2, 6, 7, 2}};
     output_shapes = {StaticShape{}};

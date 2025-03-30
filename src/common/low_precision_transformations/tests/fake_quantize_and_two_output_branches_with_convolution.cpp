@@ -22,6 +22,8 @@
 #include "ov_lpt_models/fake_quantize_and_two_output_branches_with_convolution.hpp"
 
 #include "simple_low_precision_transformer.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/fake_quantize.hpp"
 
 using namespace testing;
 using namespace ov;
@@ -189,3 +191,4 @@ INSTANTIATE_TEST_SUITE_P(
         ::testing::ValuesIn(shapes),
         ::testing::ValuesIn(fakeQuantizeOnDataTestValues)),
     FakeQuantizeAndTwoOutputBranchesWithConvolutionTransformation::getTestCaseName);
+

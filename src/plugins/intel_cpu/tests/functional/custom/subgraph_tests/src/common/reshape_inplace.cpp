@@ -5,6 +5,14 @@
 #include "common_test_utils/ov_tensor_utils.hpp"
 #include "common_test_utils/node_builders/constant.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/mvn.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/shape_of.hpp"
 
 namespace ov {
 namespace test {
@@ -139,3 +147,4 @@ TEST_F(InPlaceReshapeShareInputCheck, smoke_CPU_InPlaceReshapeShareInputCheck) {
 
 }  // namespace test
 }  // namespace ov
+

@@ -11,6 +11,7 @@
 #include "itt.hpp"
 #include "openvino/pass/manager.hpp"
 #include "openvino/op/avg_pool.hpp"
+#include "openvino/op/avg_pool.hpp"
 
 using namespace ov;
 
@@ -28,3 +29,4 @@ bool ov::pass::low_precision::MarkupAvgPoolPrecisionPreserved::run_on_model(cons
     manager.run_passes(f);
     return false;
 }
+

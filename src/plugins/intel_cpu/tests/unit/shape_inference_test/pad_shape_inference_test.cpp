@@ -5,12 +5,15 @@
 #include <pad_shape_inference.hpp>
 
 #include "common_test_utils/test_assertions.hpp"
-#include "openvino/opsets/opset10.hpp"
 #include "utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/pad.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
-using namespace ov::opset10;
+using ov::op::v0::Constant;
+using ov::op::v0::Parameter;
 using namespace testing;
 
 template <class TOp>

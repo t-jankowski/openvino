@@ -23,6 +23,12 @@
 #include "openvino/op/divide.hpp"
 #include "openvino/op/multiply.hpp"
 #include "openvino/op/subtract.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/divide.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/subtract.hpp"
 
 namespace ov {
 namespace pass {
@@ -101,3 +107,4 @@ bool SubtractTransformation::transform(ov::pass::pattern::Matcher &m) {
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

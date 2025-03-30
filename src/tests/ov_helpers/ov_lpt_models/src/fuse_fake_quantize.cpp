@@ -4,13 +4,26 @@
 
 #include "ov_lpt_models/fuse_fake_quantize.hpp"
 
-#include "openvino/opsets/opset1.hpp"
 #include "ov_ops/type_relaxed.hpp"
 #include "low_precision/network_helper.hpp"
 
 #include "ov_lpt_models/common/builders.hpp"
 #include "ov_lpt_models/common/fake_quantize_on_data.hpp"
 #include "ov_lpt_models/common/dequantization_operations.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/max_pool.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/max_pool.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace builder {
@@ -27,12 +40,12 @@ std::shared_ptr<ov::Model> FuseFakeQuantizeFunction::getOriginal(
     const ov::element::Type precisionAfterDequantization,
     const ov::element::Type precisionFqOnData,
     const FakeQuantizeOnDataWithConstant& fqOnData) {
-    const auto input = std::make_shared<ov::opset1::Parameter>(add.empty() ? precisionBeforeDequantization : precisionBeforeAdd, inputShape);
+    const auto input = std::make_shared<ov::op::v0::Parameter>(add.empty() ? precisionBeforeDequantization : precisionBeforeAdd, inputShape);
     input->set_friendly_name("input");
 
     std::shared_ptr<Node> parent = input;
     if (!add.empty()) {
-        parent = makeElementwise<ov::opset1::Add>(parent, add);
+        parent = makeElementwise<ov::op::v1::Add>(parent, add);
     }
 
     const std::shared_ptr<Node> lastDequantization = makeDequantization(parent, dequantization);
@@ -42,12 +55,12 @@ std::shared_ptr<ov::Model> FuseFakeQuantizeFunction::getOriginal(
         makeFakeQuantizeTypeRelaxed(lastDequantization, precisionFqOnData, fqOnData);
     fakeQuantize->set_friendly_name("output");
 
-    ov::ResultVector results{ std::make_shared<ov::opset1::Result>(fakeQuantize) };
+    ov::ResultVector results{ std::make_shared<ov::op::v0::Result>(fakeQuantize) };
     return std::make_shared<ov::Model>(results, ov::ParameterVector{ input }, "FuseFakeQuantizeFunction");
 }
 
 namespace {
-std::shared_ptr<ov::opset1::Convolution> make_convolution(
+std::shared_ptr<ov::op::v1::Convolution> make_convolution(
     const ov::PartialShape& inputShape,
     const ov::element::Type precisionData,
     const ov::element::Type precisionWeights,
@@ -68,7 +81,7 @@ std::shared_ptr<ov::opset1::Convolution> make_convolution(
             { 1.28f, 1.28f, 1.28f },
             precisionData));
 
-    auto convolution = std::make_shared<ov::opset1::Convolution>(
+    auto convolution = std::make_shared<ov::op::v1::Convolution>(
         parent,
         weights,
         ov::Strides{ 1, 1 },
@@ -89,12 +102,12 @@ std::shared_ptr<ov::opset1::Convolution> make_convolution(
         const ov::element::Type precisionAfterDequantization,
         const ov::element::Type precisionFqOnData,
         const FakeQuantizeOnDataWithConstant& fqOnData) {
-        const auto input = std::make_shared<ov::opset1::Parameter>(add.empty() ? precisionBeforeDequantization : precisionBeforeAdd, inputShape);
+        const auto input = std::make_shared<ov::op::v0::Parameter>(add.empty() ? precisionBeforeDequantization : precisionBeforeAdd, inputShape);
         input->set_friendly_name("input");
 
         std::shared_ptr<Node> parent = input;
         if (!add.empty()) {
-            parent = makeElementwise<ov::opset1::Add>(parent, add);
+            parent = makeElementwise<ov::op::v1::Add>(parent, add);
         }
 
         const std::shared_ptr<Node> lastDequantization = makeDequantization(parent, dequantization);
@@ -113,7 +126,7 @@ std::shared_ptr<ov::opset1::Convolution> make_convolution(
                                        {{0.01f}, precisionFqOnData}});
         lastNode->set_friendly_name("output");
 
-        ov::ResultVector results{ std::make_shared<ov::opset1::Result>(lastNode) };
+        ov::ResultVector results{ std::make_shared<ov::op::v0::Result>(lastNode) };
         return std::make_shared<ov::Model>(results, ov::ParameterVector{ input }, "FuseFakeQuantizeFunction");
     }
 
@@ -123,7 +136,7 @@ std::shared_ptr<ov::Model> FuseFakeQuantizeFunction::get(
     const FakeQuantizeOnData& fqOnData1,
     const FakeQuantizeOnData& fqOnData2,
     const DequantizationOperations& dequantizationOperations2) {
-    const auto input = std::make_shared<ov::opset1::Parameter>(precisionBefore, inputShape);
+    const auto input = std::make_shared<ov::op::v0::Parameter>(precisionBefore, inputShape);
     input->set_friendly_name("input");
 
     std::shared_ptr<Node> parent = input;
@@ -142,7 +155,7 @@ std::shared_ptr<ov::Model> FuseFakeQuantizeFunction::get(
     const ov::op::PadType padType = ov::op::PadType::NOTSET;
     const ov::op::RoundingType roundingType = ov::op::RoundingType::FLOOR;
 
-    parent = std::make_shared<ov::opset1::MaxPool>(
+    parent = std::make_shared<ov::op::v1::MaxPool>(
         parent,
         stride,
         padBegin,
@@ -161,8 +174,8 @@ std::shared_ptr<ov::Model> FuseFakeQuantizeFunction::get(
     }
 
     ov::ResultVector results{
-        std::make_shared<ov::opset1::Result>(make_convolution(inputShape, precisionBefore, precisionBefore, parent, 0)),
-        std::make_shared<ov::opset1::Result>(make_convolution(inputShape, precisionBefore, precisionBefore, parent, 1))
+        std::make_shared<ov::op::v0::Result>(make_convolution(inputShape, precisionBefore, precisionBefore, parent, 0)),
+        std::make_shared<ov::op::v0::Result>(make_convolution(inputShape, precisionBefore, precisionBefore, parent, 1))
     };
     return std::make_shared<ov::Model>(results, ov::ParameterVector{ input }, "FuseFakeQuantizeFunction");
 }
@@ -183,24 +196,26 @@ std::shared_ptr<ov::Model> FuseFakeQuantizeFunction::get(
     ov::ParameterVector inputs;
     std::vector<std::shared_ptr<Node>> lastDequantizations;
     for (const Branch& branch : branches) {
-        const auto input = std::make_shared<ov::opset1::Parameter>(branch.precisionBeforeDequantization, inputShape);
+        const auto input = std::make_shared<ov::op::v0::Parameter>(branch.precisionBeforeDequantization, inputShape);
         inputs.push_back(input);
 
         const std::shared_ptr<Node> lastDequantization = makeDequantization(input, branch.dequantization);
         lastDequantizations.push_back(lastDequantization);
     }
 
-    std::shared_ptr<ov::opset1::Multiply> multiply = std::make_shared<ov::opset1::Multiply>(lastDequantizations[0], lastDequantizations[1]);
+    std::shared_ptr<ov::op::v1::Multiply> multiply = std::make_shared<ov::op::v1::Multiply>(lastDequantizations[0], lastDequantizations[1]);
 
     const std::shared_ptr<Node> fakeQuantize = branches[0].dequantization.multiply.outPrecision == precisionFqOnData ?
         makeFakeQuantize(multiply, precisionFqOnData, fqOnData) :
         makeFakeQuantizeTypeRelaxed(multiply, precisionFqOnData, fqOnData);
     fakeQuantize->set_friendly_name("output");
 
-    ov::ResultVector results{ std::make_shared<ov::opset1::Result>(fakeQuantize) };
+    ov::ResultVector results{ std::make_shared<ov::op::v0::Result>(fakeQuantize) };
     return std::make_shared<ov::Model>(results, inputs, "FuseFakeQuantizeFunction");
 }
 
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

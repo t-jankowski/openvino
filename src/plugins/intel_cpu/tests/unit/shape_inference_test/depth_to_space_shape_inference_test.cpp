@@ -4,12 +4,13 @@
 
 #include <gtest/gtest.h>
 
-#include "openvino/opsets/opset10.hpp"
 #include "utils.hpp"
+#include "openvino/op/depth_to_space.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
-using namespace ov::opset10;
+using ov::op::v0::Parameter;
 using namespace testing;
 
 class DepthToSpaceV0StaticShapeInferenceTest : public OpStaticShapeInferenceTest<op::v0::DepthToSpace> {

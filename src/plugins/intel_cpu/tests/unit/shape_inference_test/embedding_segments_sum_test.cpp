@@ -4,12 +4,13 @@
 
 #include "embedding_segments_sum_shape_inference.hpp"
 #include "gmock/gmock.h"
-#include "openvino/opsets/opset10.hpp"
 #include "utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/embedding_segments_sum.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
-using namespace ov::opset10;
 using namespace testing;
 using namespace std;
 

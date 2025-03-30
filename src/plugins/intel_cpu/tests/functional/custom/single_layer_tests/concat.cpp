@@ -4,6 +4,8 @@
 
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 
@@ -843,3 +845,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_Concat_CPU_planarChannels_inplace_5D_static,
 
 }  // namespace test
 }  // namespace ov
+

@@ -13,6 +13,14 @@
 #include "openvino/core/model.hpp"
 #include "openvino/openvino.hpp"
 #include "utils/model.hpp"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
 namespace {
 
 using namespace ov::tools::subgraph_dumper;
@@ -139,3 +147,5 @@ TEST_F(ModelComparatorTest, is_subgraph) {
 }
 
 }  // namespace
+
+

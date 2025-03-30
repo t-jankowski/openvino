@@ -2,12 +2,37 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#include "openvino/opsets/opset13.hpp"
 #include "openvino/pass/manager.hpp"
 
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
 #include "common_test_utils/include/common_test_utils/ov_tensor_utils.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/convert_like.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/range.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/scatter_elements_update.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/slice.hpp"
+#include "openvino/op/squeeze.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/convert_like.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/range.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/scatter_elements_update.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/slice.hpp"
+#include "openvino/op/squeeze.hpp"
 
 using namespace ov::test;
 using namespace CPUTestUtils;
@@ -229,21 +254,21 @@ private:
     std::tuple<Output<Node>, Output<Node>> get_shape_rank(const Output<Node>& x,
                                                       bool as_scalar = false,
                                                       element::Type output_type = element::i32) {
-        auto shape = std::make_shared<opset10::ShapeOf>(x, output_type);
-        Output<Node> rank = std::make_shared<opset10::ShapeOf>(shape, output_type);
+        auto shape = std::make_shared<op::v3::ShapeOf>(x, output_type);
+        Output<Node> rank = std::make_shared<op::v3::ShapeOf>(shape, output_type);
         if (as_scalar) {
-            auto axis_0 = opset10::Constant::create(output_type, Shape{}, {0});
-            rank = std::make_shared<opset10::Squeeze>(rank, axis_0);
+            auto axis_0 = op::v0::Constant::create(output_type, Shape{}, {0});
+            rank = std::make_shared<op::v0::Squeeze>(rank, axis_0);
         }
         return std::make_tuple(shape, rank);
     }
 
     std::shared_ptr<Node> get_node_axes_range(const Output<Node>& x) {
-        auto start = std::make_shared<opset10::Constant>(element::i32, Shape{}, 0);
-        auto step = std::make_shared<opset10::Constant>(element::i32, Shape{}, 1);
+        auto start = std::make_shared<op::v0::Constant>(element::i32, Shape{}, 0);
+        auto step = std::make_shared<op::v0::Constant>(element::i32, Shape{}, 1);
         Output<Node> reduced_rank;
         std::tie(std::ignore, reduced_rank) = get_shape_rank(x, true);
-        return std::make_shared<opset10::Range>(start, reduced_rank, step, element::i32);
+        return std::make_shared<op::v4::Range>(start, reduced_rank, step, element::i32);
     }
 
     size_t normalized_axis;  // normalized_axis
@@ -303,3 +328,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_IndexAddTest,
 
 }  // namespace test
 }  // namespace ov
+

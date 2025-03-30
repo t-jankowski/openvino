@@ -8,6 +8,12 @@
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
 #include "common_test_utils/test_enums.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/non_zero.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/squeeze.hpp"
+#include "openvino/op/unsqueeze.hpp"
 
 using namespace CPUTestUtils;
 
@@ -391,3 +397,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_CompareWithRefs_dynamic_const,
 
 }  // namespace test
 }  // namespace ov
+

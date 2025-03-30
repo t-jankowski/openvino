@@ -10,6 +10,8 @@
 #include <vector>
 
 #include "shared_test_classes/base/ov_subgraph.hpp"
+#include "openvino/op/space_to_depth.hpp"
+#include "openvino/op/space_to_depth.hpp"
 
 namespace ov {
 namespace test {
@@ -30,3 +32,5 @@ protected:
 };
 }  // namespace test
 }  // namespace ov
+
+

@@ -14,6 +14,8 @@
 #include "itt.hpp"
 #include "openvino/op/constant.hpp"
 #include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
 
 namespace ov {
 namespace pass {
@@ -105,3 +107,4 @@ bool FoldFakeQuantizeTransformation::isPrecisionPreserved(std::shared_ptr<Node> 
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

@@ -4,11 +4,17 @@
 
 #include "ov_lpt_models/broadcast.hpp"
 
-#include "openvino/opsets/opset1.hpp"
-#include "openvino/opsets/opset3.hpp"
 
 #include "low_precision/network_helper.hpp"
 #include "ov_lpt_models/common/builders.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace builder {
@@ -19,8 +25,8 @@ template <typename T>
 std::shared_ptr<ov::Node> make_broadcast(const std::shared_ptr<ov::Node>& parent, const Shape& tagetShape, const Shape& axesMapping) {
     return std::make_shared<T>(
         parent,
-        std::make_shared<ov::opset1::Constant>(ov::element::i32, Shape{ tagetShape.size() }, tagetShape),
-        std::make_shared<ov::opset1::Constant>(ov::element::i32, Shape{ axesMapping.size() }, axesMapping));
+        std::make_shared<ov::op::v0::Constant>(ov::element::i32, Shape{ tagetShape.size() }, tagetShape),
+        std::make_shared<ov::op::v0::Constant>(ov::element::i32, Shape{ axesMapping.size() }, axesMapping));
 }
 } // namespace
 
@@ -32,7 +38,7 @@ std::shared_ptr<ov::Model> BroadcastFunction::get(
     const Shape& tagetShape,
     const Shape& axesMapping,
     const ov::builder::subgraph::DequantizationOperations& dequantizationAfter) {
-    const auto input = std::make_shared<ov::opset1::Parameter>(precisionBeforeDequantization, inputShape);
+    const auto input = std::make_shared<ov::op::v0::Parameter>(precisionBeforeDequantization, inputShape);
     std::shared_ptr<ov::Node> parent = input;
 
     if (!dequantizationBefore.empty()) {
@@ -40,15 +46,15 @@ std::shared_ptr<ov::Model> BroadcastFunction::get(
     }
 
     parent = v1 ?
-        make_broadcast<ov::opset1::Broadcast>(parent, tagetShape, axesMapping) :
-        make_broadcast<ov::opset3::Broadcast>(parent, tagetShape, axesMapping);
+        make_broadcast<ov::op::v1::Broadcast>(parent, tagetShape, axesMapping) :
+        make_broadcast<ov::op::v3::Broadcast>(parent, tagetShape, axesMapping);
     parent->set_friendly_name("broadcast");
 
     if (!dequantizationAfter.empty()) {
         parent = makeDequantization(parent, dequantizationAfter);
     }
 
-    const std::shared_ptr<ov::opset1::Result> result = std::make_shared<ov::opset1::Result>(parent);
+    const std::shared_ptr<ov::op::v0::Result> result = std::make_shared<ov::op::v0::Result>(parent);
 
     const std::shared_ptr<ov::Model> function = std::make_shared<ov::Model>(
         ov::ResultVector{ result },
@@ -60,3 +66,5 @@ std::shared_ptr<ov::Model> BroadcastFunction::get(
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

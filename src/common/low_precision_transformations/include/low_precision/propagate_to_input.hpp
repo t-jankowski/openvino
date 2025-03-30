@@ -15,6 +15,8 @@
 #include "network_helper.hpp"
 #include "openvino/op/convert.hpp"
 #include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/fake_quantize.hpp"
 
 namespace ov {
 namespace pass {
@@ -161,3 +163,4 @@ private:
         return parentAttributes;
     }
 };
+

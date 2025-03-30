@@ -21,6 +21,14 @@
 
 #include "openvino/op/fake_quantize.hpp"
 #include "openvino/op/relu.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
 
 namespace ExecutionGraphTests {
 
@@ -129,3 +137,5 @@ TEST_P(ExecGraphRuntimePrecision, CheckRuntimePrecision) {
 };
 
 }  // namespace ExecutionGraphTests
+
+

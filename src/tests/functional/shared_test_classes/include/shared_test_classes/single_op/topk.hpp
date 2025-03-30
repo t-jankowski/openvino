@@ -8,6 +8,8 @@
 #include <string>
 
 #include "shared_test_classes/base/ov_subgraph.hpp"
+#include "openvino/op/topk.hpp"
+#include "openvino/op/topk.hpp"
 
 namespace ov {
 namespace test {
@@ -51,3 +53,5 @@ protected:
 };
 }  // namespace test
 }  // namespace ov
+
+

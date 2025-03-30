@@ -7,6 +7,12 @@
 #include "common_test_utils/node_builders/constant.hpp"
 #include "common_test_utils/data_utils.hpp"
 #include "openvino/op/nms_rotated.hpp"
+#include "openvino/op/nms_rotated.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/nms_rotated.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace ov::test;
 
@@ -207,3 +213,5 @@ utils::fill_data_random(tensor.data<ov::element_type_traits<P>::value_type>(), s
 }
 
 } // namespace LayerTestsDefinitions
+
+

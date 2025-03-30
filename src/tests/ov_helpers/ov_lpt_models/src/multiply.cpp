@@ -6,12 +6,19 @@
 
 #include <memory>
 
-#include "openvino/opsets/opset1.hpp"
 #include <ov_ops/type_relaxed.hpp>
 #include "low_precision/network_helper.hpp"
 
 #include "ov_lpt_models/common/builders.hpp"
 #include "ov_lpt_models/common/dequantization_operations.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace ov::pass::low_precision;
 
@@ -27,8 +34,8 @@ struct BranchNodes {
 
 BranchNodes makeBranch(const MultiplyBranch& branch) {
     std::shared_ptr<Node> parent = branch.constant.empty() ?
-        std::make_shared<ov::opset1::Parameter>(branch.input_precision, branch.inputShape) :
-        std::dynamic_pointer_cast<Node>(std::make_shared<ov::opset1::Constant>(
+        std::make_shared<ov::op::v0::Parameter>(branch.input_precision, branch.inputShape) :
+        std::dynamic_pointer_cast<Node>(std::make_shared<ov::op::v0::Constant>(
             branch.constant.outPrecision,
             branch.constant.shape,
             branch.constant.values));
@@ -53,7 +60,7 @@ std::shared_ptr<ov::Model> MultiplyFunction::get(const ov::element::Type model_p
     const auto branchNodes2 = multiply_function::makeBranch(actualValues.branch2);
 
     // branchNodes1.dequantization & branchNodes2.dequantization can have different input types
-    std::shared_ptr<ov::Node> parent = std::make_shared<ov::op::TypeRelaxed<ov::opset1::Multiply>>(
+    std::shared_ptr<ov::Node> parent = std::make_shared<ov::op::TypeRelaxed<ov::op::v1::Multiply>>(
         std::vector<ov::element::Type>{ov::element::f32, ov::element::f32},
         std::vector<ov::element::Type>{actualValues.after_dequantization.empty() ? model_precision : ov::element::f32},
         ov::op::TemporaryReplaceOutputType(branchNodes1.dequantization, ov::element::f32).get(),
@@ -65,14 +72,14 @@ std::shared_ptr<ov::Model> MultiplyFunction::get(const ov::element::Type model_p
     parent = makeDequantization(parent, actualValues.after_dequantization);
     parent->set_friendly_name("output");
 
-    ov::ResultVector results{ std::make_shared<ov::opset1::Result>(parent) };
+    ov::ResultVector results{ std::make_shared<ov::op::v0::Result>(parent) };
 
     ov::ParameterVector inputs;
-    if (ov::is_type<ov::opset1::Parameter>(branchNodes1.input)) {
-        inputs.push_back(ov::as_type_ptr<ov::opset1::Parameter>(branchNodes1.input));
+    if (ov::is_type<ov::op::v0::Parameter>(branchNodes1.input)) {
+        inputs.push_back(ov::as_type_ptr<ov::op::v0::Parameter>(branchNodes1.input));
     }
-    if (ov::is_type<ov::opset1::Parameter>(branchNodes2.input)) {
-        inputs.push_back(ov::as_type_ptr<ov::opset1::Parameter>(branchNodes2.input));
+    if (ov::is_type<ov::op::v0::Parameter>(branchNodes2.input)) {
+        inputs.push_back(ov::as_type_ptr<ov::op::v0::Parameter>(branchNodes2.input));
     }
 
     return std::make_shared<ov::Model>(results, inputs, "MultiplyTransformation");
@@ -81,3 +88,5 @@ std::shared_ptr<ov::Model> MultiplyFunction::get(const ov::element::Type model_p
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

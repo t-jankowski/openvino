@@ -12,6 +12,10 @@
 #include "openvino/op/matrix_nms.hpp"
 #include "openvino/op/util/attr_types.hpp"
 #include "openvino/op/util/multiclass_nms_base.hpp"
+#include "openvino/op/interpolate.hpp"
+#include "openvino/op/matrix_nms.hpp"
+#include "openvino/op/interpolate.hpp"
+#include "openvino/op/matrix_nms.hpp"
 
 namespace ov {
 namespace test {
@@ -219,3 +223,5 @@ std::ostream& operator<<(std::ostream& os, MemoryTransformation type);
 }  // namespace utils
 }  // namespace test
 }  // namespace ov
+
+

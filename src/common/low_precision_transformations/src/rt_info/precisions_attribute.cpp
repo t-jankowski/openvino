@@ -13,6 +13,7 @@
 #include "low_precision/network_helper.hpp"
 #include "low_precision/layer_transformation.hpp"
 #include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/fake_quantize.hpp"
 
 using namespace ov;
 using namespace ov;
@@ -65,3 +66,4 @@ std::string PrecisionsAttribute::to_string() const {
 
     return ss.str();
 }
+

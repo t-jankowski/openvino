@@ -3,6 +3,16 @@
 //
 
 #include "shared_test_classes/subgraph/variadic_split_pad.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/pad.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/variadic_split.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/pad.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/variadic_split.hpp"
 
 
 namespace ov {
@@ -61,3 +71,5 @@ void VariadicSplitPad::SetUp() {
 
 }  // namespace test
 }  // namespace ov
+
+

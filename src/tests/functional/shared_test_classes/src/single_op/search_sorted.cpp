@@ -6,6 +6,10 @@
 
 #include "common_test_utils/ov_tensor_utils.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/search_sorted.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/search_sorted.hpp"
 
 namespace ov {
 namespace test {
@@ -119,3 +123,5 @@ const std::vector<SearchSortedSpecificParams> SearchSortedLayerTest::GeneratePar
 
 }  // namespace test
 }  // namespace ov
+
+

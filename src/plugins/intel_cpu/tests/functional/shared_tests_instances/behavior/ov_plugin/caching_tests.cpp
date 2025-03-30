@@ -7,6 +7,10 @@
 #include "ov_ops/multiclass_nms_ie_internal.hpp"
 #include "ov_ops/nms_ie_internal.hpp"
 #include "ov_ops/nms_static_shape_ie.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/matrix_nms.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace ov;
 using namespace ov::test::behavior;
@@ -139,3 +143,4 @@ namespace {
                              ::testing::ValuesIn(TestCpuTargets),
                              CompileModelWithCacheEncryptionTest::getTestCaseName);
 } // namespace
+

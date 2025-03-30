@@ -14,6 +14,10 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/fake_quantize.hpp"
 #include "openvino/op/multiply.hpp"
+#include "openvino/op/assign.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/multiply.hpp"
 
 namespace ov {
 namespace pass {
@@ -123,3 +127,4 @@ bool AssignAndReadValueTransformation::isPrecisionPreserved(std::shared_ptr<Node
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

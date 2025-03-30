@@ -6,28 +6,69 @@
 
 #include <string>
 
-#include "openvino/opsets/opset1.hpp"
 
 #include "ov_lpt_models/common/fake_quantize_on_data.hpp"
 #include "ov_lpt_models/common/dequantization_operations.hpp"
 #include "ov_lpt_models/common/builders.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/avg_pool.hpp"
+#include "openvino/op/clamp.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/depth_to_space.hpp"
+#include "openvino/op/interpolate.hpp"
+#include "openvino/op/mvn.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/max_pool.hpp"
+#include "openvino/op/normalize_l2.hpp"
+#include "openvino/op/prelu.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/squeeze.hpp"
+#include "openvino/op/strided_slice.hpp"
+#include "openvino/op/transpose.hpp"
+#include "openvino/op/unsqueeze.hpp"
+#include "openvino/op/variadic_split.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/avg_pool.hpp"
+#include "openvino/op/clamp.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/depth_to_space.hpp"
+#include "openvino/op/interpolate.hpp"
+#include "openvino/op/mvn.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/max_pool.hpp"
+#include "openvino/op/normalize_l2.hpp"
+#include "openvino/op/prelu.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/squeeze.hpp"
+#include "openvino/op/strided_slice.hpp"
+#include "openvino/op/transpose.hpp"
+#include "openvino/op/unsqueeze.hpp"
+#include "openvino/op/variadic_split.hpp"
 
 namespace ov {
 namespace builder {
 namespace subgraph {
 
 std::shared_ptr<ov::Model> TransformationsAfterSplitFunction::get(const std::string transformationName) {
-    const auto input = std::make_shared<ov::opset1::Parameter>(ov::element::u8, Shape{1, 9, 16, 16});
+    const auto input = std::make_shared<ov::op::v0::Parameter>(ov::element::u8, Shape{1, 9, 16, 16});
     const size_t outputSize = 2ul;
 
-    const auto axis = ov::opset1::Constant::create(ov::element::i64, Shape{}, {2});
-    const auto splitLength = ov::opset1::Constant::create(ov::element::i64, Shape{outputSize}, {8, 8});
-    const auto variadicSplit = std::make_shared<ov::opset1::VariadicSplit>(input, axis, splitLength);
+    const auto axis = ov::op::v0::Constant::create(ov::element::i64, Shape{}, {2});
+    const auto splitLength = ov::op::v0::Constant::create(ov::element::i64, Shape{outputSize}, {8, 8});
+    const auto variadicSplit = std::make_shared<ov::op::v1::VariadicSplit>(input, axis, splitLength);
 
     ResultVector results;
     for (size_t i = 0; i < outputSize; ++i) {
         const auto additionalLayer = getLayerByTransformationName(transformationName, variadicSplit->output(i));
-        results.push_back(std::make_shared<ov::opset1::Result>(additionalLayer));
+        results.push_back(std::make_shared<ov::op::v0::Result>(additionalLayer));
     }
 
     const auto function = std::make_shared<ov::Model>(
@@ -43,17 +84,17 @@ std::shared_ptr<Node> TransformationsAfterSplitFunction::getLayerByTransformatio
     const ov::Output<Node> parent) {
     if (transformationName == "AddTransformationWithoutConcat") {
         const auto dequantization = makeDequantization(parent, { {}, {}, { 3.f } });
-        const auto addConstant = ov::opset1::Constant::create(ov::element::u8, Shape{}, {128.f});
-        return std::make_shared<ov::opset1::Add>(dequantization, addConstant);
+        const auto addConstant = ov::op::v0::Constant::create(ov::element::u8, Shape{}, {128.f});
+        return std::make_shared<ov::op::v1::Add>(dequantization, addConstant);
     }
     if (transformationName == "AddTransformationWithConcat") {
         const auto dequantization = makeDequantization(parent, {{ov::element::f32}, {}, {0.1f}});
-        const auto addConstant = ov::opset1::Constant::create(ov::element::f32, Shape{}, {128.f});
-        return std::make_shared<ov::opset1::Add>(dequantization, addConstant);
+        const auto addConstant = ov::op::v0::Constant::create(ov::element::f32, Shape{}, {128.f});
+        return std::make_shared<ov::op::v1::Add>(dequantization, addConstant);
     }
     if (transformationName == "AvgPoolTransformation") {
         const auto dequantization = makeDequantization(parent, { {ov::element::f32}, {}, { 0.1f } });
-        return std::make_shared<ov::opset1::AvgPool>(dequantization,
+        return std::make_shared<ov::op::v1::AvgPool>(dequantization,
                                                      Strides{1, 1},
                                                      Shape{1, 1},
                                                      Shape{0, 0},
@@ -63,13 +104,13 @@ std::shared_ptr<Node> TransformationsAfterSplitFunction::getLayerByTransformatio
     }
     if (transformationName == "ClampTransformation") {
         const auto dequantization = makeDequantization(parent, {{ov::element::f32}, {}, {0.1f}});
-        return std::make_shared<ov::opset1::Clamp>(dequantization, 0.0, 6.0);
+        return std::make_shared<ov::op::v0::Clamp>(dequantization, 0.0, 6.0);
     }
     if (transformationName == "ConvolutionTransformation") {
         const auto dequantizationOnData = makeDequantization(parent, {{ov::element::f32}, {}, {0.1f}});
-        const auto weights = ov::opset1::Constant::create(ov::element::i8, Shape{3, 9, 1, 1}, {2});
+        const auto weights = ov::op::v0::Constant::create(ov::element::i8, Shape{3, 9, 1, 1}, {2});
         const auto dequantizationOnWeights = makeDequantization(weights, {{ov::element::f32}, {}, {0.3f}});
-        return std::make_shared<ov::opset1::Convolution>(
+        return std::make_shared<ov::op::v1::Convolution>(
             dequantizationOnData,
             dequantizationOnWeights,
             Strides{ 1, 1 },
@@ -79,9 +120,9 @@ std::shared_ptr<Node> TransformationsAfterSplitFunction::getLayerByTransformatio
     }
     if (transformationName == "AsymmetricConvolutionTransformation") {
         const auto dequantizationOnData = makeDequantization(parent, {{ov::element::f32}, {128.f}, {0.1f}});
-        const auto weights = ov::opset1::Constant::create(ov::element::i8, Shape{3, 9, 1, 1}, {2});
+        const auto weights = ov::op::v0::Constant::create(ov::element::i8, Shape{3, 9, 1, 1}, {2});
         const auto dequantizationOnWeights = makeDequantization(weights, {{ov::element::f32}, {}, {0.3f}});
-        return std::make_shared<ov::opset1::Convolution>(
+        return std::make_shared<ov::op::v1::Convolution>(
             dequantizationOnData,
             dequantizationOnWeights,
             Strides{ 1, 1 },
@@ -91,7 +132,7 @@ std::shared_ptr<Node> TransformationsAfterSplitFunction::getLayerByTransformatio
     }
     if (transformationName == "DepthToSpaceTransformation") {
         const auto dequantization = makeDequantization(parent, {{ov::element::f32}, {}, {0.1f}});
-        return std::make_shared<ov::opset1::DepthToSpace>(dequantization, ov::opset1::DepthToSpace::DepthToSpaceMode::BLOCKS_FIRST, 3);
+        return std::make_shared<ov::op::v0::DepthToSpace>(dequantization, ov::op::v0::DepthToSpace::DepthToSpaceMode::BLOCKS_FIRST, 3);
     }
     if (transformationName == "FakeQuantizeTransformation") {
         const auto dequantization = makeDequantization(parent, {{ov::element::f32}, {}, {0.1f}});
@@ -99,7 +140,7 @@ std::shared_ptr<Node> TransformationsAfterSplitFunction::getLayerByTransformatio
     }
     if (transformationName == "InterpolateTransformation") {
         const auto dequantization = makeDequantization(parent, {{ov::element::f32}, {}, {0.1f}});
-        const auto outShape = ov::opset1::Constant::create(ov::element::i64, Shape{4}, {1, 4, 32, 32});
+        const auto outShape = ov::op::v0::Constant::create(ov::element::i64, Shape{4}, {1, 4, 32, 32});
 
         ov::op::v0::Interpolate::Attributes attributes;
         attributes.axes = ov::AxisSet{ 2, 3 };
@@ -109,17 +150,17 @@ std::shared_ptr<Node> TransformationsAfterSplitFunction::getLayerByTransformatio
         attributes.pads_begin = std::vector<size_t>{ 0ul };
         attributes.pads_end = std::vector<size_t>{ 0ul };
 
-        return std::make_shared<ov::opset1::Interpolate>(dequantization, outShape, attributes);
+        return std::make_shared<ov::op::v0::Interpolate>(dequantization, outShape, attributes);
     }
     if (transformationName == "MatMulTransformation") {
         const auto dequantizationOnData = makeDequantization(parent, {{ov::element::f32}, {}, {0.1f}});
-        const auto weights = ov::opset1::Constant::create(ov::element::i8, Shape{16, 16}, {2});
+        const auto weights = ov::op::v0::Constant::create(ov::element::i8, Shape{16, 16}, {2});
         const auto dequantizationOnWeights = makeDequantization(weights, {{ov::element::f32}, {}, {0.3f}});
-        return std::make_shared<ov::opset1::MatMul>(dequantizationOnData, dequantizationOnWeights);
+        return std::make_shared<ov::op::v0::MatMul>(dequantizationOnData, dequantizationOnWeights);
     }
     if (transformationName == "MaxPoolTransformation") {
         const auto dequantization = makeDequantization(parent, {{ov::element::f32}, {}, {0.1f}});
-        return std::make_shared<ov::opset1::MaxPool>(
+        return std::make_shared<ov::op::v1::MaxPool>(
             dequantization,
             Strides{ 1, 1 },
             Shape{ 1, 1 },
@@ -136,47 +177,47 @@ std::shared_ptr<Node> TransformationsAfterSplitFunction::getLayerByTransformatio
     }
     if (transformationName == "NormalizeL2Transformation") {
         const auto dequantization = makeDequantization(parent, {{ov::element::f32}, {}, {0.1f}});
-        const auto axesNode = ov::opset1::Constant::create(ov::element::i64, ov::Shape{3}, {1, 2, 3});
-        return std::make_shared<ov::opset1::NormalizeL2>(dequantization, axesNode, 1e-6, ov::op::EpsMode::ADD);
+        const auto axesNode = ov::op::v0::Constant::create(ov::element::i64, ov::Shape{3}, {1, 2, 3});
+        return std::make_shared<ov::op::v0::NormalizeL2>(dequantization, axesNode, 1e-6, ov::op::EpsMode::ADD);
     }
     if (transformationName == "PReluTransformation") {
         const auto dequantization = makeDequantization(parent, {{ov::element::f32}, {}, {0.1f}});
-        const auto slope = std::make_shared<ov::opset1::Constant>(ov::element::f32, Shape{}, std::vector<float>{0.1f});
-        return std::make_shared<ov::opset1::PRelu>(dequantization, slope);
+        const auto slope = std::make_shared<ov::op::v0::Constant>(ov::element::f32, Shape{}, std::vector<float>{0.1f});
+        return std::make_shared<ov::op::v0::PRelu>(dequantization, slope);
     }
     if (transformationName == "ReluTransformation") {
         const auto dequantization = makeDequantization(parent, {{ov::element::f32}, {}, {0.1f}});
-        return std::make_shared<ov::opset1::Relu>(dequantization);
+        return std::make_shared<ov::op::v0::Relu>(dequantization);
     }
     if (transformationName == "ReshapeTransformation") {
         const auto dequantization = makeDequantization(parent, {{ov::element::f32}, {}, {0.1f}});
-        const auto reshapeConst = ov::opset1::Constant::create(ov::element::i64, ov::Shape{3}, {1, 3, -1});
-        return std::make_shared<ov::opset1::Reshape>(dequantization, reshapeConst, false);
+        const auto reshapeConst = ov::op::v0::Constant::create(ov::element::i64, ov::Shape{3}, {1, 3, -1});
+        return std::make_shared<ov::op::v1::Reshape>(dequantization, reshapeConst, false);
     }
     if (transformationName == "SqueezeTransformation") {
         const auto dequantization = makeDequantization(parent, {{ov::element::f32}, {}, {0.1f}});
-        const auto squeezeConst = ov::opset1::Constant::create(ov::element::i64, ov::Shape{1}, {0});
-        return std::make_shared<ov::opset1::Squeeze>(dequantization, squeezeConst);
+        const auto squeezeConst = ov::op::v0::Constant::create(ov::element::i64, ov::Shape{1}, {0});
+        return std::make_shared<ov::op::v0::Squeeze>(dequantization, squeezeConst);
     }
     if (transformationName == "StridedSliceTransformation") {
         const auto dequantization = makeDequantization(parent, {{ov::element::f32}, {}, {0.1f}});
 
         std::vector<int64_t> mask{ 1, 0, 1, 1 };
-        const auto beginParam = ov::opset1::Constant::create(ov::element::i64, Shape{4}, {0, 0, 0, 0});
-        const auto endParam = ov::opset1::Constant::create(ov::element::i64, Shape{4}, {1, 2, 1, 1});
-        const auto stridesParam = ov::opset1::Constant::create(ov::element::i64, Shape{4}, {1, 1, 1, 1});
+        const auto beginParam = ov::op::v0::Constant::create(ov::element::i64, Shape{4}, {0, 0, 0, 0});
+        const auto endParam = ov::op::v0::Constant::create(ov::element::i64, Shape{4}, {1, 2, 1, 1});
+        const auto stridesParam = ov::op::v0::Constant::create(ov::element::i64, Shape{4}, {1, 1, 1, 1});
 
-        return std::make_shared<ov::opset1::StridedSlice>(dequantization, beginParam, endParam, stridesParam, mask, mask);
+        return std::make_shared<ov::op::v1::StridedSlice>(dequantization, beginParam, endParam, stridesParam, mask, mask);
     }
     if (transformationName == "TransposeTransformation") {
         const auto dequantization = makeDequantization(parent, {{ov::element::f32}, {}, {0.1f}});
-        const auto transposeConstant = ov::opset1::Constant::create(ov::element::i64, Shape{4}, {0, 1, 3, 2});
-        return std::make_shared<ov::opset1::Transpose>(dequantization, transposeConstant);
+        const auto transposeConstant = ov::op::v0::Constant::create(ov::element::i64, Shape{4}, {0, 1, 3, 2});
+        return std::make_shared<ov::op::v1::Transpose>(dequantization, transposeConstant);
     }
     if (transformationName == "UnsqueezeTransformation") {
         const auto dequantization = makeDequantization(parent, {{ov::element::f32}, {}, {0.1f}});
-        const auto unsqueezeConst = ov::opset1::Constant::create(ov::element::i64, ov::Shape{1}, {0});
-        return std::make_shared<ov::opset1::Unsqueeze>(dequantization, unsqueezeConst);
+        const auto unsqueezeConst = ov::op::v0::Constant::create(ov::element::i64, ov::Shape{1}, {0});
+        return std::make_shared<ov::op::v0::Unsqueeze>(dequantization, unsqueezeConst);
     }
     if (transformationName == "FuseConvertTransformation") {
         return makeDequantization(parent, {{ov::element::f32}, {}, {0.1f}});
@@ -205,3 +246,5 @@ std::shared_ptr<Node> TransformationsAfterSplitFunction::getLayerByTransformatio
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

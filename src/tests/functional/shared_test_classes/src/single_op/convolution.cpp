@@ -10,6 +10,14 @@
 #include "openvino/op/convolution.hpp"
 #include "common_test_utils/data_utils.hpp"
 #include "common_test_utils/ov_tensor_utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -76,3 +84,5 @@ void ConvolutionLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

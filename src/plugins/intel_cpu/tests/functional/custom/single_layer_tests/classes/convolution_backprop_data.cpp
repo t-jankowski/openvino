@@ -3,6 +3,8 @@
 //
 
 #include "convolution_backprop_data.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 using namespace ov::test;
@@ -223,3 +225,4 @@ void DeconvolutionLayerCPUTest::SetUp() {
 
     function = createGraph(inputDynamicShapes, outShapeType);
 }
+

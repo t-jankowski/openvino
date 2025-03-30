@@ -9,6 +9,9 @@
 #include "utils/cpu_test_utils.hpp"
 #include "transformations/op_conversions/bidirectional_sequences_decomposition.hpp"
 #include "transformations/op_conversions/convert_sequences_to_tensor_iterator.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/transpose.hpp"
 
 using namespace CPUTestUtils;
 using namespace ov::test::utils;
@@ -373,3 +376,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_SequenceCPUTest_static_rnn_lstm, SequenceCPUTest,
 
 }  // namespace test
 }  // namespace ov
+

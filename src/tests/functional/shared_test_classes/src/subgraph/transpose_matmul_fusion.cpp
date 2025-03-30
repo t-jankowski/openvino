@@ -3,6 +3,16 @@
 //
 
 #include "shared_test_classes/subgraph/transpose_matmul_fusion.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/transpose.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/transpose.hpp"
 
 namespace ov {
 namespace test {
@@ -49,3 +59,5 @@ void TransposeMatMulFusion::TearDown() {
 
 }  // namespace test
 }  // namespace ov
+
+

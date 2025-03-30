@@ -7,6 +7,12 @@
 #include "shared_test_classes/single_op/roi_align.hpp"
 
 #include "openvino/core/enum_names.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/roi_align.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/roi_align.hpp"
 
 namespace ov {
 namespace test {
@@ -201,3 +207,5 @@ void ROIAlignV9LayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

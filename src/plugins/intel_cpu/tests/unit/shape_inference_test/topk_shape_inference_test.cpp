@@ -5,13 +5,16 @@
 #include <gmock/gmock.h>
 
 #include "common_test_utils/test_assertions.hpp"
-#include "openvino/opsets/opset10.hpp"
 #include "topk_shape_inference.hpp"
 #include "utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/topk.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
-using namespace ov::opset10;
+using ov::op::v0::Constant;
+using ov::op::v0::Parameter;
 using namespace testing;
 
 namespace topk_test {

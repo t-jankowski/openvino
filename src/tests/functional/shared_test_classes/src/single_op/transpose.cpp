@@ -3,6 +3,14 @@
 //
 
 #include "shared_test_classes/single_op/transpose.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/transpose.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/transpose.hpp"
 
 namespace ov {
 namespace test {
@@ -52,3 +60,5 @@ void TransposeLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

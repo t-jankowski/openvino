@@ -6,6 +6,7 @@
 
 #include "single_op_tests/scatter_elements_update.hpp"
 #include "common_test_utils/test_constants.hpp"
+#include "openvino/op/scatter_elements_update.hpp"
 
 using ov::test::ScatterElementsUpdateLayerTest;
 using ov::test::ScatterElementsUpdate12LayerTest;
@@ -92,3 +93,4 @@ INSTANTIATE_TEST_SUITE_P(
                        ::testing::Values(ov::test::utils::DEVICE_CPU)),
     ScatterElementsUpdate12LayerTest::getTestCaseName);
 }  // namespace
+

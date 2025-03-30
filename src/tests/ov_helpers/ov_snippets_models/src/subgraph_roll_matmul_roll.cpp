@@ -4,7 +4,16 @@
 
 #include "subgraph_roll_matmul_roll.hpp"
 #include <common_test_utils/data_utils.hpp>
-#include "openvino/opsets/opset1.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/roll.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/roll.hpp"
 
 namespace ov {
 namespace test {
@@ -27,10 +36,10 @@ std::shared_ptr<ov::Model> SubgraphRollMatMulRollFunction::initOriginal() const 
     parent1->get_rt_info()["enforceBF16evenForGraphTail"] = true;
     parent1->set_friendly_name("roll1");
 
-    std::shared_ptr<ov::opset1::Parameter> parameter2;
+    std::shared_ptr<ov::op::v0::Parameter> parameter2;
     std::shared_ptr<Node> parent2;
 
-    parameter2 = std::make_shared<ov::opset1::Parameter>(precision, input_shapes[1]);
+    parameter2 = std::make_shared<ov::op::v0::Parameter>(precision, input_shapes[1]);
     parameter2->set_friendly_name("parameter2");
 
     parent2 = std::make_shared<ov::op::v7::Roll>(parameter2, shift, axes);
@@ -45,7 +54,7 @@ std::shared_ptr<ov::Model> SubgraphRollMatMulRollFunction::initOriginal() const 
     auto roll3 = std::make_shared<ov::op::v7::Roll>(parent1, shift, axes);
     roll3->set_friendly_name("roll3");
 
-    const auto result = std::make_shared<ov::opset1::Result>(roll3);
+    const auto result = std::make_shared<ov::op::v0::Result>(roll3);
     result->set_friendly_name("result");
 
     return std::make_shared<ov::Model>(
@@ -57,3 +66,5 @@ std::shared_ptr<ov::Model> SubgraphRollMatMulRollFunction::initOriginal() const 
 }  // namespace snippets
 }  // namespace test
 }  // namespace ov
+
+

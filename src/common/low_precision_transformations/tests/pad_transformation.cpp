@@ -14,6 +14,7 @@
 #include "ov_lpt_models/common/dequantization_operations.hpp"
 #include "ov_lpt_models/pad.hpp"
 #include "simple_low_precision_transformer.hpp"
+#include "openvino/op/pad.hpp"
 
 namespace {
 using namespace testing;
@@ -1086,3 +1087,4 @@ INSTANTIATE_TEST_SUITE_P(
     PadTransformation::getTestCaseName);
 } // namespace testCasesWithDynamicRank
 } // namespace
+

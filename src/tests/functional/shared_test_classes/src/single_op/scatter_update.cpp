@@ -3,6 +3,12 @@
 //
 
 #include "shared_test_classes/single_op/scatter_update.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/scatter_update.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/scatter_update.hpp"
 
 namespace ov {
 namespace test {
@@ -59,3 +65,5 @@ void ScatterUpdateLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

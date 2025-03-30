@@ -7,6 +7,12 @@
 #include "openvino/op/parameter.hpp"
 #include "openvino/op/result.hpp"
 #include "openvino/op/extractimagepatches.hpp"
+#include "openvino/op/extractimagepatches.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/extractimagepatches.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 
 namespace ov {
@@ -57,3 +63,5 @@ void ExtractImagePatchesTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

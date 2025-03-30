@@ -28,6 +28,10 @@
 #include "openvino/op/parameter.hpp"
 #include "openvino/op/concat.hpp"
 #include "openvino/op/concat.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -123,3 +127,5 @@ TEST_P(OVIterationChaining, Simple) {
 }  // namespace behavior
 }  // namespace test
 }  // namespace ov
+
+

@@ -3,6 +3,12 @@
 //
 
 #include "shared_test_classes/single_op/proposal.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/proposal.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/proposal.hpp"
 
 namespace ov {
 namespace test {
@@ -97,3 +103,5 @@ void ProposalLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

@@ -6,6 +6,12 @@
 
 #include "openvino/op/multiply.hpp"
 #include "openvino/op/non_max_suppression.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/non_max_suppression.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/non_max_suppression.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -370,3 +376,5 @@ void compare_b_boxes(const std::vector<ov::Tensor>& expected,
 
 }  // namespace test
 }  // namespace ov
+
+

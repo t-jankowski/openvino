@@ -7,6 +7,18 @@
 #include "common_test_utils/data_utils.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "common_test_utils/node_builders/convolution.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/split.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/split.hpp"
 
 namespace ov {
 namespace test {
@@ -73,3 +85,5 @@ void SplitConvConcatBase::configure_test(const ov::test::BasicParams& param) {
 
 }  // namespace test
 }  // namespace ov
+
+

@@ -6,6 +6,8 @@
 
 #include "snippets_helpers.hpp"
 #include "snippets/utils/utils.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/add.hpp"
 
 /* This file contains definitions of rather complex functions (models) that support (and require)
  * specification of some the internal operations. This flexibility is required to extend coverage of
@@ -146,3 +148,5 @@ private:
 }  // namespace snippets
 }  // namespace test
 }  // namespace ov
+
+

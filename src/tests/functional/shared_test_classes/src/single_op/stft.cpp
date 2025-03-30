@@ -6,6 +6,12 @@
 
 #include "common_test_utils/ov_tensor_utils.hpp"
 #include "shared_test_classes/base/utils/ranges.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/stft.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/stft.hpp"
 
 namespace ov {
 namespace test {
@@ -163,3 +169,5 @@ const STFTLayerTest::TGenData STFTLayerTest::GetTestDataForDevice(const char* de
 }
 }  // namespace test
 }  // namespace ov
+
+

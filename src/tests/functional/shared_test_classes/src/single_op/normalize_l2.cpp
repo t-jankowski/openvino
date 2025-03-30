@@ -8,6 +8,14 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/result.hpp"
 #include "openvino/op/normalize_l2.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/normalize_l2.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/normalize_l2.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -60,3 +68,5 @@ void NormalizeL2LayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

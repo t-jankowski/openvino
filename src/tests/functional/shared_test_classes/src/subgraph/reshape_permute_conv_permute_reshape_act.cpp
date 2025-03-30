@@ -4,6 +4,16 @@
 
 #include "shared_test_classes/subgraph/reshape_permute_conv_permute_reshape_act.hpp"
 #include "common_test_utils/node_builders/convolution.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/tanh.hpp"
+#include "openvino/op/transpose.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/tanh.hpp"
+#include "openvino/op/transpose.hpp"
 
 namespace ov {
 namespace test {
@@ -82,3 +92,5 @@ void ConvReshapeAct::SetUp() {
 
 } // namespace test
 } // namespace ov
+
+

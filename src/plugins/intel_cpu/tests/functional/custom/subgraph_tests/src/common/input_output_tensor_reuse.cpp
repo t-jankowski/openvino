@@ -3,6 +3,10 @@
 //
 
 #include "shared_test_classes/base/ov_subgraph.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/softmax.hpp"
 
 namespace ov {
 namespace test {

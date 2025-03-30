@@ -14,6 +14,10 @@
 #include "openvino/op/convert.hpp"
 #include "openvino/op/fake_quantize.hpp"
 #include "openvino/op/subtract.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/subtract.hpp"
 
 namespace ov {
 namespace pass {
@@ -93,3 +97,4 @@ bool FuseSubtractToFakeQuantizeTransformation::isPrecisionPreserved(std::shared_
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

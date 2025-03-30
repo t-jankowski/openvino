@@ -13,6 +13,14 @@
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/convolution_params.hpp"
 #include "utils/fusing_test_utils.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/divide.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/subtract.hpp"
 
 using namespace CPUTestUtils;
 
@@ -592,3 +600,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_Conv_Sum_1x1_Broadcast, Conv1x1SumUnsupportedBroa
 } // namespace
 }  // namespace test
 }  // namespace ov
+

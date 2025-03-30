@@ -8,6 +8,9 @@
 #include "common_test_utils/ov_tensor_utils.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
+#include "openvino/op/ctc_greedy_decoder.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace CPUTestUtils;
 namespace ov {
@@ -167,3 +170,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_CtcGreedyDecoderCPU,
 
 }  // namespace test
 }  // namespace ov
+

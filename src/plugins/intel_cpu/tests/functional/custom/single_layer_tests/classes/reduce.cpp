@@ -9,6 +9,8 @@
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
 #include "common_test_utils/test_enums.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 
@@ -303,3 +305,4 @@ const std::vector<ov::test::utils::ReductionType>& reductionTypesNativeInt32() {
 }  // namespace Reduce
 }  // namespace test
 }  // namespace ov
+

@@ -13,6 +13,7 @@
 #include "ov_lpt_models/common/dequantization_operations.hpp"
 #include "ov_lpt_models/round.hpp"
 #include "openvino/op/subtract.hpp"
+#include "openvino/op/subtract.hpp"
 
 namespace {
 using namespace testing;
@@ -98,3 +99,4 @@ INSTANTIATE_TEST_SUITE_P(LPT,
                          ::testing::ValuesIn(testValues),
                          RoundTransformation::getTestCaseName);
 }  // namespace
+

@@ -7,6 +7,12 @@
 #include "openvino/op/multiply.hpp"
 #include "openvino/op/sigmoid.hpp"
 #include "openvino/op/constant.hpp"
+#include "openvino/op/assign.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/read_value.hpp"
+#include "openvino/op/sigmoid.hpp"
 
 inline std::shared_ptr<ov::Model> getTargetNetwork() {
     auto shape = ov::Shape{1, 200};
@@ -32,3 +38,4 @@ std::vector<addOutputsParams> testCases = {
 INSTANTIATE_TEST_SUITE_P(smoke_AddOutputBasic, AddOutputsTest,
         ::testing::ValuesIn(testCases),
         AddOutputsTest::getTestCaseName);
+

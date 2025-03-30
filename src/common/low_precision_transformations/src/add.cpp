@@ -25,6 +25,13 @@
 #include "openvino/op/multiply.hpp"
 #include "openvino/op/negative.hpp"
 #include "openvino/op/subtract.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/divide.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/negative.hpp"
+#include "openvino/op/subtract.hpp"
 
 namespace ov {
 namespace pass {
@@ -264,3 +271,4 @@ bool AddTransformation::canBeTransformed(const std::shared_ptr<Node>& layer) con
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

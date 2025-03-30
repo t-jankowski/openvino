@@ -16,6 +16,7 @@
 #include "simple_low_precision_transformer.hpp"
 #include "ov_lpt_models/shuffle_channels.hpp"
 #include "ov_lpt_models/common/dequantization_operations.hpp"
+#include "openvino/op/shuffle_channels.hpp"
 
 namespace {
 using namespace testing;
@@ -351,3 +352,4 @@ INSTANTIATE_TEST_SUITE_P(
     ShuffleChannelsTransformation::getTestCaseName);
 } // namespace testValues2
 } // namespace
+

@@ -4,6 +4,14 @@
 
 #include "shared_test_classes/single_op/random_uniform.hpp"
 #include "openvino/core/type/element_type_traits.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/random_uniform.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/random_uniform.hpp"
+#include "openvino/op/shape_of.hpp"
 
 
 namespace ov {
@@ -80,3 +88,5 @@ void RandomUniformLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

@@ -8,6 +8,14 @@
 #include "openvino/op/result.hpp"
 #include "openvino/op/constant.hpp"
 #include "openvino/op/mvn.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/mvn.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/mvn.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -137,3 +145,5 @@ void Mvn6LayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

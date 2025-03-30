@@ -7,6 +7,12 @@
 #include "openvino/op/parameter.hpp"
 #include "openvino/op/result.hpp"
 #include "openvino/op/grn.hpp"
+#include "openvino/op/grn.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/grn.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -50,3 +56,5 @@ void GrnLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

@@ -8,6 +8,7 @@
 #include "utils/cpu_test_utils.hpp"
 #include "common_test_utils/node_builders/activation.hpp"
 #include "shared_test_classes/single_op/activation.hpp"
+#include "openvino/op/parameter.hpp"
 #if defined(OPENVINO_ARCH_RISCV64)
 #   include "nodes/kernels/riscv64/cpu_isa_traits.hpp"
 #endif
@@ -426,3 +427,4 @@ const std::vector<std::vector<InputShape>>& dynamicMathBasic() {
 }  // namespace Activation
 }  // namespace test
 }  // namespace ov
+

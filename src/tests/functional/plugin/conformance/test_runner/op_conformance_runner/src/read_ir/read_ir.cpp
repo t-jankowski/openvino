@@ -332,6 +332,10 @@ namespace {
 
 // It should point on latest opset which contains biggest list of operations
 #include "openvino/opsets/opset14_tbl.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 #undef _OPENVINO_OP_REG
 
 INSTANTIATE_TEST_SUITE_P(conformance_subgraph,
@@ -344,3 +348,4 @@ INSTANTIATE_TEST_SUITE_P(conformance_subgraph,
 } // namespace op_conformance
 } // namespace test
 } // namespace ov
+

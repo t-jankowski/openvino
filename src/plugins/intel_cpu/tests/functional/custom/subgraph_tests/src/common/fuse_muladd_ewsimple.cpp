@@ -6,6 +6,8 @@
 
 #include "common_test_utils/node_builders/activation.hpp"
 #include "common_test_utils/node_builders/eltwise.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace CPUTestUtils;
 using ov::test::utils::ActivationTypes;
@@ -115,3 +117,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_Basic,
                          FuseMulAddAndEwSimpleTest::getTestCaseName);
 }  // namespace test
 }  // namespace ov
+

@@ -6,6 +6,11 @@
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/fusing_test_utils.hpp"
 #include "transformations/rt_info/decompression.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace CPUTestUtils;
 
@@ -656,3 +661,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_FC_2D_FP16_3,
 
 }  // namespace test
 }  // namespace ov
+

@@ -10,6 +10,18 @@
 #include "cache/op_cache.hpp"
 #include "utils/node.hpp"
 #include "op_conformance_utils/utils/file.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/if.hpp"
+#include "openvino/op/loop.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/tensor_iterator.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/if.hpp"
+#include "openvino/op/loop.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/tensor_iterator.hpp"
 
 namespace ov {
 namespace tools {
@@ -141,3 +153,5 @@ std::string OpCache::get_rel_serilization_dir(const std::shared_ptr<ov::Node>& n
 }  // namespace subgraph_dumper
 }  // namespace tools
 }  // namespace ov
+
+

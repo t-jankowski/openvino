@@ -23,6 +23,7 @@
 
 #include <string>
 #include "openvino/op/group_conv.hpp"
+#include "openvino/op/group_conv.hpp"
 
 using namespace testing;
 using namespace ov::pass;
@@ -77,3 +78,4 @@ bool SimpleLowPrecisionTransformer::run_on_model(const std::shared_ptr<ov::Model
     common->run_passes(model);
     return true;
 }
+

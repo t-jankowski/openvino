@@ -7,6 +7,7 @@
 #include <memory>
 #include "layer_transformation.hpp"
 #include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/fake_quantize.hpp"
 
 namespace ov {
 namespace pass {
@@ -38,3 +39,4 @@ public:
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

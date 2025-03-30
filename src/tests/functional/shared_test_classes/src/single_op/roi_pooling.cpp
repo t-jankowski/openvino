@@ -3,6 +3,10 @@
 //
 
 #include "shared_test_classes/single_op/roi_pooling.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/roi_pooling.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/roi_pooling.hpp"
 
 namespace ov {
 namespace test {
@@ -72,3 +76,5 @@ void ROIPoolingLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

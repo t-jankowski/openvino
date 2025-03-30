@@ -6,6 +6,9 @@
 
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 
@@ -417,3 +420,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_DynamicShapes1D,
 
 }  // namespace test
 }  // namespace ov
+

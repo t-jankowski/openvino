@@ -12,6 +12,28 @@
 #include "openvino/op/read_value.hpp"
 #include "openvino/op/assign.hpp"
 #include "matchers/subgraph/read_value_assign.hpp"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/assign.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/read_value.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/split.hpp"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/assign.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/read_value.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/split.hpp"
 
 class Model_4 {
 protected:
@@ -225,3 +247,5 @@ public:
         return ref_models;
     }
 };
+
+

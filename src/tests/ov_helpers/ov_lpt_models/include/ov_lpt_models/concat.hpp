@@ -10,7 +10,8 @@
 #include "common/dequantization_operations.hpp"
 #include "common/fake_quantize_on_data.hpp"
 #include "low_precision/layer_transformation.hpp"
-#include "openvino/opsets/opset1.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/constant.hpp"
 
 namespace ov {
 namespace builder {
@@ -29,10 +30,10 @@ public:
     static std::shared_ptr<ov::Model> getOriginal(
         const ov::element::Type precision,
         const ov::PartialShape& inputShape,
-        const std::shared_ptr<ov::opset1::Constant>& input_constant1,
+        const std::shared_ptr<ov::op::v0::Constant>& input_constant1,
         const FakeQuantizeOnData& fakeQuantize1,
         const DequantizationOperations& dequantization1,
-        const std::shared_ptr<ov::opset1::Constant>& input_constant2,
+        const std::shared_ptr<ov::op::v0::Constant>& input_constant2,
         const FakeQuantizeOnData& fakeQuantize2,
         const DequantizationOperations& dequantization2);
 
@@ -299,3 +300,5 @@ private:
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

@@ -4,6 +4,10 @@
 
 #include "shared_test_classes/single_op/embedding_bag_offsets_sum.hpp"
 #include "common_test_utils/node_builders/embedding_bag_offsets_sum.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -63,3 +67,5 @@ void EmbeddingBagOffsetsSumLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

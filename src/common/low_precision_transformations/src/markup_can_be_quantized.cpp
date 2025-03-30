@@ -17,6 +17,10 @@
 #include "openvino/op/convolution.hpp"
 #include "openvino/op/group_conv.hpp"
 #include "openvino/op/util/multi_subgraph_base.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/group_conv.hpp"
 
 using namespace ov;
 
@@ -71,3 +75,4 @@ bool ov::pass::low_precision::MarkupCanBeQuantized::run_on_model(const std::shar
     }
     return true;
 }
+

@@ -8,6 +8,12 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/result.hpp"
 #include "openvino/op/depth_to_space.hpp"
+#include "openvino/op/depth_to_space.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/depth_to_space.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -70,3 +76,5 @@ void DepthToSpaceLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

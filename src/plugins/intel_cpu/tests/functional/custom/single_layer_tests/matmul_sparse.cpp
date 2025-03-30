@@ -9,6 +9,9 @@
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "shared_test_classes/base/utils/generate_inputs.hpp"
 #include "utils/fusing_test_utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 
@@ -334,3 +337,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_FC_3D_I8_sparse, MatMulSparseCPUTest, testParams3
 
 }  // namespace test
 }  // namespace ov
+

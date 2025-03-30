@@ -17,6 +17,12 @@
 #include "openvino/op/divide.hpp"
 #include "openvino/op/util/arithmetic_reductions_keep_dims.hpp"
 #include "openvino/op/util/logical_reduction_keep_dims.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/divide.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/subtract.hpp"
 
 using namespace ov::test;
 
@@ -516,3 +522,4 @@ const auto fusingBias = fusingSpecificParams{std::make_shared<postNodesMgr>(std:
         }, "fusingBias"}}), {"Add"}};
 
 } // namespace CPUTestUtils
+

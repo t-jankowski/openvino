@@ -19,6 +19,8 @@
 #include "simple_low_precision_transformer.hpp"
 #include "openvino/op/constant.hpp"
 #include "openvino/op/group_conv.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/group_conv.hpp"
 
 using namespace testing;
 using namespace ov;
@@ -974,3 +976,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_LPT,
                          GroupConvolutionTransformation::getTestCaseName);
 }  // namespace testValues3
 // clang-format on
+

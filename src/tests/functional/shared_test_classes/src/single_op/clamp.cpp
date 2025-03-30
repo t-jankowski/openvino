@@ -3,6 +3,12 @@
 //
 
 #include "shared_test_classes/single_op/clamp.hpp"
+#include "openvino/op/clamp.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/clamp.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -48,3 +54,5 @@ void ClampLayerTest::SetUp() {
 }
 } // namespace test
 } // namespace ov
+
+

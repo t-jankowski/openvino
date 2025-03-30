@@ -10,6 +10,10 @@
 #include "common_test_utils/node_builders/constant.hpp"
 #include "common_test_utils/node_builders/reduce.hpp"
 #include "openvino/op/constant.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -23,3 +27,5 @@ std::shared_ptr<ov::Model> ReduceFunction::initOriginal() const {
 }  // namespace snippets
 }  // namespace test
 }  // namespace ov
+
+

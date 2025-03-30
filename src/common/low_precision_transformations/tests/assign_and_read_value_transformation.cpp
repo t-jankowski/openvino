@@ -16,6 +16,7 @@
 #include "ov_lpt_models/assign_and_read_value.hpp"
 #include "simple_low_precision_transformer.hpp"
 #include "low_precision/layer_transformation.hpp"
+#include "openvino/op/assign.hpp"
 
 
 namespace {
@@ -197,3 +198,4 @@ INSTANTIATE_TEST_SUITE_P(
     AssignTransformation::getTestCaseName);
 } // namespace testValues1
 } // namespace
+

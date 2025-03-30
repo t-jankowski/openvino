@@ -3,10 +3,6 @@
 //
 
 #include <common_test_utils/ov_tensor_utils.hpp>
-#include <openvino/opsets/opset1.hpp>
-#include <openvino/opsets/opset3.hpp>
-#include <openvino/opsets/opset4.hpp>
-#include <openvino/opsets/opset8.hpp>
 #include <string>
 #include <tuple>
 
@@ -16,6 +12,42 @@
 #include "transformations/utils/gen_pattern.hpp"
 #include "utils/cpu_test_utils.hpp"
 #include "utils/fusing_test_utils.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/equal.hpp"
+#include "openvino/op/gather.hpp"
+#include "openvino/op/logical_and.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/range.hpp"
+#include "openvino/op/reduce_prod.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/scatter_nd_update.hpp"
+#include "openvino/op/scatter_update.hpp"
+#include "openvino/op/select.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/strided_slice.hpp"
+#include "openvino/op/tile.hpp"
+#include "openvino/op/unsqueeze.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/equal.hpp"
+#include "openvino/op/gather.hpp"
+#include "openvino/op/logical_and.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/range.hpp"
+#include "openvino/op/reduce_prod.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/scatter_nd_update.hpp"
+#include "openvino/op/scatter_update.hpp"
+#include "openvino/op/select.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/strided_slice.hpp"
+#include "openvino/op/tile.hpp"
+#include "openvino/op/unsqueeze.hpp"
 
 using namespace CPUTestUtils;
 using namespace ov::gen_pattern;
@@ -34,21 +66,21 @@ static std::shared_ptr<ov::Model> buildCausalMaskPreprocess(const int max_seq_le
     auto const_triu = makeConst(ov::element::i32,
                                 ov::Shape({1, 1, static_cast<size_t>(max_seq_len), static_cast<size_t>(max_seq_len)}),
                                 triu);
-    auto attention_mask = std::make_shared<ov::opset1::Parameter>(ov::element::i32, ov::PartialShape{-1, -1});
-    auto batch_size = std::make_shared<ov::opset1::Parameter>(ov::element::i32, ov::Shape{1});
-    auto cache_positions = std::make_shared<ov::opset1::Parameter>(ov::element::i32, ov::PartialShape{-1});
-    auto kvLen = std::make_shared<ov::opset1::Parameter>(ov::element::i32, ov::PartialShape{1});
+    auto attention_mask = std::make_shared<ov::op::v0::Parameter>(ov::element::i32, ov::PartialShape{-1, -1});
+    auto batch_size = std::make_shared<ov::op::v0::Parameter>(ov::element::i32, ov::Shape{1});
+    auto cache_positions = std::make_shared<ov::op::v0::Parameter>(ov::element::i32, ov::PartialShape{-1});
+    auto kvLen = std::make_shared<ov::op::v0::Parameter>(ov::element::i32, ov::PartialShape{1});
 
     auto ShapeOf_i32 = [](std::shared_ptr<ov::Node> data) {
-        return makeOP<ov::opset3::ShapeOf>({data}, {{"output_type", "i32"}});
+        return makeOP<ov::op::v3::ShapeOf>({data}, {{"output_type", "i32"}});
     };
 
     auto ListConstruct_Concat =
-        makeOP<ov::opset1::Concat>({batch_size, {1}, {1}, {1}}, {{"axis", 0}});  //  tensor_array<i32[4]>
+        makeOP<ov::op::v0::Concat>({batch_size, {1}, {1}, {1}}, {{"axis", 0}});  //  tensor_array<i32[4]>
     auto repeat_Tile =
-        makeOP<ov::opset1::Tile>({const_triu, ListConstruct_Concat});  //  tensor_array<u8[?,1,8192,8192]>
+        makeOP<ov::op::v0::Tile>({const_triu, ListConstruct_Concat});  //  tensor_array<u8[?,1,8192,8192]>
     auto to_Convert =
-        makeOP<ov::opset1::Convert>({repeat_Tile}, {{"destination_type", "f32"}});  //  tensor_array<f32[?,1,8192,8192]>
+        makeOP<ov::op::v0::Convert>({repeat_Tile}, {{"destination_type", "f32"}});  //  tensor_array<f32[?,1,8192,8192]>
     auto Constant_107277 = makeConst(ov::element::f32,
                                      ov::Shape({
                                          1,
@@ -58,34 +90,34 @@ static std::shared_ptr<ov::Model> buildCausalMaskPreprocess(const int max_seq_le
                                      }),
                                      {-FLT_MAX});
     auto mul_Multiply_1 =
-        makeOP<ov::opset1::Multiply>({to_Convert, Constant_107277},
+        makeOP<ov::op::v1::Multiply>({to_Convert, Constant_107277},
                                      {{"auto_broadcast", "numpy"}});  //  tensor_array<f32[?,1,8192,8192]>
     auto SliceAssign_201_Reshape_0 =
-        makeOP<ov::opset1::Reshape>({mul_Multiply_1, {-1}}, {{"special_zero", false}});  //  tensor_array<f32[?]>
+        makeOP<ov::op::v1::Reshape>({mul_Multiply_1, {-1}}, {{"special_zero", false}});  //  tensor_array<f32[?]>
     auto SliceAssign_201_ShapeOf = ShapeOf_i32(mul_Multiply_1);                          //  tensor_array<i32[4]>
     auto SliceAssign_201_ReduceProd =
-        makeOP<ov::opset1::ReduceProd>({SliceAssign_201_ShapeOf, 0}, {{"keep_dims", false}});  //  tensor_array<i32[]>
-    auto SliceAssign_201_Range = makeOP<ov::opset4::Range>({0, SliceAssign_201_ReduceProd, 1},
+        makeOP<ov::op::v1::ReduceProd>({SliceAssign_201_ShapeOf, 0}, {{"keep_dims", false}});  //  tensor_array<i32[]>
+    auto SliceAssign_201_Range = makeOP<ov::op::v4::Range>({0, SliceAssign_201_ReduceProd, 1},
                                                            {{"output_type", "i32"}});  //  tensor_array<i32[?]>
     auto SliceAssign_201_Reshape =
-        makeOP<ov::opset1::Reshape>({SliceAssign_201_Range, {-1, 1, max_seq_len, max_seq_len}},
+        makeOP<ov::op::v1::Reshape>({SliceAssign_201_Range, {-1, 1, max_seq_len, max_seq_len}},
                                     {{"special_zero", true}});  //  tensor_array<i32[?,1,8192,8192]>
     auto ShapeOf_49034 = ShapeOf_i32(attention_mask);           //  tensor_array<i32[2]>
     auto Gather_41642 =
-        makeOP<ov::opset8::Gather>({ShapeOf_49034, {1}, 0}, {{"batch_dims", 0}});  //  tensor_array<i32[1]>
+        makeOP<ov::op::v8::Gather>({ShapeOf_49034, {1}, 0}, {{"batch_dims", 0}});  //  tensor_array<i32[1]>
     auto ScatterUpdate_93502 =
-        makeOP<ov::opset3::ScatterUpdate>({{0, 0, 0, 0}, {3}, Gather_41642, {0}});  //  tensor_array<i32[4]>
+        makeOP<ov::op::v3::ScatterUpdate>({{0, 0, 0, 0}, {3}, Gather_41642, {0}});  //  tensor_array<i32[4]>
     auto SliceAssign_201_Slice =
-        makeOP<ov::opset1::StridedSlice>({SliceAssign_201_Reshape, {0, 0, 0, 0}, ScatterUpdate_93502, {1, 1, 1, 1}},
+        makeOP<ov::op::v1::StridedSlice>({SliceAssign_201_Reshape, {0, 0, 0, 0}, ScatterUpdate_93502, {1, 1, 1, 1}},
                                          {{"begin_mask", {1, 1, 1, 0}},
                                           {"end_mask", {1, 1, 1, 0}},
                                           {"new_axis_mask", {}},
                                           {"shrink_axis_mask", {}},
                                           {"ellipsis_mask", {}}});  //  tensor_array<i32[?,1,8192,..8192]>
-    auto SliceAssign_201_Reshape_1 = makeOP<ov::opset1::Reshape>({SliceAssign_201_Slice, {-1, 1}},
+    auto SliceAssign_201_Reshape_1 = makeOP<ov::op::v1::Reshape>({SliceAssign_201_Slice, {-1, 1}},
                                                                  {{"special_zero", false}});  //  tensor_array<i32[?,1]>
     auto causal_mask_boolean_1 =
-        makeOP<ov::opset1::StridedSlice>({mul_Multiply_1, {0, 0, 0, 0}, ScatterUpdate_93502, {1, 1, 1, 1}},
+        makeOP<ov::op::v1::StridedSlice>({mul_Multiply_1, {0, 0, 0, 0}, ScatterUpdate_93502, {1, 1, 1, 1}},
                                          {{"begin_mask", {1, 1, 1, 0}},
                                           {"end_mask", {1, 1, 1, 0}},
                                           {"new_axis_mask", {}},
@@ -99,11 +131,11 @@ static std::shared_ptr<ov::Model> buildCausalMaskPreprocess(const int max_seq_le
                                          1,
                                      }),
                                      {0.000000f});
-    auto eq_Equal = makeOP<ov::opset1::Equal>({causal_mask_boolean_1, Constant_107278},
+    auto eq_Equal = makeOP<ov::op::v1::Equal>({causal_mask_boolean_1, Constant_107278},
                                               {{"auto_broadcast", "numpy"}});  //  tensor_array<u8[?,1,8192,..8192]>
     auto unsqueeze_Unsqueeze_1 =
-        makeOP<ov::opset1::Unsqueeze>({attention_mask, {1, 2}});  //  tensor_array<i32[?,1,1,?]>
-    auto eq_Convert = makeOP<ov::opset1::Convert>({unsqueeze_Unsqueeze_1},
+        makeOP<ov::op::v0::Unsqueeze>({attention_mask, {1, 2}});  //  tensor_array<i32[?,1,1,?]>
+    auto eq_Convert = makeOP<ov::op::v0::Convert>({unsqueeze_Unsqueeze_1},
                                                   {{"destination_type", "f32"}});  //  tensor_array<f32[?,1,1,?]>
     auto Constant_107279 = makeConst(ov::element::f32,
                                      ov::Shape({
@@ -113,36 +145,36 @@ static std::shared_ptr<ov::Model> buildCausalMaskPreprocess(const int max_seq_le
                                          1,
                                      }),
                                      {0.000000f});
-    auto eq_Equal_1 = makeOP<ov::opset1::Equal>({eq_Convert, Constant_107279},
+    auto eq_Equal_1 = makeOP<ov::op::v1::Equal>({eq_Convert, Constant_107279},
                                                 {{"auto_broadcast", "numpy"}});  //  tensor_array<u8[?,1,1,?]>
     auto mul_LogicalAnd =
-        makeOP<ov::opset1::LogicalAnd>({eq_Equal, eq_Equal_1},
+        makeOP<ov::op::v1::LogicalAnd>({eq_Equal, eq_Equal_1},
                                        {{"auto_broadcast", "numpy"}});  //  tensor_array<u8[?,1,8192,?]>
     auto masked_fill_Select =
-        makeOP<ov::opset1::Select>({mul_LogicalAnd, -FLT_MAX, causal_mask_boolean_1},
+        makeOP<ov::op::v1::Select>({mul_LogicalAnd, -FLT_MAX, causal_mask_boolean_1},
                                    {{"auto_broadcast", "numpy"}});  //  tensor_array<f32[?,1,8192,?]>
     auto copy__ShapeOf = ShapeOf_i32(causal_mask_boolean_1);        //  tensor_array<i32[4]>
     auto Constant_47319 = makeConst(ov::element::u8, ov::Shape({}), {0});
-    auto copy__Broadcast = makeOP<ov::opset1::Broadcast>({masked_fill_Select, copy__ShapeOf, Constant_47319},
+    auto copy__Broadcast = makeOP<ov::op::v1::Broadcast>({masked_fill_Select, copy__ShapeOf, Constant_47319},
                                                          {{"mode", "numpy"}});  //  tensor_array<f32[?,1,8192,..8192]>
     auto SliceAssign_201_Reshape_2 =
-        makeOP<ov::opset1::Reshape>({copy__Broadcast, {-1}}, {{"special_zero", false}});  //  tensor_array<f32[?]>
-    auto SliceAssign_201_ScatterNDUpdate = makeOP<ov::opset4::ScatterNDUpdate>(
+        makeOP<ov::op::v1::Reshape>({copy__Broadcast, {-1}}, {{"special_zero", false}});  //  tensor_array<f32[?]>
+    auto SliceAssign_201_ScatterNDUpdate = makeOP<ov::op::v3::ScatterNDUpdate>(
         {SliceAssign_201_Reshape_0, SliceAssign_201_Reshape_1, SliceAssign_201_Reshape_2},
         {});  //  tensor_array<f32[?]>
     auto SliceAssign_201_Reshape_3 =
-        makeOP<ov::opset1::Reshape>({SliceAssign_201_ScatterNDUpdate, {-1, 1, max_seq_len, max_seq_len}},
+        makeOP<ov::op::v1::Reshape>({SliceAssign_201_ScatterNDUpdate, {-1, 1, max_seq_len, max_seq_len}},
                                     {{"special_zero", true}});  //  tensor_array<f32[?,1,8192,8192]>
     auto ScatterUpdate_93554 =
-        makeOP<ov::opset3::ScatterUpdate>({{0, 0, 0, 0}, {3}, kvLen, {0}}, {});  //  tensor_array<i32[4]>
+        makeOP<ov::op::v3::ScatterUpdate>({{0, 0, 0, 0}, {3}, kvLen, {0}}, {});  //  tensor_array<i32[4]>
     auto slice_Slice_14 =
-        makeOP<ov::opset1::StridedSlice>({SliceAssign_201_Reshape_3, {0, 0, 0, 0}, ScatterUpdate_93554, {1, 1, 1, 1}},
+        makeOP<ov::op::v1::StridedSlice>({SliceAssign_201_Reshape_3, {0, 0, 0, 0}, ScatterUpdate_93554, {1, 1, 1, 1}},
                                          {{"begin_mask", {1, 1, 1, 0}},
                                           {"end_mask", {1, 1, 1, 0}},
                                           {"new_axis_mask", {}},
                                           {"shrink_axis_mask", {}},
                                           {"ellipsis_mask", {}}});  //  tensor_array<f32[?,1,8192,..8192]>
-    auto index_Gather = makeOP<ov::opset8::Gather>({slice_Slice_14, cache_positions, 2},
+    auto index_Gather = makeOP<ov::op::v8::Gather>({slice_Slice_14, cache_positions, 2},
                                                    {{"batch_dims", 0}});  //  tensor_array<f32[?,1,?,..8192]>
     auto result = index_Gather;
 
@@ -218,3 +250,4 @@ TEST_F(CausalMaskPreprocessCausalMaskPreprocess, smoke_CompareWithRefs) {
 
 }  // namespace test
 }  // namespace ov
+

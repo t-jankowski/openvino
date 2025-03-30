@@ -8,6 +8,12 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/result.hpp"
 #include "openvino/op/power.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/power.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/power.hpp"
 
 namespace ov {
 namespace test {
@@ -55,3 +61,5 @@ void PowerLayerTest::SetUp() {
 }
 } // namespace test
 } // namespace ov
+
+

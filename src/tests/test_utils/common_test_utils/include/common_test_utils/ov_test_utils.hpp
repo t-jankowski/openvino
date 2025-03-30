@@ -11,6 +11,8 @@
 #include "openvino/pass/manager.hpp"
 #include "openvino/pass/pass.hpp"
 #include "transformations/init_node_info.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/constant.hpp"
 
 #define DYN ov::Dimension::dynamic()
 
@@ -85,3 +87,5 @@ bool is_tensor_iterator_exist(const std::shared_ptr<ov::Model>&);
 }  // namespace utils
 }  // namespace test
 }  // namespace ov
+
+

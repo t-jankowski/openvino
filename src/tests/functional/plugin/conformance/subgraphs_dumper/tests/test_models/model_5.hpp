@@ -13,6 +13,18 @@
 #include "openvino/op/read_value.hpp"
 #include "openvino/op/assign.hpp"
 #include "matchers/subgraph/read_value_assign.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/assign.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/read_value.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/assign.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/read_value.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
 
 class Model_5 {
 protected:
@@ -94,3 +106,5 @@ public:
         return ref_models;
     }
 };
+
+

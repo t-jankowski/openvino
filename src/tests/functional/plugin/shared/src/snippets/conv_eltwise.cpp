@@ -5,6 +5,10 @@
 #include "common_test_utils/common_utils.hpp"
 #include "snippets/conv_eltwise.hpp"
 #include "subgraph_customizable.hpp"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/sqrt.hpp"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/sqrt.hpp"
 
 namespace ov {
 namespace test {
@@ -51,3 +55,5 @@ TEST_P(ConvEltwise, CompareWithRefImpl) {
 } // namespace snippets
 } // namespace test
 } // namespace ov
+
+

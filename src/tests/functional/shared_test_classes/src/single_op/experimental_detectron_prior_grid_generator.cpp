@@ -3,6 +3,10 @@
 //
 
 #include "shared_test_classes/single_op/experimental_detectron_prior_grid_generator.hpp"
+#include "openvino/op/experimental_detectron_prior_grid_generator.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/experimental_detectron_prior_grid_generator.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -65,3 +69,5 @@ void ExperimentalDetectronPriorGridGeneratorLayerTest::SetUp() {
 
 } // namespace test
 } // namespace ov
+
+

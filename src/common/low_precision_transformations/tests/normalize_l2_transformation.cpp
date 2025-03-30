@@ -16,6 +16,7 @@
 #include "ov_lpt_models/normalize_l2.hpp"
 #include "simple_low_precision_transformer.hpp"
 #include "transformations/utils/utils.hpp"
+#include "openvino/op/normalize_l2.hpp"
 
 namespace {
 using namespace testing;
@@ -316,3 +317,4 @@ INSTANTIATE_TEST_SUITE_P(
     NormalizeL2Transformation::getTestCaseName);
 } // namespace testValues2
 } // namespace
+

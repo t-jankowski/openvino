@@ -7,6 +7,12 @@
 #include "common_test_utils/node_builders/constant.hpp"
 #include "ov_lpt_models/common/builders.hpp"
 #include "ov_ops/type_relaxed.hpp"
+#include "openvino/op/max_pool.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/max_pool.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace builder {
@@ -29,8 +35,8 @@ namespace subgraph {
         const auto deq = makeDequantization(input, dequantization);
 
         const auto op =
-            ov::opset1::MaxPool(deq, Strides{1, 1}, Shape{1, 1}, Shape{0, 0}, Shape{2, 2}, ov::op::RoundingType::FLOOR);
-        const auto targetOp = std::make_shared<ov::op::TypeRelaxed<ov::opset1::MaxPool>>(
+            ov::op::v1::MaxPool(deq, Strides{1, 1}, Shape{1, 1}, Shape{0, 0}, Shape{2, 2}, ov::op::RoundingType::FLOOR);
+        const auto targetOp = std::make_shared<ov::op::TypeRelaxed<ov::op::v1::MaxPool>>(
             op,
             std::vector<ov::element::Type>{ov::element::f32, ov::element::f32},
             std::vector<ov::element::Type>{});
@@ -38,7 +44,7 @@ namespace subgraph {
         rtInfo["Variant::std::string"] = "targetOp";
 
         return std::make_shared<ov::Model>(
-            ov::ResultVector{ std::make_shared<ov::opset1::Result>(targetOp) },
+            ov::ResultVector{ std::make_shared<ov::op::v0::Result>(targetOp) },
             params,
             "NormalizeDequantizationFunction");
     }
@@ -46,3 +52,5 @@ namespace subgraph {
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

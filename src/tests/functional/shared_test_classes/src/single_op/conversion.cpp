@@ -3,6 +3,16 @@
 //
 
 #include "shared_test_classes/single_op/conversion.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/convert_like.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/convert_like.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -64,3 +74,5 @@ void ConversionLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

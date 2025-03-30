@@ -12,6 +12,7 @@
 #include "transformations/rt_info/primitives_priority_attribute.hpp"
 #include "utils/general_utils.h"
 #include "utils/rt_info/memory_formats_attribute.hpp"
+#include "openvino/op/result.hpp"
 #if defined(OPENVINO_ARCH_X86) || defined(OPENVINO_ARCH_X86_64)
 #    include <xbyak/xbyak_util.h>
 #endif
@@ -559,3 +560,4 @@ bool containsSupportedFormatsOnly(const std::vector<cpu_memory_format_t>& format
 }
 
 }  // namespace CPUTestUtils
+

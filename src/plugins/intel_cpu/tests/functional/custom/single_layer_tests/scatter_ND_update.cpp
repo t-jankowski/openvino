@@ -5,6 +5,8 @@
 #include "common_test_utils/ov_tensor_utils.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/scatter_nd_update.hpp"
 
 using namespace CPUTestUtils;
 namespace ov {
@@ -201,3 +203,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_CompareWithRefs,
                          ScatterNDUpdateLayerCPUTest::getTestCaseName);
 }  // namespace test
 }  // namespace ov
+

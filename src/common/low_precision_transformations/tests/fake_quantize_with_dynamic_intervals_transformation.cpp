@@ -14,6 +14,10 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "simple_low_precision_transformer.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace testing;
 using namespace ov;
@@ -165,3 +169,4 @@ INSTANTIATE_TEST_SUITE_P(
         ::testing::ValuesIn(shapes),
         ::testing::ValuesIn(fakeQuantizeTransformationTestValues)),
     FakeQuantizeWithDynamicIntervalsTransformation::getTestCaseName);
+

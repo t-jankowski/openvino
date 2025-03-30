@@ -12,6 +12,9 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/multiply.hpp"
 #include "openvino/op/reduce_sum.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/reduce_sum.hpp"
 
 namespace ov {
 namespace pass {
@@ -101,3 +104,4 @@ bool ReduceSumTransformation::getUpdatePrecision(const std::shared_ptr<Node>& re
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

@@ -11,6 +11,7 @@
 
 #include "low_precision/lpt_visibility.hpp"
 #include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/fake_quantize.hpp"
 
 namespace ov {
 namespace pass {
@@ -94,3 +95,4 @@ inline std::ostream &operator << (std::ostream &os, const QuantizationDetails& v
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

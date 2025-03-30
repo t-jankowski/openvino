@@ -14,6 +14,9 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/multiply.hpp"
 #include "openvino/op/squeeze.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/squeeze.hpp"
 
 namespace ov {
 namespace pass {
@@ -85,3 +88,4 @@ bool SqueezeTransformation::canBeTransformed(const std::shared_ptr<Node>& layer)
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

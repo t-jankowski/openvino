@@ -6,6 +6,7 @@
 
 #include "single_op_tests/scatter_ND_update.hpp"
 #include "common_test_utils/test_constants.hpp"
+#include "openvino/op/scatter_nd_update.hpp"
 
 using ov::test::ScatterNDUpdateLayerTest;
 using ov::test::ScatterNDUpdate15LayerTest;
@@ -116,3 +117,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_ScatterNDUpdate15Duplicate,
                          ScatterNDUpdate15LayerTest::getTestCaseName);
 
 }  // namespace
+

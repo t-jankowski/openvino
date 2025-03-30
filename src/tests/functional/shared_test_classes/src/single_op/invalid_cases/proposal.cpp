@@ -3,6 +3,14 @@
 //
 
 #include "shared_test_classes/single_op/invalid_cases/proposal.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/proposal.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/proposal.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -127,3 +135,5 @@ TEST_P(ProposalBehTest, Inference) {
 }
 }  // namespace test
 }  // namespace ov
+
+

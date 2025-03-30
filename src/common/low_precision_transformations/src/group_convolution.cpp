@@ -12,6 +12,7 @@
 #include "low_precision/network_helper.hpp"
 #include "itt.hpp"
 #include "openvino/op/group_conv.hpp"
+#include "openvino/op/group_conv.hpp"
 
 namespace ov {
 namespace pass {
@@ -61,3 +62,4 @@ size_t GroupConvolutionTransformation::getInputChannels(const std::shared_ptr<ov
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

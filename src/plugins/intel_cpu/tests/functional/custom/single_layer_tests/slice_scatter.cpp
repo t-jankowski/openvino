@@ -7,6 +7,9 @@
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
 #include "utils/filter_cpu_info.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/slice_scatter.hpp"
 
 using namespace CPUTestUtils;
 using namespace ov::test;
@@ -446,3 +449,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_CompareWithRefs_Common_Full_Slice_5D,
                                             ::testing::ValuesIn(CPUParamsCommon5D)),
                          SliceScatterLayerCPUTest::getTestCaseName);
 }  // namespace
+

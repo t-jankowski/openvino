@@ -7,6 +7,10 @@
 #include "common_test_utils/node_builders/group_convolution.hpp"
 #include "utils/cpu_test_utils.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -47,7 +51,7 @@ protected:
                                                                std::vector<size_t>{1, 1},
                                                                ov::op::PadType::EXPLICIT);
         auto bias_const = ov::test::utils::make_constant(precision, {1, 32 , 1, 1});
-        auto bias = std::make_shared<ov::opset10::Add>(dw_conv, bias_const);
+        auto bias = std::make_shared<ov::op::v1::Add>(dw_conv, bias_const);
         function = std::make_shared<ov::Model>(bias, params, "ConvDWConv");
     }
 };
@@ -58,3 +62,4 @@ TEST_F(ConvDWConv, smoke_CompareWithRefs) {
 
 }  // namespace test
 }  // namespace ov
+

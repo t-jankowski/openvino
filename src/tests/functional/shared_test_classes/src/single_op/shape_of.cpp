@@ -3,6 +3,10 @@
 //
 
 #include "shared_test_classes/single_op/shape_of.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/shape_of.hpp"
 
 namespace ov {
 namespace test {
@@ -44,3 +48,5 @@ void ShapeOfLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

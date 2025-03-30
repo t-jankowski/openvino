@@ -5,6 +5,14 @@
 #include "common_test_utils/ov_tensor_utils.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 namespace ov {
@@ -51,9 +59,9 @@ protected:
             auto param_node = std::make_shared<ov::op::v0::Parameter>(input_precisions[i], inputDynamicShapes[i]);
             params.push_back(param_node);
         }
-        const auto bcast_data = ov::opset10::Constant::create(input_precision, {}, {1.f});
-        const auto bcast = std::make_shared<ov::opset10::Broadcast>(bcast_data, params[1]);
-        const auto add = std::make_shared<ov::opset10::Add>(params[0], bcast);
+        const auto bcast_data = ov::op::v0::Constant::create(input_precision, {}, {1.f});
+        const auto bcast = std::make_shared<ov::op::v3::Broadcast>(bcast_data, params[1]);
+        const auto add = std::make_shared<ov::op::v1::Add>(params[0], bcast);
         function = std::make_shared<ov::Model>(add, params);
     }
 
@@ -129,3 +137,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_BroadcastEltwise,
 } // namespace
 }  // namespace test
 }  // namespace ov
+

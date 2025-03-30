@@ -11,6 +11,7 @@
 #include "itt.hpp"
 #include "openvino/pass/manager.hpp"
 #include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/fake_quantize.hpp"
 
 using namespace ov;
 using namespace ov::pass::low_precision;
@@ -29,3 +30,4 @@ bool ov::pass::low_precision::AlignQuantizationIntervals::run_on_model(const std
     manager.run_passes(f);
     return false;
 }
+

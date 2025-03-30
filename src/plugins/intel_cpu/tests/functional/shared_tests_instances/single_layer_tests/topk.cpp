@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "single_op_tests/topk.hpp"
+#include "openvino/op/topk.hpp"
 
 using ov::test::TopKLayerTest;
 
@@ -55,3 +56,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_TopK, TopKLayerTest,
                 ::testing::Values(ov::test::utils::DEVICE_CPU)),
         TopKLayerTest::getTestCaseName);
 }  // namespace
+

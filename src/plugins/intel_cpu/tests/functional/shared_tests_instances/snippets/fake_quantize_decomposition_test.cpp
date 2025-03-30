@@ -6,6 +6,9 @@
 #include <vector>
 
 #include "snippets/fake_quantize_decomposition_test.hpp"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/swish.hpp"
 
 using namespace ov::test::snippets;
 
@@ -149,3 +152,4 @@ INSTANTIATE_TEST_SUITE_P(
 #endif
 
 }  // namespace
+

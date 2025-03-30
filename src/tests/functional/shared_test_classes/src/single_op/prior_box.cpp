@@ -10,6 +10,14 @@
 #include "openvino/op/result.hpp"
 #include "openvino/op/shape_of.hpp"
 #include "openvino/op/prior_box_clustered.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/prior_box.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/prior_box.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/shape_of.hpp"
 
 namespace ov {
 namespace test {
@@ -115,3 +123,5 @@ void PriorBoxLayerTest::SetUp() {
 }
 } // namespace test
 } // namespace ov
+
+

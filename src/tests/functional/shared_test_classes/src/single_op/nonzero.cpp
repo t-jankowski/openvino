@@ -8,6 +8,12 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/result.hpp"
 #include "openvino/op/non_zero.hpp"
+#include "openvino/op/non_zero.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/non_zero.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -55,3 +61,5 @@ void NonZeroLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

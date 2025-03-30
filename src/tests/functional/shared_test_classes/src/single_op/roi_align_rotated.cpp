@@ -7,6 +7,12 @@
 #include <random>
 
 #include "openvino/core/enum_names.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/roi_align_rotated.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/roi_align_rotated.hpp"
 
 namespace ov {
 namespace test {
@@ -136,3 +142,5 @@ void ROIAlignRotatedLayerTest::SetUp() {
 
 }  // namespace test
 }  // namespace ov
+
+

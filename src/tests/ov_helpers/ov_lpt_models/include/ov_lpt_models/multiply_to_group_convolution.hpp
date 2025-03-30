@@ -10,6 +10,8 @@
 #include "ov_lpt_models/common/constant.hpp"
 #include "ov_lpt_models/common/fake_quantize_on_data.hpp"
 #include "ov_lpt_models/common/dequantization_operations.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/constant.hpp"
 
 namespace ov {
 namespace builder {
@@ -41,3 +43,5 @@ public:
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

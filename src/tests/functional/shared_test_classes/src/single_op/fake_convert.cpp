@@ -6,8 +6,12 @@
 
 #include <random>
 
-#include "openvino/opsets/opset1.hpp"
-#include "openvino/opsets/opset13.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_convert.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_convert.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -69,13 +73,15 @@ void FakeConvertLayerTest::SetUp() {
         configuration.insert(ov::hint::inference_precision(ov::element::bf16));
     }
 
-    const auto data = std::make_shared<opset1::Parameter>(data_prec, inputDynamicShapes.front());
-    const auto scale = std::make_shared<opset1::Constant>(data_prec, scale_shape, scale_values);
-    const auto shift = std::make_shared<opset1::Constant>(data_prec, shift_shape, shift_values);
+    const auto data = std::make_shared<op::v0::Parameter>(data_prec, inputDynamicShapes.front());
+    const auto scale = std::make_shared<op::v0::Constant>(data_prec, scale_shape, scale_values);
+    const auto shift = std::make_shared<op::v0::Constant>(data_prec, shift_shape, shift_values);
 
-    const auto fake_convert = default_shift ? std::make_shared<opset13::FakeConvert>(data, scale, dst_prec)
-                                            : std::make_shared<opset13::FakeConvert>(data, scale, shift, dst_prec);
+    const auto fake_convert = default_shift ? std::make_shared<op::v13::FakeConvert>(data, scale, dst_prec)
+                                            : std::make_shared<op::v13::FakeConvert>(data, scale, shift, dst_prec);
     function = std::make_shared<ov::Model>(NodeVector{fake_convert}, ParameterVector{data});
 }
 }  // namespace test
 }  // namespace ov
+
+

@@ -23,6 +23,8 @@
 #include "ov_lpt_models/move_fake_quantize.hpp"
 #include "ov_lpt_models/relu.hpp"
 #include "simple_low_precision_transformer.hpp"
+#include "openvino/op/avg_pool.hpp"
+#include "openvino/op/fake_quantize.hpp"
 
 using namespace testing;
 using namespace ov;
@@ -538,3 +540,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_LPT,
                          MoveFakeQuantizeTransformation::getTestCaseName);
 }  // namespace NegativeTestValues
 }  // namespace
+

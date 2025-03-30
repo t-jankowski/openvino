@@ -3,6 +3,12 @@
 //
 
 #include "shared_test_classes/single_op/log_softmax.hpp"
+#include "openvino/op/log_softmax.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/log_softmax.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -52,3 +58,5 @@ void LogSoftmaxLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

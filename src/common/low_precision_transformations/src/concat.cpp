@@ -22,6 +22,12 @@
 #include "openvino/op/convert.hpp"
 #include "openvino/op/multiply.hpp"
 #include "openvino/op/subtract.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/subtract.hpp"
 
 namespace ov {
 namespace pass {
@@ -350,3 +356,4 @@ bool ConcatTransformation::isQuantizedStatic(const std::shared_ptr<const Node>& 
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

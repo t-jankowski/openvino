@@ -6,6 +6,8 @@
 
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "shared_test_classes/subgraph/group_normalization_fusion.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/constant.hpp"
 
 namespace ov {
 namespace test {
@@ -88,3 +90,5 @@ std::vector<std::tuple<T_old_vals..., T_added_vals...>> expand_vals(std::vector<
 
 }  // namespace test
 }  // namespace ov
+
+

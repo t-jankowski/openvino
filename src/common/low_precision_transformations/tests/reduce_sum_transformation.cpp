@@ -20,6 +20,7 @@
 #include "ov_lpt_models/reduce.hpp"
 #include "ov_lpt_models/common/dequantization_operations.hpp"
 #include "ov_lpt_models/common/constant.hpp"
+#include "openvino/op/reduce_sum.hpp"
 
 namespace {
 using namespace testing;
@@ -401,3 +402,4 @@ namespace testValues3 {
 } // namespace testValues3
 
 } // namespace
+

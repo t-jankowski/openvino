@@ -5,6 +5,11 @@
 #include "common_test_utils/ov_tensor_utils.hpp"
 
 #include "shared_test_classes/base/ov_subgraph.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/loop.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -59,3 +64,4 @@ TEST_F(FuseNon0OuputPort, smoke_FuseNon0OuputPort) {
 
 }  // namespace test
 }  // namespace ov
+

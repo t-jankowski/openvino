@@ -15,6 +15,8 @@
 #include "ov_lpt_models/common/dequantization_operations.hpp"
 #include "ov_lpt_models/fuse_fake_quantize.hpp"
 #include "simple_low_precision_transformer.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/max_pool.hpp"
 
 namespace {
 
@@ -189,3 +191,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_LPT_DiffFq,
                          EliminateFakeQuantizeTransformation::getTestCaseName);
 
 }  // namespace
+

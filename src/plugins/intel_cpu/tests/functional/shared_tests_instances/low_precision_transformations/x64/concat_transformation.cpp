@@ -6,6 +6,7 @@
 
 #include "low_precision_transformations/concat_transformation.hpp"
 #include "common_test_utils/test_constants.hpp"
+#include "openvino/op/constant.hpp"
 
 using namespace LayerTestsDefinitions;
 
@@ -124,3 +125,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_LPT, ConcatTransformation,
         ::testing::ValuesIn(testValues)),
     ConcatTransformation::getTestCaseName);
 }  // namespace concat_transformation_mixed
+

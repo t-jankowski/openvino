@@ -5,6 +5,11 @@
 #include "common_test_utils/node_builders/constant.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace CPUTestUtils;
 
@@ -63,3 +68,4 @@ TEST_F(ConcatReorderInPlaceTest, smoke_ConcatReorderInPlace_CPU) {
 }  // namespace
 }  // namespace test
 }  // namespace ov
+

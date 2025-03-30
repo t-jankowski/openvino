@@ -10,6 +10,9 @@
 #include "shared_test_classes/single_op/non_max_suppression.hpp"
 #include "utils/cpu_test_utils.hpp"
 #include "common_test_utils/test_enums.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/non_max_suppression.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 
@@ -225,3 +228,4 @@ const auto nmsParams = ::testing::Combine(::testing::ValuesIn(inShapeParams),
 INSTANTIATE_TEST_SUITE_P(smoke_NmsLayerCPUTest, NmsLayerCPUTest, nmsParams, NmsLayerCPUTest::getTestCaseName);
 
 }  // namespace
+

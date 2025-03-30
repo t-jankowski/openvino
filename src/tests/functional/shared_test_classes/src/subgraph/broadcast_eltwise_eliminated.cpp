@@ -3,6 +3,16 @@
 //
 
 #include "shared_test_classes/subgraph/broadcast_eltwise_eliminated.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/shape_of.hpp"
 
 namespace ov {
 namespace test {
@@ -43,3 +53,5 @@ void BroadcastEltwiseEliminated::TearDown() {
 
 }  // namespace test
 }  // namespace ov
+
+

@@ -3,6 +3,14 @@
 //
 
 #include "shared_test_classes/single_op/strided_slice.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/strided_slice.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/strided_slice.hpp"
 
 namespace ov {
 namespace test {
@@ -68,3 +76,5 @@ void StridedSliceLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

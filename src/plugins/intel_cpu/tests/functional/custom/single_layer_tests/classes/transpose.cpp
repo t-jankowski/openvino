@@ -6,6 +6,10 @@
 
 #include "gtest/gtest.h"
 #include "utils/cpu_test_utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/transpose.hpp"
 
 using namespace CPUTestUtils;
 
@@ -131,3 +135,4 @@ const std::vector<std::vector<size_t>>& inputOrder4D() {
 }  // namespace Transpose
 }  // namespace test
 }  // namespace ov
+

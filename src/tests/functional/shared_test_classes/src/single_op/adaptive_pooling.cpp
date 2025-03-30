@@ -3,6 +3,14 @@
 //
 
 #include "shared_test_classes/single_op/adaptive_pooling.hpp"
+#include "openvino/op/adaptive_avg_pool.hpp"
+#include "openvino/op/adaptive_max_pool.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/adaptive_avg_pool.hpp"
+#include "openvino/op/adaptive_max_pool.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -58,3 +66,5 @@ void AdaPoolLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

@@ -17,6 +17,7 @@
 #include "ov_lpt_models/mat_mul.hpp"
 #include "simple_low_precision_transformer.hpp"
 #include "transformations/init_node_info.hpp"
+#include "openvino/op/matmul.hpp"
 
 namespace {
 using namespace testing;
@@ -522,3 +523,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_LPT,
                          MatMulWithConstantTransformation::getTestCaseName);
 }  // namespace testValues4
 }  // namespace
+

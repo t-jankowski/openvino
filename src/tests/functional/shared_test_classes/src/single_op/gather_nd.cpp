@@ -5,6 +5,10 @@
 #include "shared_test_classes/single_op/gather_nd.hpp"
 
 #include "common_test_utils/node_builders/gather_nd.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -75,3 +79,5 @@ void GatherND8LayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

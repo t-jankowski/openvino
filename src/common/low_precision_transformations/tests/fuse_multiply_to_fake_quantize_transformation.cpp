@@ -17,6 +17,7 @@
 #include "ov_lpt_models/fuse_multiply_to_fake_quantize.hpp"
 
 #include "simple_low_precision_transformer.hpp"
+#include "openvino/op/multiply.hpp"
 
 namespace {
 using namespace testing;
@@ -230,3 +231,4 @@ INSTANTIATE_TEST_SUITE_P(
     FuseMultiplyToFakeQuantizeTransformation::getTestCaseName);
 } // namespace testValues2
 } // namespace
+

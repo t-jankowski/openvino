@@ -10,6 +10,16 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/minimum.hpp"
 #include "openvino/op/maximum.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/maximum.hpp"
+#include "openvino/op/minimum.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/maximum.hpp"
+#include "openvino/op/minimum.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 
 namespace ov {
@@ -83,3 +93,5 @@ void MaxMinLayerTest::SetUp() {
 }
 } // namespace test
 } // namespace ov
+
+

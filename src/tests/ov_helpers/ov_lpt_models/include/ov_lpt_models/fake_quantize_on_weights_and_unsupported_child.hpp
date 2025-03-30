@@ -8,6 +8,8 @@
 
 #include <low_precision/layer_transformation.hpp>
 #include "ov_lpt_models/common/fake_quantize_on_weights.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/constant.hpp"
 
 namespace ov {
 namespace builder {
@@ -25,3 +27,5 @@ static std::shared_ptr<ov::Model> get(
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

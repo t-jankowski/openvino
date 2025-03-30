@@ -8,6 +8,7 @@
 #include "utils/cpu_test_utils.hpp"
 #include "functional_test_utils/skip_tests_config.hpp"
 #include "common_test_utils/test_constants.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 
@@ -97,3 +98,4 @@ TEST_F(EdgeWithSameNameInTwoModels, smoke_CompareWithRef) {
 
 }  // namespace test
 }  // namespace ov
+

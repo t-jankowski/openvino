@@ -3,6 +3,12 @@
 //
 
 #include "shared_test_classes/single_op/slice_scatter.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/slice_scatter.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/slice_scatter.hpp"
 
 namespace ov {
 namespace test {
@@ -63,3 +69,5 @@ void SliceScatterLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

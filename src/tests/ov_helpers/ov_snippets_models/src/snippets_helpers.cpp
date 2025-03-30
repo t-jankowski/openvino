@@ -4,6 +4,8 @@
 
 #include "snippets_helpers.hpp"
 #include "snippets/op/subgraph.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -50,3 +52,4 @@ void SnippetsFunctionCustomizable::ResetCustomOpsInputs() {
 }  // namespace snippets
 }  // namespace test
 }  // namespace ov
+

@@ -16,6 +16,8 @@
 #include "ov_lpt_models/convolution.hpp"
 #include "openvino/op/constant.hpp"
 #include "openvino/op/convolution.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convolution.hpp"
 
 using namespace testing;
 using namespace ov;
@@ -140,3 +142,4 @@ INSTANTIATE_TEST_SUITE_P(
         ::testing::ValuesIn(testValues),
         ::testing::ValuesIn(transposeFlags)),
     IsAsymmetricOnWeightsFakeQuantizeTransformation::getTestCaseName);
+

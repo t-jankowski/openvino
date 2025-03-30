@@ -3,6 +3,14 @@
 //
 
 #include "shared_test_classes/single_op/cum_sum.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/cum_sum.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/cum_sum.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -52,3 +60,5 @@ void CumSumLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

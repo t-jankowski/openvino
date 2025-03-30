@@ -3,6 +3,10 @@
 //
 
 #include "shared_test_classes/subgraph/parameter_result.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -41,3 +45,5 @@ void ParameterResultSubgraphTest::SetUp() {
 
 }  // namespace test
 }  // namespace ov
+
+

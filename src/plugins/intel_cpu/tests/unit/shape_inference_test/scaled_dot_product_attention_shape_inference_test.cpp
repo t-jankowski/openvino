@@ -5,8 +5,9 @@
 #include <gmock/gmock.h>
 
 #include "common_test_utils/test_assertions.hpp"
-#include "openvino/opsets/opset13.hpp"
 #include "utils.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/scaled_dot_product_attention.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -25,11 +26,11 @@ TEST_F(ScaledDotProductAttentionV13StaticShapeInferenceTest, default_ctor) {
 }
 
 TEST_F(ScaledDotProductAttentionV13StaticShapeInferenceTest, dynamic_shapes) {
-    const auto query = std::make_shared<opset13::Parameter>(element::f32, PartialShape{-1, -1, -1});
-    const auto key = std::make_shared<opset13::Parameter>(element::f32, PartialShape{-1, -1, -1});
-    const auto value = std::make_shared<opset13::Parameter>(element::f32, PartialShape{-1, -1, -1});
-    const auto attention_mask = std::make_shared<opset13::Parameter>(element::f32, PartialShape{-1, -1, -1});
-    const auto scale = std::make_shared<opset13::Parameter>(element::f32, PartialShape{-1});
+    const auto query = std::make_shared<op::v0::Parameter>(element::f32, PartialShape{-1, -1, -1});
+    const auto key = std::make_shared<op::v0::Parameter>(element::f32, PartialShape{-1, -1, -1});
+    const auto value = std::make_shared<op::v0::Parameter>(element::f32, PartialShape{-1, -1, -1});
+    const auto attention_mask = std::make_shared<op::v0::Parameter>(element::f32, PartialShape{-1, -1, -1});
+    const auto scale = std::make_shared<op::v0::Parameter>(element::f32, PartialShape{-1});
     auto causal = false;
     op = make_op(query, key, value, attention_mask, scale, causal);
 
@@ -40,11 +41,11 @@ TEST_F(ScaledDotProductAttentionV13StaticShapeInferenceTest, dynamic_shapes) {
 }
 
 TEST_F(ScaledDotProductAttentionV13StaticShapeInferenceTest, static_shapes) {
-    const auto query = std::make_shared<opset13::Parameter>(element::f32, ov::Shape{2, 3, 4});
-    const auto key = std::make_shared<opset13::Parameter>(element::f32, ov::Shape{2, 5, 4});
-    const auto value = std::make_shared<opset13::Parameter>(element::f32, ov::Shape{2, 5, 6});
-    const auto attention_mask = std::make_shared<opset13::Parameter>(element::f32, ov::Shape{1, 3, 5});
-    const auto scale = std::make_shared<opset13::Parameter>(element::f32, ov::Shape{1});
+    const auto query = std::make_shared<op::v0::Parameter>(element::f32, ov::Shape{2, 3, 4});
+    const auto key = std::make_shared<op::v0::Parameter>(element::f32, ov::Shape{2, 5, 4});
+    const auto value = std::make_shared<op::v0::Parameter>(element::f32, ov::Shape{2, 5, 6});
+    const auto attention_mask = std::make_shared<op::v0::Parameter>(element::f32, ov::Shape{1, 3, 5});
+    const auto scale = std::make_shared<op::v0::Parameter>(element::f32, ov::Shape{1});
     auto causal = false;
     op = make_op(query, key, value, attention_mask, scale, causal);
 
@@ -55,11 +56,11 @@ TEST_F(ScaledDotProductAttentionV13StaticShapeInferenceTest, static_shapes) {
 }
 
 TEST_F(ScaledDotProductAttentionV13StaticShapeInferenceTest, mixed_shapes) {
-    const auto query = std::make_shared<opset13::Parameter>(element::f32, PartialShape{2, {2, 3}, 4});
-    const auto key = std::make_shared<opset13::Parameter>(element::f32, PartialShape{-1, {2, 7}, -1});
-    const auto value = std::make_shared<opset13::Parameter>(element::f32, ov::Shape{2, 5, 6});
-    const auto attention_mask = std::make_shared<opset13::Parameter>(element::f32, PartialShape{1, {3, 5}, 5});
-    const auto scale = std::make_shared<opset13::Parameter>(element::f32, ov::Shape{});
+    const auto query = std::make_shared<op::v0::Parameter>(element::f32, PartialShape{2, {2, 3}, 4});
+    const auto key = std::make_shared<op::v0::Parameter>(element::f32, PartialShape{-1, {2, 7}, -1});
+    const auto value = std::make_shared<op::v0::Parameter>(element::f32, ov::Shape{2, 5, 6});
+    const auto attention_mask = std::make_shared<op::v0::Parameter>(element::f32, PartialShape{1, {3, 5}, 5});
+    const auto scale = std::make_shared<op::v0::Parameter>(element::f32, ov::Shape{});
     auto causal = false;
     op = make_op(query, key, value, attention_mask, scale, causal);
 
@@ -70,11 +71,11 @@ TEST_F(ScaledDotProductAttentionV13StaticShapeInferenceTest, mixed_shapes) {
 }
 
 TEST_F(ScaledDotProductAttentionV13StaticShapeInferenceTest, attention_L_broadcast) {
-    const auto query = std::make_shared<opset13::Parameter>(element::f32, PartialShape::dynamic());
-    const auto key = std::make_shared<opset13::Parameter>(element::f32, PartialShape::dynamic());
-    const auto value = std::make_shared<opset13::Parameter>(element::f32, PartialShape::dynamic());
-    const auto attention_mask = std::make_shared<opset13::Parameter>(element::f32, PartialShape::dynamic());
-    const auto scale = std::make_shared<opset13::Parameter>(element::f32, PartialShape::dynamic());
+    const auto query = std::make_shared<op::v0::Parameter>(element::f32, PartialShape::dynamic());
+    const auto key = std::make_shared<op::v0::Parameter>(element::f32, PartialShape::dynamic());
+    const auto value = std::make_shared<op::v0::Parameter>(element::f32, PartialShape::dynamic());
+    const auto attention_mask = std::make_shared<op::v0::Parameter>(element::f32, PartialShape::dynamic());
+    const auto scale = std::make_shared<op::v0::Parameter>(element::f32, PartialShape::dynamic());
     auto causal = false;
 
     op = make_op(query, key, value, attention_mask, scale, causal);
@@ -86,11 +87,11 @@ TEST_F(ScaledDotProductAttentionV13StaticShapeInferenceTest, attention_L_broadca
 }
 
 TEST_F(ScaledDotProductAttentionV13StaticShapeInferenceTest, attention_S_broadcast) {
-    const auto query = std::make_shared<opset13::Parameter>(element::f32, PartialShape::dynamic());
-    const auto key = std::make_shared<opset13::Parameter>(element::f32, PartialShape::dynamic());
-    const auto value = std::make_shared<opset13::Parameter>(element::f32, PartialShape::dynamic());
-    const auto attention_mask = std::make_shared<opset13::Parameter>(element::f32, PartialShape::dynamic());
-    const auto scale = std::make_shared<opset13::Parameter>(element::f32, PartialShape::dynamic());
+    const auto query = std::make_shared<op::v0::Parameter>(element::f32, PartialShape::dynamic());
+    const auto key = std::make_shared<op::v0::Parameter>(element::f32, PartialShape::dynamic());
+    const auto value = std::make_shared<op::v0::Parameter>(element::f32, PartialShape::dynamic());
+    const auto attention_mask = std::make_shared<op::v0::Parameter>(element::f32, PartialShape::dynamic());
+    const auto scale = std::make_shared<op::v0::Parameter>(element::f32, PartialShape::dynamic());
     auto causal = false;
 
     op = make_op(query, key, value, attention_mask, scale, causal);

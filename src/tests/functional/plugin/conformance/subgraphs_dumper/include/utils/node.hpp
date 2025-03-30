@@ -11,6 +11,10 @@
 #include "openvino/openvino.hpp"
 #include "openvino/op/util/op_types.hpp"
 #include "openvino/op/constant.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace util {
@@ -133,3 +137,5 @@ std::string get_node_version(const ov::NodeTypeInfo& node_type_info);
 
 }  // namespace util
 }  // namespace ov
+
+

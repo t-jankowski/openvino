@@ -37,6 +37,10 @@
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
 #include "internal_properties.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {

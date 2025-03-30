@@ -18,6 +18,8 @@
 #include "ov_lpt_models/common/dequantization_operations.hpp"
 #include "simple_low_precision_transformer.hpp"
 #include "ov_lpt_models/multiply_to_group_convolution.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
 
 using namespace testing;
 using namespace ov;
@@ -422,3 +424,4 @@ INSTANTIATE_TEST_SUITE_P(
     MultiplyToGroupConvolutionTransformation,
     ::testing::ValuesIn(testValues),
     MultiplyToGroupConvolutionTransformation::getTestCaseName);
+

@@ -6,6 +6,9 @@
 #include <gtest/gtest.h>
 #include "low_precision/layer_transformation.hpp"
 #include "low_precision/network_helper.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 
@@ -149,3 +152,4 @@ TEST(smoke_LPT_LayerTransformation, getDataPrecision_reqNone_U8zp_to_undefzp) {
     ASSERT_EQ(false, precisionDetails.hasZeroPoint);
     ASSERT_EQ(true, precisionDetails.empty());
 }
+

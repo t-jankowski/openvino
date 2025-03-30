@@ -5,6 +5,14 @@
 #include "subgraph_transpose.hpp"
 #include "common_test_utils/data_utils.hpp"
 #include <snippets/op/subgraph.hpp>
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/transpose.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/transpose.hpp"
 
 namespace ov {
 namespace test {
@@ -38,3 +46,4 @@ std::shared_ptr<ov::Model> TransposeMulFunction::initOriginal() const {
 }  // namespace snippets
 }  // namespace test
 }  // namespace ov
+

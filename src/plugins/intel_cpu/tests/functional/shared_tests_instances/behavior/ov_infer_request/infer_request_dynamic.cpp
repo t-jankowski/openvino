@@ -6,6 +6,11 @@
 
 #include "common_test_utils/node_builders/constant.hpp"
 #include "common_test_utils/node_builders/eltwise.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/split.hpp"
 
 using namespace ov::test::behavior;
 
@@ -79,3 +84,4 @@ INSTANTIATE_TEST_SUITE_P(
                        ::testing::ValuesIn(configs)),
     OVInferRequestDynamicTests::getTestCaseName);
 }  // namespace
+

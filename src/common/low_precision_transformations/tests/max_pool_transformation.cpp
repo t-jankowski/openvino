@@ -16,6 +16,7 @@
 #include "simple_low_precision_transformer.hpp"
 #include "transformations/init_node_info.hpp"
 #include "transformations/utils/utils.hpp"
+#include "openvino/op/max_pool.hpp"
 
 using namespace testing;
 using namespace ov::pass;
@@ -283,3 +284,4 @@ INSTANTIATE_TEST_SUITE_P(
         ::testing::ValuesIn(testValues)),
     MaxPoolTransformation::getTestCaseName);
 } // namespace testValues2
+

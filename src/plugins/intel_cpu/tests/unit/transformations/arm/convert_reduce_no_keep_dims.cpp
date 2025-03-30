@@ -4,9 +4,18 @@
 
 #include <gtest/gtest.h>
 
-#include <openvino/opsets/opset1.hpp>
 #include <transformations/cpu_opset/arm/pass/convert_reduce_no_keep_dims.hpp>
 #include "common_test_utils/ov_test_utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reduce_logical_and.hpp"
+#include "openvino/op/reduce_logical_or.hpp"
+#include "openvino/op/reduce_max.hpp"
+#include "openvino/op/reduce_mean.hpp"
+#include "openvino/op/reduce_min.hpp"
+#include "openvino/op/reduce_prod.hpp"
+#include "openvino/op/reduce_sum.hpp"
+#include "openvino/op/squeeze.hpp"
 
 using namespace ov::intel_cpu;
 
@@ -14,17 +23,17 @@ template <class T>
 class ConvertReduceNoKeepDimsTest : public testing::Test {};
 
 template <class T>
-static std::shared_ptr<ov::Model> createInitGraph(std::shared_ptr<ov::opset1::Parameter> param) {
-        auto axes = ov::opset1::Constant::create(ov::element::i64, ov::Shape{2}, {0, 1});
+static std::shared_ptr<ov::Model> createInitGraph(std::shared_ptr<ov::op::v0::Parameter> param) {
+        auto axes = ov::op::v0::Constant::create(ov::element::i64, ov::Shape{2}, {0, 1});
         auto reduce = std::make_shared<T>(param, axes, false);
         return std::make_shared<ov::Model>(ov::NodeVector{ reduce }, ov::ParameterVector{ param });
 }
 
 template <class T>
-static std::shared_ptr<ov::Model> createRefGraph(std::shared_ptr<ov::opset1::Parameter> param) {
-        auto axes = ov::opset1::Constant::create(ov::element::i64, ov::Shape{2}, {0, 1});
+static std::shared_ptr<ov::Model> createRefGraph(std::shared_ptr<ov::op::v0::Parameter> param) {
+        auto axes = ov::op::v0::Constant::create(ov::element::i64, ov::Shape{2}, {0, 1});
         auto reduce = std::make_shared<T>(param, axes, true);
-        auto squeeze = std::make_shared<ov::opset1::Squeeze>(reduce, axes);
+        auto squeeze = std::make_shared<ov::op::v0::Squeeze>(reduce, axes);
         return std::make_shared<ov::Model>(ov::NodeVector{ squeeze }, ov::ParameterVector{ param });
 }
 
@@ -50,7 +59,7 @@ TYPED_TEST_SUITE_P(ConvertReduceNoKeepDimsTest);
 TYPED_TEST_P(ConvertReduceNoKeepDimsTest, CheckConvertReduceTransformationIsAppliedForStaticShapes) {
     ov::element::Type_t dataType = std::is_base_of<ov::op::util::LogicalReductionKeepDims, TypeParam>::value ?
                                    ov::element::boolean : ov::element::f32;
-    auto param = std::make_shared<ov::opset1::Parameter>(dataType, static_param_shape);
+    auto param = std::make_shared<ov::op::v0::Parameter>(dataType, static_param_shape);
     auto model = createInitGraph<TypeParam>(param);
     auto model_ref = createRefGraph<TypeParam>(param);
 
@@ -65,7 +74,7 @@ TYPED_TEST_P(ConvertReduceNoKeepDimsTest, CheckConvertReduceTransformationIsAppl
 TYPED_TEST_P(ConvertReduceNoKeepDimsTest, CheckConvertReduceTransformationIsAppliedForDynaimcShapes) {
     ov::element::Type_t dataType = std::is_base_of<ov::op::util::LogicalReductionKeepDims, TypeParam>::value ?
                                    ov::element::boolean : ov::element::f32;
-    auto param = std::make_shared<ov::opset1::Parameter>(dataType, dynamic_param_shape);
+    auto param = std::make_shared<ov::op::v0::Parameter>(dataType, dynamic_param_shape);
     auto model = createInitGraph<TypeParam>(param);
     auto model_ref = createRefGraph<TypeParam>(param);
 
@@ -81,11 +90,11 @@ REGISTER_TYPED_TEST_SUITE_P(ConvertReduceNoKeepDimsTest,
                             CheckConvertReduceTransformationIsAppliedForStaticShapes,
                             CheckConvertReduceTransformationIsAppliedForDynaimcShapes);
 
-using reduceTypes = ::testing::Types<ov::opset1::ReduceMin,
-                                     ov::opset1::ReduceMax,
-                                     ov::opset1::ReduceSum,
-                                     ov::opset1::ReduceProd,
-                                     ov::opset1::ReduceMean,
-                                     ov::opset1::ReduceLogicalAnd,
-                                     ov::opset1::ReduceLogicalOr>;
+using reduceTypes = ::testing::Types<ov::op::v1::ReduceMin,
+                                     ov::op::v1::ReduceMax,
+                                     ov::op::v1::ReduceSum,
+                                     ov::op::v1::ReduceProd,
+                                     ov::op::v1::ReduceMean,
+                                     ov::op::v1::ReduceLogicalAnd,
+                                     ov::op::v1::ReduceLogicalOr>;
 INSTANTIATE_TYPED_TEST_SUITE_P(ConvertReduce, ConvertReduceNoKeepDimsTest, reduceTypes);

@@ -3,6 +3,10 @@
 //
 
 #include "shared_test_classes/single_op/region_yolo.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/region_yolo.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/region_yolo.hpp"
 
 namespace ov {
 namespace test {
@@ -49,4 +53,6 @@ void RegionYoloLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+
 

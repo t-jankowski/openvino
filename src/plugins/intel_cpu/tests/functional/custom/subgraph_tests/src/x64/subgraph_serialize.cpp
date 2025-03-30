@@ -6,15 +6,31 @@
 
 #include "openvino/core/model.hpp"
 #include "openvino/runtime/core.hpp"
-#include "openvino/opsets/opset9.hpp"
 #include "utils/cpu_test_utils.hpp"
 #include "snippets/op/subgraph.hpp"
 #include "functional_test_utils/skip_tests_config.hpp"
 #include "common_test_utils/graph_comparator.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/sinh.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/sinh.hpp"
 
 
 using namespace CPUTestUtils;
-using namespace ov::opset9;
+using ov::op::v0::Constant;
+using ov::op::v0::Parameter;
+using ov::op::v0::Relu;
+using ov::op::v0::Result;
+using ov::op::v0::Sinh;
+using ov::op::v1::Add;
 
 namespace ov {
 namespace test {
@@ -153,3 +169,4 @@ TEST_F(SubgraphSnippetSerializationTest, smoke_SerializeSubgraphWithResultAs1stO
 }
 }  // namespace test
 }  // namespace ov
+

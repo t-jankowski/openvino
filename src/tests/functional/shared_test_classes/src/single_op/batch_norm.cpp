@@ -5,6 +5,12 @@
 #include "shared_test_classes/single_op/batch_norm.hpp"
 
 #include "common_test_utils/ov_tensor_utils.hpp"
+#include "openvino/op/batch_norm.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/batch_norm.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -64,3 +70,5 @@ void BatchNormLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

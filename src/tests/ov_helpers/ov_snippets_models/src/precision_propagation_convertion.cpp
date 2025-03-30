@@ -4,7 +4,16 @@
 
 #include "precision_propagation_convertion.hpp"
 #include <assert.h>
-#include "openvino/opsets/opset1.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -25,12 +34,12 @@ std::shared_ptr<ov::op::v0::FakeQuantize> make_fake_quantize(
             for (auto i = 0; i < size; ++i) {
                 values[i] = static_cast<float>(initialValue + i);
             }
-            auto constant = std::make_shared<ov::opset1::Constant>(precision, shape, values);
+            auto constant = std::make_shared<ov::op::v0::Constant>(precision, shape, values);
             constant->set_friendly_name(name);
             return constant;
     };
 
-    const auto fakeQuantize = std::make_shared<ov::opset1::FakeQuantize>(
+    const auto fakeQuantize = std::make_shared<ov::op::v0::FakeQuantize>(
         parent,
         generate(inputType, {}, fake_quantize_intervals[0], "inputLow"),
         generate(inputType, {}, fake_quantize_intervals[1], "inputHigh"),
@@ -57,10 +66,10 @@ std::shared_ptr<ov::Model> PrecisionPropagationConvertionFunction::get(
     const std::vector<float>& fake_quantize_intervals) {
     assert(2ull == input_shapes.size());
     assert(4ull == fake_quantize_intervals.size());
-    const auto parameter1 = std::make_shared<ov::opset1::Parameter>(input_type, input_shapes[0]);
+    const auto parameter1 = std::make_shared<ov::op::v0::Parameter>(input_type, input_shapes[0]);
     parameter1->set_friendly_name("parameter1");
 
-    const auto parameter2 = std::make_shared<ov::opset1::Parameter>(input_type, input_shapes[1]);
+    const auto parameter2 = std::make_shared<ov::op::v0::Parameter>(input_type, input_shapes[1]);
     parameter2->set_friendly_name("parameter2");
 
     std::shared_ptr<Node> parent = make_fake_quantize(
@@ -70,10 +79,10 @@ std::shared_ptr<ov::Model> PrecisionPropagationConvertionFunction::get(
         fake_quantize_intervals);
     parent->set_friendly_name("fakeQuantize");
 
-    parent = std::make_shared<ov::opset1::Add>(parent, parameter2);
+    parent = std::make_shared<ov::op::v1::Add>(parent, parameter2);
     parent->set_friendly_name("add");
 
-    const auto result = std::make_shared<ov::opset1::Result>(parent);
+    const auto result = std::make_shared<ov::op::v0::Result>(parent);
     result->set_friendly_name("result");
 
     auto function = std::make_shared<ov::Model>(
@@ -90,3 +99,5 @@ std::shared_ptr<Model> PrecisionPropagationConvertionFunction::initOriginal() co
 }  // namespace snippets
 }  // namespace test
 }  // namespace ov
+
+

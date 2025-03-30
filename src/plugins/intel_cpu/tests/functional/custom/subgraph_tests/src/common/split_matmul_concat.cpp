@@ -5,6 +5,11 @@
 #include "utils/cpu_test_utils.hpp"
 #include "common_test_utils/node_builders/constant.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/variadic_split.hpp"
 
 using namespace CPUTestUtils;
 
@@ -145,3 +150,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_FC_2D_FP32, SplitMatMulConcatTest, testParams2D_F
 
 }  // namespace test
 }  // namespace ov
+

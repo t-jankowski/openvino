@@ -3,9 +3,16 @@
 //
 
 #include <gtest/gtest.h>
-#include "openvino/opsets/opset8.hpp"
 #include "common_test_utils/ov_plugin_cache.hpp"
 #include "behavior/ov_infer_request/inference.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -33,7 +40,7 @@ std::shared_ptr<Model> OVInferRequestInferenceTests::create_n_inputs(size_t n,
         auto data1 = std::make_shared<ov::op::v0::Parameter>(type, shape);
         data1->set_friendly_name("input" + index_str);
         data1->get_output_tensor(0).set_names({"tensor_input" + index_str});
-        auto constant = opset8::Constant::create(type, {1}, {1});
+        auto constant = op::v0::Constant::create(type, {1}, {1});
         auto op1 = std::make_shared<ov::op::v1::Add>(data1, constant);
         op1->set_friendly_name("Add" + index_str);
         auto res1 = std::make_shared<ov::op::v0::Result>(op1);
@@ -70,3 +77,5 @@ TEST_P(OVInferRequestInferenceTests, Inference_ROI_Tensor) {
 }  // namespace behavior
 }  // namespace test
 }  // namespace ov
+
+

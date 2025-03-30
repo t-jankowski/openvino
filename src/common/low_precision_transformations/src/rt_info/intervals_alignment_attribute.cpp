@@ -13,6 +13,9 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/fake_quantize.hpp"
 #include "openvino/op/multiply.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/multiply.hpp"
 
 using namespace ov;
 using namespace ov;
@@ -214,3 +217,4 @@ std::string IntervalsAlignmentAttribute::to_string() const {
         ", preferablePrecisions: " << preferablePrecisions.str();
     return ss.str();
 }
+

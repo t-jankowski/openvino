@@ -12,6 +12,14 @@
 
 #include "common_test_utils/common_utils.hpp"
 #include "common_test_utils/node_builders/fake_quantize.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 
 namespace LayerTestsDefinitions {
@@ -76,3 +84,5 @@ TEST_P(OutputLayers, CompareWithRefImpl) {
 };
 
 }  // namespace LayerTestsDefinitions
+
+

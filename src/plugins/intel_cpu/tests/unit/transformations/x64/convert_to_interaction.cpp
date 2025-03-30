@@ -7,8 +7,6 @@
 #include <string>
 #include <memory>
 
-#include <openvino/opsets/opset1.hpp>
-#include <openvino/opsets/opset8.hpp>
 #include <transformations/cpu_opset/x64/op/interaction.hpp>
 #include <transformations/cpu_opset/x64/pass/convert_to_interaction.hpp>
 #include <transformations/common_optimizations/nop_elimination.hpp>
@@ -19,6 +17,15 @@
 #include "ov_ops/type_relaxed.hpp"
 
 #include "common_test_utils/ov_test_utils.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/gather.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/transpose.hpp"
 
 using namespace testing;
 using namespace ov::intel_cpu;
@@ -33,7 +40,7 @@ static std::shared_ptr<ov::op::v0::FakeQuantize> createFQ(const std::shared_ptr<
 }
 
 static std::shared_ptr<ov::Model> makeInteraction(const ov::PartialShape& inputShape, bool intraFQ = false, bool postFQ = false) {
-    std::shared_ptr<ov::opset1::Parameter> input = std::make_shared<ov::opset1::Parameter>(element::f32, inputShape);
+    std::shared_ptr<ov::op::v0::Parameter> input = std::make_shared<ov::op::v0::Parameter>(element::f32, inputShape);
     std::shared_ptr<ov::Node> dense_feature = nullptr;
     if (intraFQ) {
         dense_feature = createFQ(input);
@@ -44,7 +51,7 @@ static std::shared_ptr<ov::Model> makeInteraction(const ov::PartialShape& inputS
     ParameterVector inputsParams{input};
     const size_t sparse_feature_num = 26;
     for (size_t i = 0; i < sparse_feature_num; i++) {
-        auto sparse_input = std::make_shared<ov::opset1::Parameter>(element::f32, inputShape);
+        auto sparse_input = std::make_shared<ov::op::v0::Parameter>(element::f32, inputShape);
         std::shared_ptr<ov::Node> sparse_feat = nullptr;
         if (intraFQ) {
             sparse_feat = createFQ(sparse_input);

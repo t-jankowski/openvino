@@ -4,6 +4,10 @@
 
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/gather.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace CPUTestUtils;
 
@@ -68,3 +72,4 @@ TEST_F(AddConvertToReorderTest, smoke_TestAddReorder_CPU) {
 }  // namespace
 }  // namespace test
 }  // namespace ov
+

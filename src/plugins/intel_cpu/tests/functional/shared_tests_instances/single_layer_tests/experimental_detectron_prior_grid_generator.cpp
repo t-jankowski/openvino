@@ -3,6 +3,7 @@
 //
 
 #include "single_op_tests/experimental_detectron_prior_grid_generator.hpp"
+#include "openvino/op/experimental_detectron_prior_grid_generator.hpp"
 
 namespace {
 using ov::test::ExperimentalDetectronPriorGridGeneratorLayerTest;
@@ -42,3 +43,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_ExperimentalDetectronPriorGridGenerator, Experime
      ExperimentalDetectronPriorGridGeneratorLayerTest::getTestCaseName);
 
 } // namespace
+

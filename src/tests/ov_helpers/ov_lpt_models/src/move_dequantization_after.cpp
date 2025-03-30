@@ -5,8 +5,13 @@
 #include "ov_lpt_models/move_dequantization_after.hpp"
 #include "low_precision/network_helper.hpp"
 
-#include "openvino/opsets/opset1.hpp"
 #include "ov_lpt_models/common/builders.hpp"
+#include "openvino/op/max_pool.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/max_pool.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace ov::pass::low_precision;
 
@@ -21,7 +26,7 @@ namespace subgraph {
         const auto input = std::make_shared<ov::op::v0::Parameter>(precision, inputShape);
 
         const auto deq = makeDequantization(input, dequantization);
-        const auto targetOp = typeRelaxed ? std::make_shared<ov::op::TypeRelaxed<ov::opset1::MaxPool>>(
+        const auto targetOp = typeRelaxed ? std::make_shared<ov::op::TypeRelaxed<ov::op::v1::MaxPool>>(
                                                 std::vector<ov::element::Type>{ov::element::f32, ov::element::f32},
                                                 std::vector<ov::element::Type>{},
                                                 deq,
@@ -30,7 +35,7 @@ namespace subgraph {
                                                 Shape{0, 0},
                                                 Shape{2, 2},
                                                 ov::op::RoundingType::FLOOR)
-                                          : std::make_shared<ov::opset1::MaxPool>(deq,
+                                          : std::make_shared<ov::op::v1::MaxPool>(deq,
                                                                                   Strides{1, 1},
                                                                                   Shape{1, 1},
                                                                                   Shape{0, 0},
@@ -40,7 +45,7 @@ namespace subgraph {
         rtInfo["Variant::std::string"] = "targetOp";
 
         return std::make_shared<ov::Model>(
-            ov::ResultVector{ std::make_shared<ov::opset1::Result>(targetOp) },
+            ov::ResultVector{ std::make_shared<ov::op::v0::Result>(targetOp) },
             ov::ParameterVector{ input },
             "MoveDequantizationAfterFunction");
     }
@@ -55,7 +60,7 @@ namespace subgraph {
         const auto input = std::make_shared<ov::op::v0::Parameter>(precision, inputShape);
 
         const auto deqBefore = makeDequantization(input, dequantizationBefore);
-        const auto targetOp = typeRelaxed ? std::make_shared<ov::op::TypeRelaxed<ov::opset1::MaxPool>>(
+        const auto targetOp = typeRelaxed ? std::make_shared<ov::op::TypeRelaxed<ov::op::v1::MaxPool>>(
                                                 std::vector<ov::element::Type>{ov::element::f32, ov::element::f32},
                                                 std::vector<ov::element::Type>{precisionAfterOperation},
                                                 deqBefore,
@@ -64,7 +69,7 @@ namespace subgraph {
                                                 Shape{0, 0},
                                                 Shape{2, 2},
                                                 ov::op::RoundingType::FLOOR)
-                                          : std::make_shared<ov::opset1::MaxPool>(deqBefore,
+                                          : std::make_shared<ov::op::v1::MaxPool>(deqBefore,
                                                                                   Strides{1, 1},
                                                                                   Shape{1, 1},
                                                                                   Shape{0, 0},
@@ -76,7 +81,7 @@ namespace subgraph {
         const auto deqAfter = makeDequantization(targetOp, dequantizationAfter);
 
         return std::make_shared<ov::Model>(
-            ov::ResultVector{ std::make_shared<ov::opset1::Result>(deqAfter) },
+            ov::ResultVector{ std::make_shared<ov::op::v0::Result>(deqAfter) },
             ov::ParameterVector{ input },
             "MoveDequantizationAfterFunction");
     }
@@ -84,3 +89,5 @@ namespace subgraph {
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

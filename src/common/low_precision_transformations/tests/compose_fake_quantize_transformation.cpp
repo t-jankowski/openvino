@@ -18,6 +18,7 @@
 #include "ov_lpt_models/compose_fake_quantize.hpp"
 #include "ov_lpt_models/common/dequantization_operations.hpp"
 #include "ov_lpt_models/common/fake_quantize_on_data.hpp"
+#include "openvino/op/fake_quantize.hpp"
 
 using namespace testing;
 using namespace ov::pass;
@@ -147,3 +148,4 @@ INSTANTIATE_TEST_SUITE_P(
         ::testing::ValuesIn(inputShapes),
         ::testing::ValuesIn(testValues)),
     ComposeFakeQuantizeTransformation::getTestCaseName);
+

@@ -4,6 +4,10 @@
 
 #include "random_uniform.hpp"
 #include "common_test_utils/node_builders/constant.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/random_uniform.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace CPUTestUtils;
 
@@ -267,3 +271,4 @@ TEST_P(RandomUniformLayerTestCPU, CompareWithRefs) {
 
 }  // namespace test
 }  // namespace ov
+

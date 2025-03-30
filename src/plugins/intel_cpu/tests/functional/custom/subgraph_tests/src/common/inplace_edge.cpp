@@ -5,6 +5,10 @@
 #include "common_test_utils/node_builders/eltwise.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/cum_sum.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace CPUTestUtils;
 namespace ov {
@@ -71,3 +75,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_NonInputInPlaceTest_CPU,
 }  // namespace
 }  // namespace test
 }  // namespace ov
+

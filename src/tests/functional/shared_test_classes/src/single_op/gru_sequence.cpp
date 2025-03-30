@@ -9,6 +9,14 @@
 #include "openvino/pass/manager.hpp"
 #include "common_test_utils/ov_tensor_utils.hpp"
 #include "common_test_utils/ov_test_utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/gru_sequence.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/gru_sequence.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -168,3 +176,5 @@ void GRUSequenceTest::generate_inputs(const std::vector<ov::Shape>& targetInputS
 }
 } //  namespace test
 } //  namespace ov
+
+

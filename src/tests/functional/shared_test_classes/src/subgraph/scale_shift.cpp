@@ -9,6 +9,14 @@
 #include "openvino/op/result.hpp"
 #include "openvino/op/multiply.hpp"
 #include "openvino/op/add.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -46,3 +54,5 @@ void ScaleShiftLayerTest::SetUp() {
 }
 } // namespace test
 } // namespace ov
+
+

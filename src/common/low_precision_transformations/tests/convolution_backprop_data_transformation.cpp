@@ -21,6 +21,9 @@
 #include "openvino/op/broadcast.hpp"
 #include "openvino/op/constant.hpp"
 #include "openvino/op/convolution.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convolution.hpp"
 
 namespace {
 using namespace testing;
@@ -610,3 +613,4 @@ INSTANTIATE_TEST_SUITE_P(
     ConvolutionBackpropDataTransformation::getTestCaseName);
 } // namespace testValues2
 } // namespace
+

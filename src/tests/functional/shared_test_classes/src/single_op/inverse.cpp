@@ -8,6 +8,12 @@
 #include <random>
 
 #include "common_test_utils/ov_tensor_utils.hpp"
+#include "openvino/op/inverse.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/inverse.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace ov::test;
 
@@ -68,3 +74,5 @@ void InverseLayerTest::generate_inputs(const std::vector<ov::Shape>& targetInput
 }
 }  // namespace test
 }  // namespace ov
+
+

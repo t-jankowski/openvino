@@ -9,6 +9,14 @@
 #include "openvino/pass/manager.hpp"
 #include "openvino/runtime/exec_model_info.hpp"
 #include "shared_test_classes/subgraph/matmul_const_transposes_extraction.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -129,3 +137,5 @@ void QuantizedMatMulConstTransposesExtractionTest::TearDown() {
 
 }  // namespace test
 }  // namespace ov
+
+

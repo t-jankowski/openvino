@@ -8,6 +8,9 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include "openvino/op/convert.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace CPUTestUtils;
 
@@ -222,3 +225,4 @@ std::vector<std::vector<ElementType>> inputPrecisionsConvert() {
 
 }  // namespace test
 }  // namespace ov
+

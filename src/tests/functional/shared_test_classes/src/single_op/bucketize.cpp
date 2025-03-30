@@ -5,6 +5,12 @@
 #include "shared_test_classes/single_op/bucketize.hpp"
 
 #include "common_test_utils/ov_tensor_utils.hpp"
+#include "openvino/op/bucketize.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/bucketize.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -59,3 +65,5 @@ void BucketizeLayerTest::SetUp() {
 }
 } // namespace test
 } // namespace ov
+
+

@@ -19,6 +19,14 @@
 #include "openvino/op/matmul.hpp"
 #include "openvino/op/convert.hpp"
 #include "openvino/op/constant.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ExecutionGraphTests {
 
@@ -101,3 +109,5 @@ TEST_P(ExecGraphDisableLoweringPrecision, CheckRuntimePrecision) {
     checkInferPrecision();
 }
 }  // namespace ExecutionGraphTests
+
+

@@ -8,6 +8,8 @@
 #include "common_test_utils/node_builders/activation.hpp"
 #include "common_test_utils/node_builders/eltwise.hpp"
 #include "common_test_utils/test_enums.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -85,3 +87,5 @@ void OutputBeforeActivation::SetUp() {
 
 }  // namespace test
 }  // namespace ov
+
+

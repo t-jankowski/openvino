@@ -18,6 +18,12 @@
 #include "openvino/op/multiply.hpp"
 #include "openvino/op/reshape.hpp"
 #include "openvino/op/subtract.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/subtract.hpp"
 
 using namespace ov;
 
@@ -164,3 +170,4 @@ ov::pass::low_precision::PullReshapeThroughDequantization::PullReshapeThroughDeq
     auto m = std::make_shared<ov::pass::pattern::Matcher>(reshapeWrapper, matcher_name);
     this->register_matcher(m, callback);
 }
+

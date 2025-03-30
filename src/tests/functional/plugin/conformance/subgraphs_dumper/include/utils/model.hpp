@@ -5,6 +5,12 @@
 #pragma once
 
 #include "utils/node.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace util {
@@ -203,3 +209,5 @@ generate_model(ov::NodeVector& nodes,
 
 }  // namespace util
 }  // namespace ov
+
+

@@ -3,6 +3,10 @@
 //
 
 #include "shared_test_classes/base/ov_subgraph.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/gather_nd.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -196,3 +200,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_GatherND8DynamicBD_2,
 }  // namespace
 }  // namespace test
 }  // namespace ov
+

@@ -9,6 +9,8 @@
 #include "utils/cpu_test_utils.hpp"
 #include "common_test_utils/data_utils.hpp"
 #include "shared_test_classes/base/utils/compare_results.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/parameter.hpp"
 
 
 using namespace CPUTestUtils;

@@ -9,6 +9,14 @@
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "common_test_utils/node_builders/convolution.hpp"
 #include "common_test_utils/node_builders/constant.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reduce_mean.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reduce_mean.hpp"
+#include "openvino/op/relu.hpp"
 
 using namespace ov::test;
 
@@ -37,7 +45,7 @@ public:
 
         init_input_shapes({input_shape});
 
-        auto param = std::make_shared<ov::opset10::Parameter>(net_prc, inputDynamicShapes.front());
+        auto param = std::make_shared<ov::op::v0::Parameter>(net_prc, inputDynamicShapes.front());
 
         //convolution params
         static const ov::Shape kernel_1x1 = {1};
@@ -53,7 +61,7 @@ public:
         static const std::vector<ptrdiff_t> unit_pads_begin = {1};
         static const std::vector<ptrdiff_t> unit_pads_end = {1};
 
-        auto relu0 = std::make_shared<ov::opset10::Relu>(param);
+        auto relu0 = std::make_shared<ov::op::v0::Relu>(param);
 
         auto conv1 = utils::make_convolution(relu0,
                                              net_prc,
@@ -66,7 +74,7 @@ public:
                                              512,
                                              true);
 
-        auto relu1 = std::make_shared<ov::opset10::Relu>(conv1);
+        auto relu1 = std::make_shared<ov::op::v0::Relu>(conv1);
 
         auto conv2 = utils::make_convolution(relu1,
                                              net_prc,
@@ -79,7 +87,7 @@ public:
                                              512,
                                              true);
 
-        auto relu2 = std::make_shared<ov::opset10::Relu>(conv2);
+        auto relu2 = std::make_shared<ov::op::v0::Relu>(conv2);
 
         auto conv3 = utils::make_convolution(relu2,
                                              net_prc,
@@ -92,11 +100,11 @@ public:
                                              2048,
                                              true);
 
-        auto add = std::make_shared<ov::opset10::Add>(conv3, relu0);
+        auto add = std::make_shared<ov::op::v1::Add>(conv3, relu0);
 
         auto axis = utils::make_constant(ov::element::i32, {1}, std::vector<int32_t>({2}));
 
-        auto reduce = std::make_shared<ov::opset10::ReduceMean>(add, axis, true);
+        auto reduce = std::make_shared<ov::op::v1::ReduceMean>(add, axis, true);
 
         function = std::make_shared<ov::Model>(ov::OutputVector{reduce}, ov::ParameterVector{param});
     }
@@ -126,3 +134,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_release_memory,
 // a few infer requests one graph
 // a few infer request a few graphs
 // a few infer request parallel release calls
+

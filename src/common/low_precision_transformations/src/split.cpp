@@ -15,6 +15,11 @@
 #include "openvino/op/result.hpp"
 #include "openvino/op/shape_of.hpp"
 #include "openvino/op/split.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/split.hpp"
 
 namespace ov {
 namespace pass {
@@ -165,3 +170,4 @@ bool SplitTransformation::canBeTransformed(const std::shared_ptr<Node>& layer) c
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

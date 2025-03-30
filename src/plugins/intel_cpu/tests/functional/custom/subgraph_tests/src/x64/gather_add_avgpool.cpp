@@ -4,6 +4,11 @@
 
 #include "openvino/runtime/exec_model_info.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/avg_pool.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/gather.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -70,3 +75,4 @@ TEST_F(GatherAddAvgpool, smoke_CompareWithRefs) {
 
 }  // namespace test
 }  // namespace ov
+

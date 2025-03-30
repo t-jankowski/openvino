@@ -16,6 +16,8 @@
 #include "transformations/common_optimizations/depth_to_space_fusion.hpp"
 #include "transformations/init_node_info.hpp"
 #include "transformations/utils/utils.hpp"
+#include "openvino/op/depth_to_space.hpp"
+#include "openvino/op/depth_to_space.hpp"
 
 namespace LayerTestsDefinitions {
 
@@ -60,3 +62,5 @@ TEST_P(DepthToSpaceTransformation, CompareWithRefImpl) {
 };
 
 }  // namespace LayerTestsDefinitions
+
+

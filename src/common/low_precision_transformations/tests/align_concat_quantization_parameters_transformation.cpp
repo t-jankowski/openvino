@@ -18,6 +18,11 @@
 #include "ov_lpt_models/align_concat_quantization_parameters.hpp"
 #include "ov_lpt_models/common/dequantization_operations.hpp"
 #include "simple_low_precision_transformer.hpp"
+#include "openvino/op/avg_pool.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/max_pool.hpp"
 
 using namespace testing;
 using namespace ov::pass;
@@ -156,3 +161,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_LPT,
                                             ::testing::ValuesIn(additionalLayer),
                                             ::testing::ValuesIn(testValues)),
                          AlignConcatQuantizationParametersTransformation::getTestCaseName);
+

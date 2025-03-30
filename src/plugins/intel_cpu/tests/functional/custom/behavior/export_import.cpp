@@ -9,7 +9,12 @@
 #include "common_test_utils/node_builders/constant.hpp"
 #include "functional_test_utils/skip_tests_config.hpp"
 
-#include <openvino/opsets/opset9.hpp>
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/softmax.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/softmax.hpp"
 
 namespace {
 
@@ -26,7 +31,7 @@ std::shared_ptr<ov::Model> MakeMatMulModel() {
 
     auto add_const = ov::test::utils::make_constant(ov::element::f32, {1, 1024});
     auto add = ov::test::utils::make_eltwise(matmul, add_const, ov::test::utils::EltwiseTypes::ADD);
-    auto softmax = std::make_shared<ov::opset9::Softmax>(add);
+    auto softmax = std::make_shared<ov::op::v8::Softmax>(add);
 
     ov::NodeVector results{softmax};
     return std::make_shared<ov::Model>(results, params, "MatMulModel");
@@ -125,3 +130,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_ExportImportTest,
                                                              testing_property_for_enable_cpu_pinning)));
 
 }  // namespace
+

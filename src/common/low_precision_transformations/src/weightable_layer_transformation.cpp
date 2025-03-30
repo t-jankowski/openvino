@@ -17,6 +17,14 @@
 #include "openvino/op/group_conv.hpp"
 #include "openvino/op/multiply.hpp"
 #include "openvino/op/reshape.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/reshape.hpp"
 
 namespace ov {
 namespace pass {
@@ -472,3 +480,4 @@ bool WeightableLayerTransformation::isAsymmetricOnWeights(
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

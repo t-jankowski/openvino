@@ -3,6 +3,12 @@
 //
 
 #include "shared_test_classes/single_op/roll.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/roll.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/roll.hpp"
 
 namespace ov {
 namespace test {
@@ -53,3 +59,5 @@ void RollLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

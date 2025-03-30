@@ -5,6 +5,14 @@
 #include "openvino/op/convolution.hpp"
 #include "openvino/op/group_conv.hpp"
 #include "matchers/single_op/convolutions.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/group_conv.hpp"
 
 using namespace ov::tools::subgraph_dumper;
 
@@ -64,3 +72,5 @@ bool ConvolutionsMatcher::match_inputs(const std::shared_ptr<ov::Node> &node,
     }
     return true;
 }
+
+

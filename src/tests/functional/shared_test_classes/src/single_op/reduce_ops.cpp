@@ -5,6 +5,10 @@
 #include "shared_test_classes/single_op/reduce_ops.hpp"
 #include "common_test_utils/data_utils.hpp"
 #include "common_test_utils/node_builders/reduce.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -77,3 +81,5 @@ void ReduceOpsLayerWithSpecificInputTest::generate_inputs(const std::vector<ov::
 }
 }  // namespace test
 }  // namespace ov
+
+

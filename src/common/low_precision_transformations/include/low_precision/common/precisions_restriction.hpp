@@ -13,6 +13,8 @@
 #include "openvino/core/node.hpp"
 #include "openvino/op/convolution.hpp"
 #include "openvino/op/lstm_sequence.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/lstm_sequence.hpp"
 
 namespace ov {
 namespace pass {
@@ -89,3 +91,4 @@ public:
 }  // namespace low_precision
 }  // namespace pass
 }  // namespace ov
+

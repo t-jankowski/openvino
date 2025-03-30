@@ -16,6 +16,10 @@
 #include "openvino/op/multiply.hpp"
 #include "openvino/op/transpose.hpp"
 #include "openvino/op/unsqueeze.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/transpose.hpp"
+#include "openvino/op/unsqueeze.hpp"
 
 namespace ov {
 namespace pass {
@@ -167,3 +171,4 @@ bool TransposeTransformation::canBeTransformed(const std::shared_ptr<Node>& op) 
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

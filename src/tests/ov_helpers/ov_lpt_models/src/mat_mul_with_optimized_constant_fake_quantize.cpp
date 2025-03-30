@@ -4,7 +4,16 @@
 
 #include "ov_lpt_models/mat_mul_with_optimized_constant_fake_quantize.hpp"
 
-#include "openvino/opsets/opset1.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace builder {
@@ -16,11 +25,11 @@ std::shared_ptr<ov::Model> MatMulWithOptimizedConstantFakeQuantizeFunction::getO
     const ov::PartialShape& inputShape2,
     const FakeQuantizeOnData& fqOnData,
     const FakeQuantizeOnData& fqOnWeights) {
-    const auto input = std::make_shared<ov::opset1::Parameter>(precision, inputShape1);
+    const auto input = std::make_shared<ov::op::v0::Parameter>(precision, inputShape1);
 
-    const auto lowConstantOnActivations = std::make_shared<ov::opset1::Constant>(precision, fqOnData.constantShape, fqOnData.inputLowValues);
-    const auto highConstantOnActivations = std::make_shared<ov::opset1::Constant>(precision, fqOnData.constantShape, fqOnData.inputHighValues);
-    const auto fakeQuantizeOnActivations = std::make_shared<ov::opset1::FakeQuantize>(
+    const auto lowConstantOnActivations = std::make_shared<ov::op::v0::Constant>(precision, fqOnData.constantShape, fqOnData.inputLowValues);
+    const auto highConstantOnActivations = std::make_shared<ov::op::v0::Constant>(precision, fqOnData.constantShape, fqOnData.inputHighValues);
+    const auto fakeQuantizeOnActivations = std::make_shared<ov::op::v0::FakeQuantize>(
         input,
         lowConstantOnActivations,
         highConstantOnActivations,
@@ -31,10 +40,10 @@ std::shared_ptr<ov::Model> MatMulWithOptimizedConstantFakeQuantizeFunction::getO
     const ov::Shape weightsShape = { static_cast<size_t>(inputShape2[0].get_length()), static_cast<size_t>(inputShape1[1].get_length()) };
     const std::vector<float> weigths(weightsShape[0] * weightsShape[1], 10.f);
 
-    const auto weightsConst = std::make_shared<ov::opset1::Constant>(precision, weightsShape, weigths);
-    const auto lowConstantOnWeights = std::make_shared<ov::opset1::Constant>(precision, fqOnWeights.constantShape, fqOnWeights.inputLowValues);
-    const auto highConstantOnWeights = std::make_shared<ov::opset1::Constant>(precision, fqOnWeights.constantShape, fqOnWeights.inputHighValues);
-    const auto fakeQuantizeOnWeights = std::make_shared<ov::opset1::FakeQuantize>(
+    const auto weightsConst = std::make_shared<ov::op::v0::Constant>(precision, weightsShape, weigths);
+    const auto lowConstantOnWeights = std::make_shared<ov::op::v0::Constant>(precision, fqOnWeights.constantShape, fqOnWeights.inputLowValues);
+    const auto highConstantOnWeights = std::make_shared<ov::op::v0::Constant>(precision, fqOnWeights.constantShape, fqOnWeights.inputHighValues);
+    const auto fakeQuantizeOnWeights = std::make_shared<ov::op::v0::FakeQuantize>(
         weightsConst,
         lowConstantOnWeights,
         highConstantOnWeights,
@@ -42,16 +51,18 @@ std::shared_ptr<ov::Model> MatMulWithOptimizedConstantFakeQuantizeFunction::getO
         highConstantOnWeights,
         fqOnWeights.quantizationLevel);
 
-    const auto matMul = std::make_shared<ov::opset1::MatMul>(
+    const auto matMul = std::make_shared<ov::op::v0::MatMul>(
         fakeQuantizeOnActivations,
         fakeQuantizeOnWeights,
         false,
         inputShape1[1] != inputShape2[0]);
 
-    ov::ResultVector results{ std::make_shared<ov::opset1::Result>(matMul) };
+    ov::ResultVector results{ std::make_shared<ov::op::v0::Result>(matMul) };
     return std::make_shared<ov::Model>(results, ov::ParameterVector{ input }, "MatMulWithOptimizedConstantFakeQuantizeFunction");
 }
 
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

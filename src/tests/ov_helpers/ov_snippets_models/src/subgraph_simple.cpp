@@ -6,6 +6,46 @@
 #include "common_test_utils/data_utils.hpp"
 #include "openvino/core/descriptor_tensor.hpp"
 #include <snippets/op/subgraph.hpp>
+#include "openvino/op/add.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/elu.hpp"
+#include "openvino/op/exp.hpp"
+#include "openvino/op/hswish.hpp"
+#include "openvino/op/log.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/power.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/roll.hpp"
+#include "openvino/op/select.hpp"
+#include "openvino/op/sin.hpp"
+#include "openvino/op/sinh.hpp"
+#include "openvino/op/split.hpp"
+#include "openvino/op/subtract.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/elu.hpp"
+#include "openvino/op/exp.hpp"
+#include "openvino/op/hswish.hpp"
+#include "openvino/op/log.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/power.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/roll.hpp"
+#include "openvino/op/select.hpp"
+#include "openvino/op/sin.hpp"
+#include "openvino/op/sinh.hpp"
+#include "openvino/op/split.hpp"
+#include "openvino/op/subtract.hpp"
 
 namespace ov {
 namespace test {
@@ -354,3 +394,5 @@ std::shared_ptr<ov::Model> EdgeReplaceFunction::initOriginal() const {
 }  // namespace snippets
 }  // namespace test
 }  // namespace ov
+
+

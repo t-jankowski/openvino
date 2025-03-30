@@ -3,9 +3,30 @@
 //
 
 #include "common_test_utils/node_builders/constant.hpp"
-#include "openvino/opsets/opset8.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/mvn.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/prelu.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/range.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/squeeze.hpp"
+#include "openvino/op/variadic_split.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/mvn.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/prelu.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/range.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/squeeze.hpp"
+#include "openvino/op/variadic_split.hpp"
 
 namespace ov {
 namespace test {
@@ -45,32 +66,32 @@ protected:
 
         auto type = element::f32;
         constexpr int const1 = 32;
-        auto input1 = std::make_shared<ov::opset8::Parameter>(type, Shape{1, const1 / 2, 8, 8});
+        auto input1 = std::make_shared<ov::op::v0::Parameter>(type, Shape{1, const1 / 2, 8, 8});
         input1->set_friendly_name("input1");
-        auto input2 = std::make_shared<ov::opset8::Parameter>(type, Shape{1, const1, 1, 1});
+        auto input2 = std::make_shared<ov::op::v0::Parameter>(type, Shape{1, const1, 1, 1});
         input2->set_friendly_name("input2");
 
         auto variadicSplit = std::make_shared<ov::op::v1::VariadicSplit>(
             input2,
-            ov::opset8::Constant::create(element::i64, Shape{1}, {1}),
-            ov::opset8::Constant::create(element::i64, Shape{2}, {const1 / 2, const1 / 2}));
+            ov::op::v0::Constant::create(element::i64, Shape{1}, {1}),
+            ov::op::v0::Constant::create(element::i64, Shape{2}, {const1 / 2, const1 / 2}));
         variadicSplit->set_friendly_name("variadicSplit");
 
-        auto add1 = std::make_shared<ov::opset8::Add>(variadicSplit->output(0),
-                                                      ov::opset8::Constant::create(type, Shape{1}, {0}));
+        auto add1 = std::make_shared<ov::op::v1::Add>(variadicSplit->output(0),
+                                                      ov::op::v0::Constant::create(type, Shape{1}, {0}));
         add1->set_friendly_name("add1");
-        auto shapeof = std::make_shared<ov::opset8::ShapeOf>(input1);
-        auto rankof = std::make_shared<ov::opset8::ShapeOf>(shapeof);
+        auto shapeof = std::make_shared<ov::op::v3::ShapeOf>(input1);
+        auto rankof = std::make_shared<ov::op::v3::ShapeOf>(shapeof);
         auto squeeze =
-            std::make_shared<ov::opset8::Squeeze>(rankof, ov::opset8::Constant::create(element::i64, Shape{1}, {0}));
+            std::make_shared<ov::op::v0::Squeeze>(rankof, ov::op::v0::Constant::create(element::i64, Shape{1}, {0}));
 
-        auto range = std::make_shared<ov::opset8::Range>(ov::opset8::Constant::create(element::i64, Shape{}, {2}),
+        auto range = std::make_shared<ov::op::v4::Range>(ov::op::v0::Constant::create(element::i64, Shape{}, {2}),
                                                          squeeze,
-                                                         ov::opset8::Constant::create(element::i64, Shape{}, {1}),
+                                                         ov::op::v0::Constant::create(element::i64, Shape{}, {1}),
                                                          ov::element::i64);
         auto create_conv = [&](const std::shared_ptr<ov::Node>& input_node) {
             ov::test::utils::InputGenerateData in_gen_data(0, 1);
-            auto conv = std::make_shared<ov::opset8::Convolution>(
+            auto conv = std::make_shared<ov::op::v1::Convolution>(
                 input_node,
                 ov::test::utils::make_constant(type, Shape{1, const1 / 2u, 3, 3}, ov::test::utils::InputGenerateData(0, 1)),
                 Strides{1, 1},
@@ -82,14 +103,14 @@ protected:
             return conv;
         };
         auto create_relu = [&](const std::shared_ptr<ov::Node>& input_node) {
-            return std::make_shared<ov::opset8::PRelu>(input_node,
-                                                       ov::opset8::Constant::create(element::f32, Shape{1}, {1}));
+            return std::make_shared<ov::op::v0::PRelu>(input_node,
+                                                       ov::op::v0::Constant::create(element::f32, Shape{1}, {1}));
         };
         auto conv1 = create_conv(input1);
         auto mvn =
-            std::make_shared<ov::opset8::MVN>(create_relu(conv1), range, false, 0.1, op::MVNEpsMode::INSIDE_SQRT);
-        auto mul = std::make_shared<ov::opset8::Multiply>(create_relu(add1), mvn);
-        auto add2 = std::make_shared<ov::opset8::Add>(variadicSplit->output(1), mul);
+            std::make_shared<ov::op::v6::MVN>(create_relu(conv1), range, false, 0.1, op::MVNEpsMode::INSIDE_SQRT);
+        auto mul = std::make_shared<ov::op::v1::Multiply>(create_relu(add1), mvn);
+        auto add2 = std::make_shared<ov::op::v1::Add>(variadicSplit->output(1), mul);
         auto conv2 = create_conv(create_relu(add2));
         conv2->set_friendly_name("conv2");
 
@@ -118,3 +139,4 @@ TEST_F(SubgraphSelectPD, smoke_CompareWithRefs) {
 
 }  // namespace test
 }  // namespace ov
+

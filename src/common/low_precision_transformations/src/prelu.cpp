@@ -17,6 +17,9 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/multiply.hpp"
 #include "openvino/op/prelu.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/prelu.hpp"
 
 namespace ov {
 namespace pass {
@@ -77,3 +80,4 @@ bool PReluTransformation::canBeTransformed(const std::shared_ptr<Node>& op) cons
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

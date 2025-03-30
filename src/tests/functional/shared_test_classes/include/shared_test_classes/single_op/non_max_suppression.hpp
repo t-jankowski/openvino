@@ -8,6 +8,8 @@
 #include <tuple>
 
 #include "shared_test_classes/base/ov_subgraph.hpp"
+#include "openvino/op/non_max_suppression.hpp"
+#include "openvino/op/non_max_suppression.hpp"
 
 namespace ov {
 namespace test {
@@ -56,3 +58,5 @@ void compare_b_boxes(const std::vector<ov::Tensor>& expected,
 
 }  // namespace test
 }  // namespace ov
+
+

@@ -3,6 +3,12 @@
 //
 
 #include "shared_test_classes/single_op/variadic_split.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/variadic_split.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/variadic_split.hpp"
 
 namespace ov {
 namespace test {
@@ -54,3 +60,4 @@ void VariadicSplitLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+

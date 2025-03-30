@@ -4,7 +4,6 @@
 
 #include "ov_lpt_models/group_convolution.hpp"
 
-#include "openvino/opsets/opset1.hpp"
 #include <ov_ops/type_relaxed.hpp>
 #include "low_precision/network_helper.hpp"
 
@@ -13,8 +12,21 @@
 #include "ov_lpt_models/common/dequantization_operations.hpp"
 #include "ov_lpt_models/common/builders.hpp"
 #include "common_test_utils/node_builders/fake_quantize.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/max_pool.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/max_pool.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/result.hpp"
 
-using namespace ov::opset1;
 using namespace ov::pass::low_precision;
 
 namespace ov {
@@ -35,7 +47,7 @@ std::shared_ptr<Node> createWeightsOriginal(
     const bool addReshape = true) {
     std::shared_ptr<Node> weights;
     if (fakeQuantizeOnWeights.empty() && dequantizationOnWeights.empty()) {
-        weights = ov::opset1::Constant::create(
+        weights = ov::op::v0::Constant::create(
             precision,
             rankLength == 3 ?
                 ov::Shape{ outputChannelsCount, inputChannelsCount, 1 } :
@@ -46,7 +58,7 @@ std::shared_ptr<Node> createWeightsOriginal(
     } else {
         const size_t inputChannelsPerGroup = inputChannelsCount / groupCount;
         if ((rankLength == 3) || (rankLength == 4)) {
-            weights = ov::opset1::Constant::create(
+            weights = ov::op::v0::Constant::create(
                 precision,
                 addReshape ?
                     (rankLength == 3 ?
@@ -67,7 +79,7 @@ std::shared_ptr<Node> createWeightsOriginal(
             const std::vector<float> values = weightsValues.size() == 1ull ?
                 std::vector<float>(shape_size(shape), weightsValues[0]) :
                 weightsValues;
-            weights = ov::opset1::Constant::create(precision, shape, values);
+            weights = ov::op::v0::Constant::create(precision, shape, values);
         }
 
         if (!fakeQuantizeOnWeights.empty()) {
@@ -123,9 +135,9 @@ std::shared_ptr<Node> createWeightsOriginal(
                     static_cast<int64_t>(kernelSize)};
             }
 
-            weights = std::make_shared<ov::opset1::Reshape>(
+            weights = std::make_shared<ov::op::v1::Reshape>(
                 weights,
-                ov::opset1::Constant::create(ov::element::i64, Shape{static_cast<size_t>(rankLength) + 1ul}, values),
+                ov::op::v0::Constant::create(ov::element::i64, Shape{static_cast<size_t>(rankLength) + 1ul}, values),
                 true);
         }
     }
@@ -140,12 +152,12 @@ std::shared_ptr<ov::Model> GroupConvolutionFunction::getOriginal(
     const size_t groupCount,
     const int groupCalculationDimention,
     const ov::builder::subgraph::DequantizationOperations& dequantizationBefore,
-    std::shared_ptr<ov::opset1::Constant> weightsConst,
+    std::shared_ptr<ov::op::v0::Constant> weightsConst,
     const ov::builder::subgraph::FakeQuantizeOnWeights fakeQuantizeOnWeights) {
     const auto rankLength = inputShape.size();
     OPENVINO_ASSERT(rankLength == 3 || rankLength == 4, "not supported input shape rank: ", rankLength);
 
-    const auto input = std::make_shared<ov::opset1::Parameter>(precision, inputShape);
+    const auto input = std::make_shared<ov::op::v0::Parameter>(precision, inputShape);
     const auto dequantization = makeDequantization(input, dequantizationBefore);
 
     const size_t inputChannelsCount = inputShape[1];
@@ -169,7 +181,7 @@ std::shared_ptr<ov::Model> GroupConvolutionFunction::getOriginal(
         fakeQuantizeOnWeights,
         {});
 
-    const auto convolution = std::make_shared<ov::opset1::GroupConvolution>(
+    const auto convolution = std::make_shared<ov::op::v1::GroupConvolution>(
         dequantization,
         weights,
         ov::Strides{ 1, 1 },
@@ -178,7 +190,7 @@ std::shared_ptr<ov::Model> GroupConvolutionFunction::getOriginal(
         ov::Strides{ 1, 1 });
     convolution->set_friendly_name("output");
 
-    ov::ResultVector results{ std::make_shared<ov::opset1::Result>(convolution) };
+    ov::ResultVector results{ std::make_shared<ov::op::v0::Result>(convolution) };
     return std::make_shared<ov::Model>(results, ov::ParameterVector{ input }, "GroupConvolutionTransformation");
 }
 
@@ -195,31 +207,31 @@ std::shared_ptr<ov::Model> GroupConvolutionFunction::getOriginal(
     const auto rankLength = inputShape.rank().is_dynamic() ? 4 : inputShape.rank().get_length();
     OPENVINO_ASSERT(rankLength == 3 || rankLength == 4 || rankLength == 5, "not supported input shape rank: ", rankLength);
 
-    const auto input = std::make_shared<ov::opset1::Parameter>(precision, inputShape);
+    const auto input = std::make_shared<ov::op::v0::Parameter>(precision, inputShape);
 
     std::shared_ptr<ov::Node> parent = input;
     if (!fakeQuantizeOnData.empty()) {
-        parent = std::make_shared<ov::opset1::FakeQuantize>(
+        parent = std::make_shared<ov::op::v0::FakeQuantize>(
             input,
-            std::make_shared<ov::opset1::Constant>(
+            std::make_shared<ov::op::v0::Constant>(
                 precision,
                 rankLength == 3 ?
                     Shape{ 1, fakeQuantizeOnData.inputLowValues.size(), 1 } :
                     Shape{ 1, fakeQuantizeOnData.inputLowValues.size(), 1, 1 },
                 fakeQuantizeOnData.inputLowValues),
-            std::make_shared<ov::opset1::Constant>(
+            std::make_shared<ov::op::v0::Constant>(
                 precision,
                 rankLength == 3 ?
                     Shape{ 1, fakeQuantizeOnData.inputHighValues.size(), 1 } :
                     Shape{ 1, fakeQuantizeOnData.inputHighValues.size(), 1, 1 },
                 fakeQuantizeOnData.inputHighValues),
-            std::make_shared<ov::opset1::Constant>(
+            std::make_shared<ov::op::v0::Constant>(
                 precision,
                 rankLength == 3 ?
                     Shape{ 1, fakeQuantizeOnData.outputLowValues.size(), 1 } :
                     Shape{ 1, fakeQuantizeOnData.outputLowValues.size(), 1, 1 },
                 fakeQuantizeOnData.outputLowValues),
-            std::make_shared<ov::opset1::Constant>(
+            std::make_shared<ov::op::v0::Constant>(
                 precision,
                 rankLength == 3 ?
                     Shape{ 1, fakeQuantizeOnData.outputHighValues.size(), 1 } :
@@ -235,7 +247,7 @@ std::shared_ptr<ov::Model> GroupConvolutionFunction::getOriginal(
         const std::vector<size_t> padKernel(rankLength - 2, 3ul);
         const ov::op::PadType padType = ov::op::PadType::NOTSET;
         const ov::op::RoundingType roundingType = ov::op::RoundingType::FLOOR;
-        const auto pooling = std::make_shared<ov::opset1::MaxPool>(
+        const auto pooling = std::make_shared<ov::op::v1::MaxPool>(
             parent,
             stride,
             padBegin,
@@ -264,7 +276,7 @@ std::shared_ptr<ov::Model> GroupConvolutionFunction::getOriginal(
         {},
         addReshape);
 
-    const auto convolution = std::make_shared<ov::opset1::GroupConvolution>(
+    const auto convolution = std::make_shared<ov::op::v1::GroupConvolution>(
         parent,
         weights,
         ov::Strides(rankLength - 2, 1ul),
@@ -272,7 +284,7 @@ std::shared_ptr<ov::Model> GroupConvolutionFunction::getOriginal(
         ov::CoordinateDiff(rankLength - 2, 0),
         ov::Strides(rankLength - 2, 1));
 
-    ov::ResultVector results{ std::make_shared<ov::opset1::Result>(convolution) };
+    ov::ResultVector results{ std::make_shared<ov::op::v0::Result>(convolution) };
     return std::make_shared<ov::Model>(results, ov::ParameterVector{ input }, "GroupConvolutionTransformation");
 }
 
@@ -283,7 +295,7 @@ std::shared_ptr<ov::Model> GroupConvolutionFunction::get(
     const size_t groupCount,
     const int calculatedDimention,
     const ov::builder::subgraph::DequantizationOperations& dequantizationBefore,
-    std::shared_ptr<ov::opset1::Constant> weightsConst,
+    std::shared_ptr<ov::op::v0::Constant> weightsConst,
     const ov::builder::subgraph::FakeQuantizeOnWeights& fakeQuantizeOnWeights,
     const ov::builder::subgraph::DequantizationOperations& dequantizationOnWeights,
     const ov::element::Type precisionAfterOperation,
@@ -293,7 +305,7 @@ std::shared_ptr<ov::Model> GroupConvolutionFunction::get(
     const auto rankLength = inputShape.rank().is_dynamic() ? 4 : inputShape.rank().get_length();
     OPENVINO_ASSERT(rankLength == 3 || rankLength == 4, "not supported input shape rank: ", rankLength);
 
-    const auto input = std::make_shared<ov::opset1::Parameter>(precision, inputShape);
+    const auto input = std::make_shared<ov::op::v0::Parameter>(precision, inputShape);
     const auto deqBefore = makeDequantization(input, dequantizationBefore);
 
     const bool channelsIsDynamic = inputShape.rank().is_dynamic() || inputShape[1].is_dynamic();
@@ -309,7 +321,7 @@ std::shared_ptr<ov::Model> GroupConvolutionFunction::get(
     std::shared_ptr<ov::Node> weights;
     if (fakeQuantizeOnWeights.empty() && dequantizationOnWeights.empty()) {
         const ov::Shape weightsShape = ov::Shape{ groupCount, outputChannelsInGroup, inputChannelsInGroup, kernelSize, kernelSize };
-        weights = ov::opset1::Constant::create(
+        weights = ov::op::v0::Constant::create(
             weightsConst->get_element_type(),
             weightsShape,
             weightsSize == 1ul ? std::vector<float>(
@@ -331,15 +343,15 @@ std::shared_ptr<ov::Model> GroupConvolutionFunction::get(
     }
 
     auto convolutionOriginal =
-        ov::opset1::GroupConvolution(ov::op::TemporaryReplaceOutputType(deqBefore, ov::element::f32).get(),
+        ov::op::v1::GroupConvolution(ov::op::TemporaryReplaceOutputType(deqBefore, ov::element::f32).get(),
                                      ov::op::TemporaryReplaceOutputType(weights, ov::element::f32).get(),
                                      ov::Strides{1, 1},
                                      ov::CoordinateDiff{0, 0},
                                      ov::CoordinateDiff{0, 0},
                                      ov::Strides{1, 1});
 
-    std::shared_ptr<ov::opset1::GroupConvolution> convolution =
-        std::make_shared<ov::op::TypeRelaxed<ov::opset1::GroupConvolution>>(
+    std::shared_ptr<ov::op::v1::GroupConvolution> convolution =
+        std::make_shared<ov::op::TypeRelaxed<ov::op::v1::GroupConvolution>>(
             convolutionOriginal,
             std::vector<ov::element::Type>{ov::element::f32, ov::element::f32},
             std::vector<ov::element::Type>{});
@@ -348,10 +360,12 @@ std::shared_ptr<ov::Model> GroupConvolutionFunction::get(
     const auto deqAfter = makeDequantization(convolution, dequantizationAfter);
     deqAfter->set_friendly_name("output");
 
-    ov::ResultVector results{ std::make_shared<ov::opset1::Result>(deqAfter) };
+    ov::ResultVector results{ std::make_shared<ov::op::v0::Result>(deqAfter) };
     return std::make_shared<ov::Model>(results, ov::ParameterVector{ input }, "GroupConvolutionTransformation");
 }
 
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

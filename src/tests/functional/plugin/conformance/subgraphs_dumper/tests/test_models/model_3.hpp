@@ -15,6 +15,24 @@
 #include "openvino/op/subtract.hpp"
 #include "openvino/op/split.hpp"
 #include "matchers/subgraph/repeat_pattern.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/clamp.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/split.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/clamp.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/split.hpp"
 
 class Model_3 {
 protected:
@@ -157,3 +175,5 @@ public:
     ov::NodeVector
     get_queue() { return node_queue; }
 };
+
+

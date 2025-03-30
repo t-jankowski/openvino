@@ -9,6 +9,18 @@
 #include "common_test_utils/node_builders/lstm_cell.hpp"
 #include "common_test_utils/node_builders/gru_cell.hpp"
 #include "common_test_utils/node_builders/rnn_cell.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/squeeze.hpp"
+#include "openvino/op/tensor_iterator.hpp"
+#include "openvino/op/unsqueeze.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/squeeze.hpp"
+#include "openvino/op/tensor_iterator.hpp"
+#include "openvino/op/unsqueeze.hpp"
 
 namespace ov {
 namespace test {
@@ -255,3 +267,5 @@ void TensorIteratorTest::generate_inputs(const std::vector<ov::Shape>& targetInp
 
 }  // namespace test
 }  // namespace ov
+
+

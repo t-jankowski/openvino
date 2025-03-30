@@ -6,6 +6,8 @@
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
 #include "utils/filter_cpu_info.hpp"
+#include "openvino/op/depth_to_space.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 namespace ov {
@@ -252,3 +254,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_CPUDepthToSpaceDynamicCPUSpecific5D,
 }  // namespace
 }  // namespace test
 }  // namespace ov
+

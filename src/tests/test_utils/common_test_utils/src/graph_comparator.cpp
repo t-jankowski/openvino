@@ -15,6 +15,16 @@
 #include "openvino/op/util/sub_graph_base.hpp"
 #include "openvino/runtime/string_aligned_buffer.hpp"
 #include "precomp.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/loop.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/tensor_iterator.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/loop.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/tensor_iterator.hpp"
 
 namespace {
 inline namespace tools {
@@ -1084,3 +1094,5 @@ AccuracyCheckResult accuracy_check(const std::shared_ptr<ov::Model>& ref_functio
     }
     return AccuracyCheckResult{true, ""};
 }
+
+

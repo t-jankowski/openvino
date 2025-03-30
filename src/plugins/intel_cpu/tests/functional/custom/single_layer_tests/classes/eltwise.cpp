@@ -11,6 +11,8 @@
 #include "openvino/core/type/element_type.hpp"
 #include "openvino/runtime/properties.hpp"
 #include "utils/cpu_test_utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 #if defined(OPENVINO_ARCH_RISCV64)
 #   include "nodes/kernels/riscv64/cpu_isa_traits.hpp"
@@ -633,3 +635,4 @@ const std::vector<bool>& enforceSnippets() {
 }  // namespace Eltwise
 }  // namespace test
 }  // namespace ov
+

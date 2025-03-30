@@ -4,12 +4,16 @@
 
 #include "common_test_utils/test_assertions.hpp"
 #include "openvino/op/reverse.hpp"
-#include "openvino/opsets/opset1.hpp"
 #include "utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reverse.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
-using namespace ov::opset1;
+using ov::op::v0::Constant;
+using ov::op::v0::Parameter;
+using ov::op::v1::Reverse;
 using namespace testing;
 
 class ReverseV1StaticShapeInferenceTest : public OpStaticShapeInferenceTest<op::v1::Reverse> {

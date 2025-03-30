@@ -7,6 +7,8 @@
 #include "common_test_utils/ov_tensor_utils.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/precision_support.h"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/string_tensor_pack.hpp"
 
 using namespace CPUTestUtils;
 
@@ -144,3 +146,4 @@ const std::vector<StringTensorPackSpecificParams> StringTensorPackParamsVector =
 }  // namespace StringTensorPack
 }  // namespace test
 }  // namespace ov
+

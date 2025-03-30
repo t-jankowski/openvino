@@ -8,6 +8,12 @@
 #include "openvino/op/loop.hpp"
 #include "matchers/subgraph/repeat_pattern.hpp"
 #include "utils/model.hpp"
+#include "openvino/op/if.hpp"
+#include "openvino/op/loop.hpp"
+#include "openvino/op/tensor_iterator.hpp"
+#include "openvino/op/if.hpp"
+#include "openvino/op/loop.hpp"
+#include "openvino/op/tensor_iterator.hpp"
 
 using namespace ov::tools::subgraph_dumper;
 
@@ -348,3 +354,5 @@ RepeatPatternExtractor::find_repeat_patterns(const std::shared_ptr<ov::Model> &m
     }
     return extracted_patterns;
 }
+
+

@@ -4,6 +4,10 @@
 
 #include "shared_test_classes/single_op/matrix_nms.hpp"
 #include "common_test_utils/test_enums.hpp"
+#include "openvino/op/matrix_nms.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/matrix_nms.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -74,3 +78,5 @@ void MatrixNmsLayerTest::SetUp() {
 }
 } // namespace test
 } // namespace ov
+
+

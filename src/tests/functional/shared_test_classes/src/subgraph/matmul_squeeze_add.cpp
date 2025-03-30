@@ -6,6 +6,20 @@
 
 #include "common_test_utils/data_utils.hpp"
 #include "common_test_utils/node_builders/constant.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/squeeze.hpp"
+#include "openvino/op/unsqueeze.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/squeeze.hpp"
+#include "openvino/op/unsqueeze.hpp"
 
 namespace ov {
 namespace test {
@@ -62,3 +76,5 @@ void MatmulSqueezeAddTest::SetUp() {
 
 }  // namespace test
 }  // namespace ov
+
+

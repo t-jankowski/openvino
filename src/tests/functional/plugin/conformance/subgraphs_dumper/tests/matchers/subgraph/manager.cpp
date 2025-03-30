@@ -7,6 +7,12 @@
 #include "base_test.hpp"
 
 #include "openvino/op/ops.hpp"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace {
 
@@ -60,3 +66,5 @@ TEST_F(ExtractorsManagerTest, extract) {
 }
 
 }  // namespace
+
+

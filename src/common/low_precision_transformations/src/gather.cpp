@@ -17,6 +17,10 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/gather.hpp"
 #include "openvino/op/multiply.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/gather.hpp"
+#include "openvino/op/multiply.hpp"
 
 namespace ov {
 namespace pass {
@@ -203,3 +207,4 @@ bool GatherTransformation::isPrecisionPreserved(std::shared_ptr<Node> layer) con
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

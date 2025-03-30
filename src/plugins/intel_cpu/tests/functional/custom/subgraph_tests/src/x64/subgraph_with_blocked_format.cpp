@@ -5,7 +5,26 @@
 #include "common_test_utils/node_builders/constant.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
-#include "openvino/opsets/opset8.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/mvn.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reduce_mean.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/sigmoid.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/mvn.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reduce_mean.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/sigmoid.hpp"
 
 namespace ov {
 namespace test {
@@ -17,38 +36,38 @@ protected:
         abs_threshold = 1e-2;
 
         auto type = element::f32;
-        auto param = std::make_shared<ov::opset8::Parameter>(type, Shape{1, 32, 64, 32});
+        auto param = std::make_shared<ov::op::v0::Parameter>(type, Shape{1, 32, 64, 32});
         auto weights_tensor = ov::test::utils::create_and_fill_tensor_real_distribution(type, Shape{32, 32, 1, 1}, 1, 10, 1);
         auto weights = std::make_shared<ov::op::v0::Constant>(weights_tensor);
-        auto conv = std::make_shared<ov::opset8::Convolution>(param,
+        auto conv = std::make_shared<ov::op::v1::Convolution>(param,
                                                               weights,
                                                               Strides{1, 1},
                                                               CoordinateDiff{0, 0},
                                                               CoordinateDiff{0, 0},
                                                               Strides{1, 1});
         auto mean =
-            std::make_shared<ov::opset8::ReduceMean>(conv,
-                                                     ov::opset8::Constant::create(element::i32, Shape{2}, {2, 3}),
+            std::make_shared<ov::op::v1::ReduceMean>(conv,
+                                                     ov::op::v0::Constant::create(element::i32, Shape{2}, {2, 3}),
                                                      true);
         auto reshape_before =
             std::make_shared<ov::op::v1::Reshape>(mean,
-                                                  ov::opset8::Constant::create(element::i32, Shape{3}, {0, 16, -1}),
+                                                  ov::op::v0::Constant::create(element::i32, Shape{3}, {0, 16, -1}),
                                                   true);
-        auto mvn = std::make_shared<ov::opset8::MVN>(reshape_before,
-                                                     ov::opset8::Constant::create(element::i32, Shape{1}, {2}),
+        auto mvn = std::make_shared<ov::op::v6::MVN>(reshape_before,
+                                                     ov::op::v0::Constant::create(element::i32, Shape{1}, {2}),
                                                      false,
                                                      0.1,
                                                      op::MVNEpsMode::INSIDE_SQRT);
         auto reshape_after =
             std::make_shared<ov::op::v1::Reshape>(mvn, std::make_shared<ov::op::v3::ShapeOf>(mean), false);
-        auto mul = std::make_shared<ov::opset8::Multiply>(
+        auto mul = std::make_shared<ov::op::v1::Multiply>(
             reshape_after,
             ov::test::utils::make_constant(type, Shape{32, 1, 1}));
-        auto add = std::make_shared<ov::opset8::Add>(
+        auto add = std::make_shared<ov::op::v1::Add>(
             mul,
             ov::test::utils::make_constant(type, Shape{32, 1, 1}));
-        auto sigmoid = std::make_shared<ov::opset8::Sigmoid>(add);
-        auto mul2 = std::make_shared<ov::opset8::Multiply>(conv, sigmoid);
+        auto sigmoid = std::make_shared<ov::op::v0::Sigmoid>(add);
+        auto mul2 = std::make_shared<ov::op::v1::Multiply>(conv, sigmoid);
 
         function = std::make_shared<ov::Model>(mul2, ParameterVector{param});
     }
@@ -77,3 +96,4 @@ TEST_F(SubgraphWithBlockedFormat, smoke_CompareWithRefs) {
 
 }  // namespace test
 }  // namespace ov
+

@@ -16,6 +16,12 @@
 #include "openvino/op/util/sub_graph_base.hpp"
 #include "openvino/runtime/aligned_buffer.hpp"
 #include "openvino/runtime/string_aligned_buffer.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/loop.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/loop.hpp"
+#include "openvino/op/result.hpp"
 
 class FunctionsComparator {
 public:
@@ -1033,3 +1039,5 @@ AccuracyCheckResult accuracy_check(const std::shared_ptr<ov::Model>& ref_functio
                                    const std::shared_ptr<ov::Model>& cur_function,
                                    float abs_threshold,
                                    float rel_threshold);
+
+

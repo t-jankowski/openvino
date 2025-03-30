@@ -8,6 +8,14 @@
 #include "openvino/op/add.hpp"
 #include "openvino/op/constant.hpp"
 #include "openvino/op/convert.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::test::utils;
@@ -304,3 +312,5 @@ TEST(specialize_function, value_count_wrong) {
         },
         ov::AssertFailure);
 }
+
+

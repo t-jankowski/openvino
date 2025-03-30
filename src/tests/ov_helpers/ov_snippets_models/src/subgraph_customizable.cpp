@@ -6,6 +6,18 @@
 #include "openvino/op/util/op_types.hpp"
 #include <snippets/op/subgraph.hpp>
 #include "common_test_utils/data_utils.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/sinh.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/sinh.hpp"
 
 namespace ov {
 namespace test {
@@ -189,3 +201,4 @@ std::shared_ptr<ov::Model> MatMulBiasActivationBinaryFunction::initReference() c
 }  // namespace snippets
 }  // namespace test
 }  // namespace ov
+

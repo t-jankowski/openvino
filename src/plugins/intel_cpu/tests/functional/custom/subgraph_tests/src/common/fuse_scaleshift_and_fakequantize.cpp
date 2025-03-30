@@ -6,6 +6,11 @@
 #include "utils/cpu_test_utils.hpp"
 #include "openvino/util/common_util.hpp"
 #include "common_test_utils/node_builders/fake_quantize.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/subtract.hpp"
 
 namespace ov {
 namespace test {
@@ -115,3 +120,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_FuseScaleShiftAndFakeQuantize,
 }  // namespace
 }  // namespace test
 }  // namespace ov
+

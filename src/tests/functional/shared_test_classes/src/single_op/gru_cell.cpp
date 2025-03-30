@@ -11,6 +11,14 @@
 #include "openvino/op/gru_cell.hpp"
 #include "openvino/pass/manager.hpp"
 #include "transformations/op_conversions/gru_cell_decomposition.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/gru_cell.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/gru_cell.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -144,3 +152,5 @@ void GRUCellTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

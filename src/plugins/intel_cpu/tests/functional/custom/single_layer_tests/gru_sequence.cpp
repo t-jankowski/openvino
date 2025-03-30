@@ -9,6 +9,7 @@
 #include "common_test_utils/node_builders/gru_cell.hpp"
 #include "openvino/pass/manager.hpp"
 #include "common_test_utils/ov_test_utils.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 namespace ov {
@@ -386,3 +387,4 @@ INSTANTIATE_TEST_SUITE_P(nightly_dynamic_bf16,
 }  // namespace
 }  // namespace test
 }  // namespace ov
+

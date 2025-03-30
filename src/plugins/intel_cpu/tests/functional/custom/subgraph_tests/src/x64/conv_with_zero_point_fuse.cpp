@@ -9,6 +9,22 @@
 #include "common_test_utils/node_builders/group_convolution.hpp"
 #include "common_test_utils/node_builders/fake_quantize.hpp"
 #include "utils/convolution_params.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/max_pool.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/max_pool.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace CPUTestUtils;
 
@@ -76,7 +92,7 @@ void ConvWithZeroPointFuseSubgraphTest::SetUp() {
 
         const auto weights_convert = std::make_shared<ov::op::v0::Convert>(weights_const, ov::element::f32);
 
-        const auto weights_multiply = std::make_shared<ov::opset10::Multiply>(
+        const auto weights_multiply = std::make_shared<ov::op::v1::Multiply>(
             weights_convert,
             std::make_shared<ov::op::v0::Constant>(ov::element::f32,
                                                    ov::Shape{numOutChannels, 1, 1, 1},
@@ -99,7 +115,7 @@ void ConvWithZeroPointFuseSubgraphTest::SetUp() {
         case nodeType::groupConvolution: {
             branches[1] = ov::test::utils::make_group_convolution(
                 fq_conv_data,
-                std::make_shared<ov::opset10::Reshape>(
+                std::make_shared<ov::op::v1::Reshape>(
                     weights_multiply,
                     std::make_shared<ov::op::v0::Constant>(
                         ov::element::i32,
@@ -144,3 +160,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_ConvWithZeroPointFuse,
 
 }  // namespace test
 }  // namespace ov
+

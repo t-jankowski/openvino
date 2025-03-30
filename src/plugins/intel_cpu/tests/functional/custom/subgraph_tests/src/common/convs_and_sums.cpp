@@ -9,6 +9,10 @@
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
 #include "openvino/op/constant.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -130,3 +134,4 @@ TEST_F(ConvsAndSums, smoke_CompareWithRefs) {
 
 }  // namespace test
 }  // namespace ov
+

@@ -9,6 +9,8 @@
 #include "openvino/op/interpolate.hpp"
 #include "openvino/core/model.hpp"
 #include "ov_lpt_models/common/dequantization_operations.hpp"
+#include "openvino/op/interpolate.hpp"
+#include "openvino/op/interpolate.hpp"
 
 namespace ov {
 namespace builder {
@@ -68,3 +70,5 @@ public:
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

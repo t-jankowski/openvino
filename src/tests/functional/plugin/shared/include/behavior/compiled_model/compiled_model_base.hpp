@@ -4,7 +4,6 @@
 
 #include <fstream>
 #include <openvino/core/preprocess/pre_post_process.hpp>
-#include <openvino/opsets/opset8.hpp>
 #include <openvino/pass/serialize.hpp>
 
 #include "base/ov_behavior_test_utils.hpp"
@@ -22,6 +21,16 @@
 #include "openvino/runtime/exec_model_info.hpp"
 #include "openvino/runtime/tensor.hpp"
 #include "openvino/util/file_util.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov::test::behavior {
 namespace {
@@ -1175,3 +1184,5 @@ TEST_P(OVCompiledModelBaseTest, compile_from_cached_weightless_blob_but_no_weigh
     std::filesystem::remove_all(cache_dir, ec);
 }
 }  // namespace ov::test::behavior
+
+

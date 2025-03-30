@@ -9,6 +9,14 @@
 #include "openvino/op/add.hpp"
 #include "openvino/op/multiply.hpp"
 #include "openvino/runtime/core.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace {
 
@@ -116,3 +124,5 @@ TEST_P(ExecGraphDuplicateInputsOutputsNames, CheckOutputsMatch) {
 }
 
 }  // namespace ExecutionGraphTests
+
+

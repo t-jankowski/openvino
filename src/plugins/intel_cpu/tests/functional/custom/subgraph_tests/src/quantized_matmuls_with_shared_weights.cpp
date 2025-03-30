@@ -9,6 +9,10 @@
 #include "common_test_utils/node_builders/reshape.hpp"
 #include "openvino/openvino.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -101,3 +105,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_CustomTest, QuantizedMatMulsWithSharedWeightsTest
 }  // namespace
 }  // namespace test
 }  // namespace ov
+

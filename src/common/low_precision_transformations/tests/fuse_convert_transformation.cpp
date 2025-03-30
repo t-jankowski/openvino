@@ -17,6 +17,7 @@
 #include "ov_lpt_models/common/dequantization_operations.hpp"
 #include "simple_low_precision_transformer.hpp"
 #include "ov_lpt_models/fuse_convert.hpp"
+#include "openvino/op/convert.hpp"
 
 namespace {
 using namespace testing;
@@ -242,3 +243,4 @@ INSTANTIATE_TEST_SUITE_P(
     FuseConvertTransformation::getTestCaseName);
 } // namespace testValues2
 } // namespace
+

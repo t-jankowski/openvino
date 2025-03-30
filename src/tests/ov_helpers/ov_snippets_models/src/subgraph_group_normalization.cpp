@@ -4,6 +4,18 @@
 
 #include "subgraph_group_normalization.hpp"
 #include <snippets/op/subgraph.hpp>
+#include "openvino/op/add.hpp"
+#include "openvino/op/group_normalization.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/sqrt.hpp"
+#include "openvino/op/subtract.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/group_normalization.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/sqrt.hpp"
+#include "openvino/op/subtract.hpp"
 
 namespace ov {
 namespace test {
@@ -97,3 +109,5 @@ std::shared_ptr<ov::Model> GroupNormalizationFunction::initLowered() const {
 }  // namespace snippets
 }  // namespace test
 }  // namespace ov
+
+

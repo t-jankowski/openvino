@@ -15,6 +15,10 @@
 #include "openvino/op/convert.hpp"
 #include "openvino/op/multiply.hpp"
 #include "openvino/op/subtract.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/subtract.hpp"
 
 using namespace ov;
 
@@ -103,3 +107,4 @@ ov::pass::low_precision::ConvertSubtractConstant::ConvertSubtractConstant(const 
     auto m = std::make_shared<ov::pass::pattern::Matcher>(multiplyWrapper, matcher_name);
     this->register_matcher(m, callback);
 }
+

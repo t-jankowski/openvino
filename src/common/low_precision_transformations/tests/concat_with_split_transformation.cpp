@@ -27,6 +27,10 @@
 #include "ov_lpt_models/concat.hpp"
 #include "ov_lpt_models/common/fake_quantize_on_data.hpp"
 #include "simple_low_precision_transformer.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/split.hpp"
 
 
 using namespace testing;
@@ -365,3 +369,4 @@ INSTANTIATE_TEST_SUITE_P(
     ConcatWithSplitTransformation::getTestCaseName);
 } // namespace casesWithoutConvolution
 } // namespace
+

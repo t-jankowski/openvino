@@ -3,6 +3,12 @@
 //
 
 #include "shared_test_classes/single_op/reshape.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reshape.hpp"
 
 namespace ov {
 namespace test {
@@ -36,4 +42,6 @@ void ReshapeLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+
 

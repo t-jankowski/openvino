@@ -6,12 +6,13 @@
 #include <array>
 
 #include "common_test_utils/test_assertions.hpp"
-#include "openvino/opsets/opset10.hpp"
 #include "utils.hpp"
+#include "openvino/op/deformable_psroi_pooling.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
-using namespace ov::opset10;
+using ov::op::v0::Parameter;
 using namespace testing;
 
 class DeformablePSROIPoolingV1StaticShapeInferenceTest : public OpStaticShapeInferenceTest<op::v1::DeformablePSROIPooling> {

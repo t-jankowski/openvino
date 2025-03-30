@@ -16,6 +16,13 @@
 #include "openvino/op/group_conv.hpp"
 #include "openvino/op/group_conv.hpp"
 #include "openvino/op/matmul.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/matmul.hpp"
 
 using namespace ov::pass::low_precision;
 
@@ -45,3 +52,4 @@ MarkupBias::MarkupBias() {
     auto m = std::make_shared<ov::pass::pattern::Matcher>(bias_m, matcher_name);
     register_matcher(m, callback);
 }
+

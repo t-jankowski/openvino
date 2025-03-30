@@ -5,9 +5,6 @@
 #include <gtest/gtest.h>
 
 #include <memory>
-#include <openvino/opsets/opset1.hpp>
-#include <openvino/opsets/opset13.hpp>
-#include <openvino/opsets/opset8.hpp>
 #include <openvino/pass/manager.hpp>
 #include <ov_ops/type_relaxed.hpp>
 #include <string>
@@ -19,6 +16,22 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "transformations/utils/print_model.hpp"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/assign.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/gather.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/read_value.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/scaled_dot_product_attention.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/unsqueeze.hpp"
 
 using namespace testing;
 using namespace ov;
@@ -82,40 +95,40 @@ static std::shared_ptr<ov::Model> makeSDPA(const ov::PartialShape& inputShape, b
         concatV = std::make_shared<ov::op::v0::Concat>(OutputVector{pastv, v}, 2);
         if (hasMultiquery) {
             auto make_multi_query = [&] (const Output<Node>& conat) {
-                auto beam_idx_shape = makeOP<ov::op::TypeRelaxed<opset1::ShapeOf>>({beam_idx},
+                auto beam_idx_shape = makeOP<ov::op::TypeRelaxed<op::v0::ShapeOf>>({beam_idx},
                     {{"type_relax", true}, {"input_data_types", {}}, {"output_data_types", {element::i32}}});
-                auto unsqueeze_concat = makeOP<opset1::Unsqueeze>({conat, 2});
+                auto unsqueeze_concat = makeOP<op::v0::Unsqueeze>({conat, 2});
                 if (at == InsertPoint::At_MQ_Unsqueeze && !insert_result) {
                     insert_result = std::make_shared<ov::op::v0::Result>(unsqueeze_concat);
                 }
-                auto concat_shape = makeOP<ov::op::TypeRelaxed<opset1::ShapeOf>>(
+                auto concat_shape = makeOP<ov::op::TypeRelaxed<op::v0::ShapeOf>>(
                     {conat},
                     {{"type_relax", true}, {"input_data_types", {}}, {"output_data_types", {element::i32}}});
-                auto gather_ls = makeOP<opset8::Gather>({concat_shape, {2, 3}, 0}, {{"batch_dims", 0}});
-                auto expected_group_shape = makeOP<opset1::Concat>({beam_idx_shape, {inputShape[1] / 4}, {4}, gather_ls}, {{"axis", 0}});
-                auto expand_Abs = makeOP<opset1::Abs>({expected_group_shape});
+                auto gather_ls = makeOP<op::v8::Gather>({concat_shape, {2, 3}, 0}, {{"batch_dims", 0}});
+                auto expected_group_shape = makeOP<op::v0::Concat>({beam_idx_shape, {inputShape[1] / 4}, {4}, gather_ls}, {{"axis", 0}});
+                auto expand_Abs = makeOP<op::v0::Abs>({expected_group_shape});
                 auto axis_mapping = makeConst(element::u8, ov::Shape({}), {0});
-                auto expand_ones = makeOP<opset1::Broadcast>({{1.0f},
+                auto expand_ones = makeOP<op::v1::Broadcast>({{1.0f},
                     expand_Abs,
                     axis_mapping}, {{"mode", "numpy"}});
                 if (at == InsertPoint::At_MQ_Broadcast && !insert_result) {
                     insert_result = std::make_shared<ov::op::v0::Result>(expand_ones);
                 }
-                auto expand_Broadcast = makeOP<opset1::Multiply>({unsqueeze_concat,
+                auto expand_Broadcast = makeOP<op::v1::Multiply>({unsqueeze_concat,
                     expand_ones}, {{"auto_broadcast", "numpy"}});
                 if (at == InsertPoint::At_MQ_Multiply && !insert_result) {
                     insert_result = std::make_shared<ov::op::v0::Result>(expand_Broadcast);
                 }
-                auto expected_shape = makeOP<opset1::Concat>({beam_idx_shape, {inputShape[1]}, gather_ls}, {{"axis", 0}});
-                auto reshape_Reshape = makeOP<opset1::Reshape>({expand_Broadcast, expected_shape}, {{"special_zero", false}});
+                auto expected_shape = makeOP<op::v0::Concat>({beam_idx_shape, {inputShape[1]}, gather_ls}, {{"axis", 0}});
+                auto reshape_Reshape = makeOP<op::v1::Reshape>({expand_Broadcast, expected_shape}, {{"special_zero", false}});
                 if (at == InsertPoint::At_MQ_Reshape && !insert_result) {
                     insert_result = std::make_shared<ov::op::v0::Result>(reshape_Reshape);
                 }
                 return reshape_Reshape;
             };
-            sdp = std::make_shared<ov::opset13::ScaledDotProductAttention>(q, make_multi_query(concatK), make_multi_query(concatV), false);
+            sdp = std::make_shared<ov::op::v13::ScaledDotProductAttention>(q, make_multi_query(concatK), make_multi_query(concatV), false);
         } else {
-            sdp = std::make_shared<ov::opset13::ScaledDotProductAttention>(q, concatK, concatV, false);
+            sdp = std::make_shared<ov::op::v13::ScaledDotProductAttention>(q, concatK, concatV, false);
         }
     }
     if (hasConvert) {

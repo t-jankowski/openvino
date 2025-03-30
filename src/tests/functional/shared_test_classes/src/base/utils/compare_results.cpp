@@ -209,6 +209,16 @@ OPENVINO_SUPPRESS_DEPRECATED_START
 #include "openvino/opsets/opset16_tbl.hpp"
 
 #include "ov_ops/opset_private_tbl.hpp"
+#include "openvino/op/detection_output.hpp"
+#include "openvino/op/i420_to_bgr.hpp"
+#include "openvino/op/i420_to_rgb.hpp"
+#include "openvino/op/nv12_to_bgr.hpp"
+#include "openvino/op/nv12_to_rgb.hpp"
+#include "openvino/op/detection_output.hpp"
+#include "openvino/op/i420_to_bgr.hpp"
+#include "openvino/op/i420_to_rgb.hpp"
+#include "openvino/op/nv12_to_bgr.hpp"
+#include "openvino/op/nv12_to_rgb.hpp"
 #undef _OPENVINO_OP_REG
     };
 OPENVINO_SUPPRESS_DEPRECATED_END
@@ -218,3 +228,5 @@ OPENVINO_SUPPRESS_DEPRECATED_END
 } // namespace utils
 } // namespace test
 } // namespace ov
+
+

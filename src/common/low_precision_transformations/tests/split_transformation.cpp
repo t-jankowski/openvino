@@ -14,6 +14,7 @@
 #include "ov_lpt_models/split.hpp"
 #include "simple_low_precision_transformer.hpp"
 #include "transformations/init_node_info.hpp"
+#include "openvino/op/split.hpp"
 
 namespace {
 using namespace testing;
@@ -475,3 +476,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_LPT,
                          ::testing::Combine(::testing::ValuesIn(precisions), ::testing::ValuesIn(testValues)),
                          SplitTransformation::getTestCaseName);
 }  // namespace
+

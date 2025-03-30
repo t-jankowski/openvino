@@ -11,6 +11,8 @@
 
 #include "transformations/init_node_info.hpp"
 #include "ov_lpt_models/interpolate.hpp"
+#include "openvino/op/interpolate.hpp"
+#include "openvino/op/interpolate.hpp"
 
 namespace LayerTestsDefinitions {
 
@@ -71,3 +73,5 @@ TEST_P(InterpolateTransformation, CompareWithRefImpl) {
 };
 
 }  // namespace LayerTestsDefinitions
+
+

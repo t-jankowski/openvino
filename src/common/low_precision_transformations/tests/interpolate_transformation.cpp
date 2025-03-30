@@ -19,6 +19,7 @@
 #include "simple_low_precision_transformer.hpp"
 #include "ov_lpt_models/interpolate.hpp"
 #include "openvino/op/interpolate.hpp"
+#include "openvino/op/interpolate.hpp"
 
 using namespace testing;
 using namespace ov::pass;
@@ -597,3 +598,4 @@ INSTANTIATE_TEST_SUITE_P(
     InterpolateTransformation,
     ::testing::ValuesIn(testValues),
     InterpolateTransformation::getTestCaseName);
+

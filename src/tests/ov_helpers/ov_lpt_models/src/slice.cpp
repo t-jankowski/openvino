@@ -3,7 +3,14 @@
 //
 
 #include "ov_lpt_models/slice.hpp"
-#include "openvino/opsets/opset8.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/slice.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/slice.hpp"
 
 using namespace ov::pass::low_precision;
 
@@ -19,7 +26,7 @@ std::shared_ptr<ov::Model> SliceFunction::get(
     const std::vector<int64_t>& stop,
     const std::vector<int64_t>& step,
     const std::vector<int64_t>& axes) {
-    const auto input = std::make_shared<ov::opset1::Parameter>(inputPrecision, inputShape);
+    const auto input = std::make_shared<ov::op::v0::Parameter>(inputPrecision, inputShape);
     input->set_friendly_name("input");
 
     std::shared_ptr<ov::Node> parent = input;
@@ -36,7 +43,7 @@ std::shared_ptr<ov::Model> SliceFunction::get(
     const auto axes_constant = ov::op::v0::Constant::create(ov::element::i64, ov::Shape{ axes.size() }, axes);
     axes_constant->set_friendly_name("axes ");
 
-    const auto stridedSlice = std::make_shared<ov::opset8::Slice>(
+    const auto stridedSlice = std::make_shared<ov::op::v8::Slice>(
         parent,
         start_constant,
         stop_constant,
@@ -44,7 +51,7 @@ std::shared_ptr<ov::Model> SliceFunction::get(
         axes_constant);
     stridedSlice->set_friendly_name("slice");
 
-    const auto res = std::make_shared<ov::opset1::Result>(stridedSlice);
+    const auto res = std::make_shared<ov::op::v0::Result>(stridedSlice);
     const auto function = std::make_shared<ov::Model>(
         ov::ResultVector{ res },
         ov::ParameterVector{ input },
@@ -56,3 +63,5 @@ std::shared_ptr<ov::Model> SliceFunction::get(
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

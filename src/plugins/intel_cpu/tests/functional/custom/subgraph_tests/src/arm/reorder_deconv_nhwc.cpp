@@ -6,6 +6,8 @@
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
 #include "common_test_utils/node_builders/convolution_backprop_data.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace CPUTestUtils;
 
@@ -66,3 +68,4 @@ TEST_F(ReorderDeconvNHWCTest, smoke_ReorderDeconvNHWC_CPU) {
 
 }  // namespace test
 }  // namespace ov
+

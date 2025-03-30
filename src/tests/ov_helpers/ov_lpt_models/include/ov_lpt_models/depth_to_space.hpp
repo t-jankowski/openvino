@@ -11,6 +11,8 @@
 
 #include "openvino/op/depth_to_space.hpp"
 #include "ov_lpt_models/common/dequantization_operations.hpp"
+#include "openvino/op/depth_to_space.hpp"
+#include "openvino/op/depth_to_space.hpp"
 
 namespace ov {
 namespace builder {
@@ -44,3 +46,5 @@ public:
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

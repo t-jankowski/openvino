@@ -5,9 +5,18 @@
 #include "ov_lpt_models/normalize_l2.hpp"
 
 #include <ov_ops/type_relaxed.hpp>
-#include "openvino/opsets/opset1.hpp"
 #include "ov_lpt_models/common/builders.hpp"
 #include "common_test_utils/node_builders/fake_quantize.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/normalize_l2.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/normalize_l2.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace builder {
@@ -26,7 +35,7 @@ std::shared_ptr<ov::Model> NormalizeL2Function::getOriginal(
     const float outputScale = 20.f;
 
 
-    const auto paramNode = std::make_shared<ov::opset1::Parameter>(precision, shapes.first);
+    const auto paramNode = std::make_shared<ov::op::v0::Parameter>(precision, shapes.first);
     paramNode->set_friendly_name("input");
 
     const auto fakeQuantize = ov::test::utils::make_fake_quantize(
@@ -37,7 +46,7 @@ std::shared_ptr<ov::Model> NormalizeL2Function::getOriginal(
 
     const auto axesNode = std::make_shared<ov::op::v0::Constant>(ov::element::i64, ov::Shape{ axes.size() }, axes);
     axesNode->set_friendly_name("axes");
-    const auto normalizeL2 = std::make_shared<ov::opset1::NormalizeL2>(fakeQuantize->output(0), axesNode, 1e-6, ov::op::EpsMode::ADD);
+    const auto normalizeL2 = std::make_shared<ov::op::v0::NormalizeL2>(fakeQuantize->output(0), axesNode, 1e-6, ov::op::EpsMode::ADD);
     normalizeL2->set_friendly_name("normalizeL2");
 
     ov::ResultVector results;
@@ -48,13 +57,13 @@ std::shared_ptr<ov::Model> NormalizeL2Function::getOriginal(
 
         const auto multiplyConst = std::make_shared<ov::op::v0::Constant>(precision, constantShape, std::vector<float>{ 2.f });
         multiplyConst->set_friendly_name("multiplyConst");
-        const auto multiply = std::make_shared<ov::opset1::Multiply>(normalizeL2->output(0), multiplyConst);
+        const auto multiply = std::make_shared<ov::op::v1::Multiply>(normalizeL2->output(0), multiplyConst);
         multiply->set_friendly_name("output");
 
-        results = { std::make_shared<ov::opset1::Result>(multiply) };
+        results = { std::make_shared<ov::op::v0::Result>(multiply) };
     } else {
         normalizeL2->set_friendly_name("output");
-        results = { std::make_shared<ov::opset1::Result>(normalizeL2) };
+        results = { std::make_shared<ov::op::v0::Result>(normalizeL2) };
     }
 
     const auto function = std::make_shared<ov::Model>(results, ov::ParameterVector{ paramNode }, "NormalizeL2Transformation");
@@ -69,19 +78,19 @@ std::shared_ptr<ov::Model> NormalizeL2Function::getOriginal(
     const std::vector<size_t>& axes,
     const ov::builder::subgraph::DequantizationOperations& dequantization) {
 
-    const auto input = std::make_shared<ov::opset1::Parameter>(inputPrecision, shape);
+    const auto input = std::make_shared<ov::op::v0::Parameter>(inputPrecision, shape);
 
     auto deqStructure = dequantization;
     deqStructure.multiply.outPrecision = precision;
     const auto deq = makeDequantization(input, deqStructure);
 
     const auto axesNode = std::make_shared<ov::op::v0::Constant>(ov::element::i64, ov::Shape{ axes.size() }, axes);
-    const auto normalizeL2 = std::make_shared<ov::opset1::NormalizeL2>(deq, axesNode, 1e-6, epsMode);
+    const auto normalizeL2 = std::make_shared<ov::op::v0::NormalizeL2>(deq, axesNode, 1e-6, epsMode);
     normalizeL2->set_friendly_name("output");
     auto& rtInfo = normalizeL2->get_rt_info();
     rtInfo["Variant::std::string"] = "normalizeL2";
 
-    ov::ResultVector results = { std::make_shared<ov::opset1::Result>(normalizeL2) };
+    ov::ResultVector results = { std::make_shared<ov::op::v0::Result>(normalizeL2) };
     const auto function = std::make_shared<ov::Model>(results, ov::ParameterVector{ input }, "NormalizeL2Transformation");
     return function;
 }
@@ -95,7 +104,7 @@ std::shared_ptr<ov::Model> NormalizeL2Function::getReference(
     const ov::builder::subgraph::DequantizationOperations& dequantizationBefore,
     const ov::element::Type precisionAfterOperation,
     const ov::builder::subgraph::DequantizationOperations& dequantizationAfter) {
-    const auto input = std::make_shared<ov::opset1::Parameter>(inputPrecision, shape);
+    const auto input = std::make_shared<ov::op::v0::Parameter>(inputPrecision, shape);
 
     auto deqBeforeStructure = dequantizationBefore;
     if (dequantizationAfter.empty()) {
@@ -105,7 +114,7 @@ std::shared_ptr<ov::Model> NormalizeL2Function::getReference(
     const auto deqBefore = makeDequantization(input, deqBeforeStructure);
 
     const auto axesNode = std::make_shared<ov::op::v0::Constant>(ov::element::i64, ov::Shape{ axes.size() }, axes);
-    const auto normalizeL2 = std::make_shared<ov::op::TypeRelaxed<ov::opset1::NormalizeL2>>(
+    const auto normalizeL2 = std::make_shared<ov::op::TypeRelaxed<ov::op::v0::NormalizeL2>>(
         std::vector<ov::element::Type>{ov::element::f32, axesNode->output(0).get_element_type()},
         std::vector<ov::element::Type>{dequantizationAfter.empty() ? precision : ov::element::f32},
         ov::op::TemporaryReplaceOutputType(deqBefore, ov::element::f32).get(),
@@ -121,7 +130,7 @@ std::shared_ptr<ov::Model> NormalizeL2Function::getReference(
 
     deqAfter->set_friendly_name("output");
 
-    ov::ResultVector results = { std::make_shared<ov::opset1::Result>(deqAfter) };
+    ov::ResultVector results = { std::make_shared<ov::op::v0::Result>(deqAfter) };
     const auto function = std::make_shared<ov::Model>(results, ov::ParameterVector{ input }, "NormalizeL2Transformation");
 
     return function;
@@ -130,3 +139,5 @@ std::shared_ptr<ov::Model> NormalizeL2Function::getReference(
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

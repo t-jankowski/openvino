@@ -4,12 +4,15 @@
 
 #include <gtest/gtest.h>
 
-#include "openvino/opsets/opset10.hpp"
 #include "utils.hpp"
+#include "openvino/op/batch_to_space.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
-using namespace ov::opset10;
+using ov::op::v0::Constant;
+using ov::op::v0::Parameter;
 using namespace testing;
 
 class BatchToSpaceV1StaticShapeInferenceTest : public OpStaticShapeInferenceTest<op::v1::BatchToSpace> {

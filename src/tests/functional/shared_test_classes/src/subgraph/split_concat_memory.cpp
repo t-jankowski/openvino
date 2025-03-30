@@ -3,6 +3,20 @@
 //
 
 #include "shared_test_classes/subgraph/split_concat_memory.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/assign.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/read_value.hpp"
+#include "openvino/op/variadic_split.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/assign.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/read_value.hpp"
+#include "openvino/op/variadic_split.hpp"
 
 namespace ov {
 namespace test {
@@ -84,4 +98,6 @@ void SplitConcatMemory::SetUp() {
 
 }  // namespace test
 }  // namespace ov
+
+
 

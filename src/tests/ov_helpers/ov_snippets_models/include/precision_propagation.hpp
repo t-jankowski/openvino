@@ -7,9 +7,10 @@
 #include <memory>
 #include <vector>
 
-#include "openvino/opsets/opset1.hpp"
 #include "snippets/op/convert_saturation.hpp"
 #include "snippets_helpers.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/add.hpp"
 
 namespace ov {
 namespace test {
@@ -19,7 +20,7 @@ namespace snippets {
  * @class DummyAdd
  * @brief DummyAdd operation has custom validate_and_infer_types method implementation.
  */
-class DummyAdd : public ov::opset1::Add {
+class DummyAdd : public ov::op::v1::Add {
 public:
     OPENVINO_OP("DummyAdd", "test::snippets");
 
@@ -27,11 +28,11 @@ public:
         const Output<Node>& arg1,
         const ov::op::AutoBroadcastSpec& auto_broadcast =
         ov::op::AutoBroadcastSpec(ov::op::AutoBroadcastType::NUMPY))
-        : ov::opset1::Add(arg0, arg1, auto_broadcast) {
+        : ov::op::v1::Add(arg0, arg1, auto_broadcast) {
         constructor_validate_and_infer_types();
     }
 
-    DummyAdd(const ov::opset1::Add& add)
+    DummyAdd(const ov::op::v1::Add& add)
         : Add(add.get_input_source_output(0), add.get_input_source_output(1), add.get_autob()) {
         constructor_validate_and_infer_types();
     }
@@ -127,3 +128,5 @@ private:
 }  // namespace snippets
 }  // namespace test
 }  // namespace ov
+
+

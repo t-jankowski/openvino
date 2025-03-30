@@ -7,10 +7,11 @@
 #include <low_precision/common/quantization_granularity_restriction.hpp>
 #include <memory>
 
-#include "openvino/opsets/opset1.hpp"
 #include "ov_lpt_models/common/dequantization_operations.hpp"
 #include "ov_lpt_models/common/fake_quantize_on_data.hpp"
 #include "ov_lpt_models/common/fake_quantize_on_weights.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/constant.hpp"
 
 namespace ov {
 namespace builder {
@@ -23,7 +24,7 @@ public:
         const ov::element::Type inputPrecision,
         const ov::PartialShape& inputShape,
         const ov::builder::subgraph::DequantizationOperations& dequantizationOnActivations,
-        std::shared_ptr<ov::opset1::Constant> weights,
+        std::shared_ptr<ov::op::v0::Constant> weights,
         const ov::builder::subgraph::FakeQuantizeOnWeights fqOnWeights,
         const ov::builder::subgraph::DequantizationOperations& dequantizationOnWeights = DequantizationOperations(),
         const bool fqOnWeightsTransposeOnData = false,
@@ -59,7 +60,7 @@ public:
         const ov::element::Type inputPrecision,
         const ov::PartialShape& inputShape,
         const ov::builder::subgraph::DequantizationOperations& dequantizationBefore,
-        std::shared_ptr<ov::opset1::Constant> weights,
+        std::shared_ptr<ov::op::v0::Constant> weights,
         const ov::builder::subgraph::FakeQuantizeOnWeights fakeQuantizeOnWeights,
         const ov::element::Type precisionAfterOperation,
         const ov::builder::subgraph::DequantizationOperations& dequantizationAfter,
@@ -76,3 +77,5 @@ public:
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

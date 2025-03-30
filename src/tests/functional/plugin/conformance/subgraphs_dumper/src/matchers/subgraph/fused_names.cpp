@@ -12,6 +12,14 @@
 #include "matchers/subgraph/fused_names.hpp"
 #include "utils/model.hpp"
 #include "utils/cache.hpp"
+#include "openvino/op/if.hpp"
+#include "openvino/op/loop.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/tensor_iterator.hpp"
+#include "openvino/op/if.hpp"
+#include "openvino/op/loop.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/tensor_iterator.hpp"
 
 using namespace ov::tools::subgraph_dumper;
 
@@ -254,3 +262,5 @@ FusedNamesExtractor::extract(const std::shared_ptr<ov::Model> &model) {
     // }
     // return matched_patterns;
 }
+
+

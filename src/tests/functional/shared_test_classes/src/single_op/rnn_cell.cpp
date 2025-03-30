@@ -6,6 +6,12 @@
 #include "transformations/op_conversions/rnn_cell_decomposition.hpp"
 #include "shared_test_classes/single_op/rnn_cell.hpp"
 #include "common_test_utils/ov_tensor_utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/rnn_cell.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/rnn_cell.hpp"
 
 namespace ov {
 namespace test {
@@ -107,3 +113,5 @@ void RNNCellTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

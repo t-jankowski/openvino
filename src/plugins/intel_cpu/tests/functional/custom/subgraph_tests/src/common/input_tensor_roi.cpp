@@ -8,6 +8,10 @@
 #include "utils/cpu_test_utils.hpp"
 #include "openvino/op/constant.hpp"
 #include "openvino/op/add.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace CPUTestUtils;
 
@@ -126,3 +130,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_InputTensorROI,
 
 }  // namespace test
 }  // namespace ov
+

@@ -6,6 +6,7 @@
 
 #include "low_precision_transformations/depth_to_space_transformation.hpp"
 #include "common_test_utils/test_constants.hpp"
+#include "openvino/op/depth_to_space.hpp"
 
 using namespace LayerTestsDefinitions;
 
@@ -47,3 +48,4 @@ const auto DepthToSpaceBS3 = ::testing::Combine(
 
 INSTANTIATE_TEST_SUITE_P(smoke_LPT_BS3, DepthToSpaceTransformation, DepthToSpaceBS3, DepthToSpaceTransformation::getTestCaseName);
 }  // namespace
+

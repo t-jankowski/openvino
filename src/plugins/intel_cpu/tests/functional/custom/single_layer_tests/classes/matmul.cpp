@@ -8,6 +8,9 @@
 #include "openvino/runtime/properties.hpp"
 #include "utils/cpu_test_utils.hpp"
 #include "common_test_utils/ov_tensor_utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 
@@ -370,3 +373,4 @@ const std::vector<ShapeRelatedParams>& IS3D_smoke() {
 }  // namespace MatMul
 }  // namespace test
 }  // namespace ov
+

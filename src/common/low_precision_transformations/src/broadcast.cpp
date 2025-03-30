@@ -14,6 +14,9 @@
 #include "openvino/op/broadcast.hpp"
 #include "openvino/op/constant.hpp"
 #include "openvino/op/multiply.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
 
 using namespace ov::pass::low_precision;
 
@@ -76,3 +79,4 @@ bool BroadcastTransformation::canBeTransformed(const std::shared_ptr<ov::Node>& 
 
     return true;
 }
+

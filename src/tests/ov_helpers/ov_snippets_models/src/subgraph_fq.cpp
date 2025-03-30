@@ -6,6 +6,8 @@
 #include "common_test_utils/data_utils.hpp"
 #include "ov_lpt_models/common/builders.hpp"
 #include <snippets/op/subgraph.hpp>
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -75,3 +77,4 @@ std::shared_ptr<ov::Model> ThreeFQFunction::initReference() const {
 }  // namespace snippets
 }  // namespace test
 }  // namespace ov
+

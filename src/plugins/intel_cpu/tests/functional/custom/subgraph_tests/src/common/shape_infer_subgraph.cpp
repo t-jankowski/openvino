@@ -4,6 +4,14 @@
 
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/gather.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/scatter_update.hpp"
+#include "openvino/op/shape_of.hpp"
 
 using namespace CPUTestUtils;
 
@@ -51,3 +59,4 @@ TEST_F(ShapeInferSubgraphTest, smoke_ShapeInferSubgraphTest_CPU) {
 }  // namespace
 }  // namespace test
 }  // namespace ov
+

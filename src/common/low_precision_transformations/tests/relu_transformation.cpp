@@ -17,6 +17,7 @@
 #include "simple_low_precision_transformer.hpp"
 #include "transformations/init_node_info.hpp"
 #include "transformations/utils/utils.hpp"
+#include "openvino/op/prelu.hpp"
 
 namespace {
 
@@ -273,3 +274,4 @@ INSTANTIATE_TEST_SUITE_P(
     ReluTransformation::getTestCaseName);
 } // namespace testValues2
 } // namespace
+

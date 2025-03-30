@@ -14,6 +14,8 @@
 #include "low_precision/rt_info/precision_preserved_attribute.hpp"
 #include "openvino/op/avg_pool.hpp"
 #include "openvino/op/multiply.hpp"
+#include "openvino/op/avg_pool.hpp"
+#include "openvino/op/multiply.hpp"
 
 namespace ov {
 namespace pass {
@@ -65,3 +67,4 @@ bool AvgPoolTransformation::isPrecisionPreserved(std::shared_ptr<Node> layer) co
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

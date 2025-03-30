@@ -7,6 +7,12 @@
 #include "common_test_utils/ov_tensor_utils.hpp"
 #include "openvino/runtime/exec_model_info.hpp"
 #include "shared_test_classes/subgraph/weights_decompression_builders.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/transpose.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/transpose.hpp"
 
 namespace ov {
 namespace test {
@@ -65,7 +71,7 @@ std::shared_ptr<ov::Model> SharedMatmulWeightsDecompression::initSubgraph(
         // In real cases, transpose is not shared between MatMuls,
         // so we recreate the own copy of transpose for each matmul
         if (transpose_weights) {
-            OPENVINO_ASSERT(ov::is_type<ov::opset10::Transpose>(shared_weights_input));
+            OPENVINO_ASSERT(ov::is_type<ov::op::v1::Transpose>(shared_weights_input));
             shared_weights_input = weights_subgraph->clone_with_new_inputs(weights_subgraph->input_values());
         }
         const auto matMul = std::make_shared<ov::op::v0::MatMul>(param, shared_weights_input);
@@ -128,3 +134,5 @@ void SharedMatmulWeightsDecompression::check_results() {
 
 }  // namespace test
 }  // namespace ov
+
+

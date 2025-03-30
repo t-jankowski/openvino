@@ -7,6 +7,7 @@
 
 #include "single_op_tests/matrix_nms.hpp"
 #include "common_test_utils/test_constants.hpp"
+#include "openvino/op/matrix_nms.hpp"
 
 namespace {
 using ov::test::MatrixNmsLayerTest;
@@ -75,3 +76,4 @@ const auto nmsParamsDynamic = ::testing::Combine(::testing::ValuesIn(inDynamicSh
 INSTANTIATE_TEST_SUITE_P(smoke_MatrixNmsLayerTest_static, MatrixNmsLayerTest, nmsParamsStatic, MatrixNmsLayerTest::getTestCaseName);
 INSTANTIATE_TEST_SUITE_P(smoke_MatrixNmsLayerTest_dynamic, MatrixNmsLayerTest, nmsParamsDynamic, MatrixNmsLayerTest::getTestCaseName);
 } // namespace
+

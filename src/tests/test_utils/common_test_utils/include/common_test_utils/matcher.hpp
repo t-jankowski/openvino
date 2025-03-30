@@ -5,6 +5,8 @@
 
 #include "openvino/pass/pattern/matcher.hpp"
 #include "openvino/util/log.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/parameter.hpp"
 
 // this is for more nuanced testing
 class TestMatcher : public ov::pass::pattern::Matcher {
@@ -37,3 +39,5 @@ public:
         return ov::pass::pattern::Matcher::match(graph_node, ov::pass::pattern::PatternValueMap{});
     }
 };
+
+

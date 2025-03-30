@@ -8,6 +8,12 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/result.hpp"
 #include "openvino/op/grid_sample.hpp"
+#include "openvino/op/grid_sample.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/grid_sample.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -63,3 +69,5 @@ void GridSampleLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

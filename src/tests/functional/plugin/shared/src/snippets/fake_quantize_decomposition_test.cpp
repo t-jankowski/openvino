@@ -13,6 +13,8 @@
 #include "ov_ops/type_relaxed.hpp"
 #include "fake_quantize_helper.hpp"
 #include "function_helper.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -77,3 +79,5 @@ TEST_P(FakeQuantizeDecompositionTest, CompareWithRefImpl) {
 }  // namespace snippets
 }  // namespace test
 }  // namespace ov
+
+

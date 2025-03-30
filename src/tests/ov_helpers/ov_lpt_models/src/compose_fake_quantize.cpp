@@ -5,8 +5,11 @@
 #include "ov_lpt_models/compose_fake_quantize.hpp"
 #include "low_precision/network_helper.hpp"
 
-#include "openvino/opsets/opset1.hpp"
 #include "ov_lpt_models/common/builders.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace ov::pass::low_precision;
 
@@ -26,15 +29,15 @@ namespace subgraph {
 
         auto results = ov::ResultVector{};
         if (dequantization1.empty() && dequantization2.empty()) {
-            results.push_back(std::make_shared<ov::opset1::Result>(fakeQuantize));
+            results.push_back(std::make_shared<ov::op::v0::Result>(fakeQuantize));
         } else {
             if (!dequantization1.empty()) {
                 const auto deq = makeDequantization(fakeQuantize, dequantization1);
-                results.push_back(std::make_shared<ov::opset1::Result>(deq));
+                results.push_back(std::make_shared<ov::op::v0::Result>(deq));
             }
             if (!dequantization2.empty()) {
                 const auto deq = makeDequantization(fakeQuantize, dequantization2);
-                results.push_back(std::make_shared<ov::opset1::Result>(deq));
+                results.push_back(std::make_shared<ov::op::v0::Result>(deq));
             }
         }
 
@@ -44,3 +47,5 @@ namespace subgraph {
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

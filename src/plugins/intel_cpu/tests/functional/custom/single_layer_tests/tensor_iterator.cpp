@@ -5,6 +5,9 @@
 #include "common_test_utils/node_builders/activation.hpp"
 #include "common_test_utils/ov_tensor_utils.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/tensor_iterator.hpp"
 
 using namespace ov;
 using namespace test;
@@ -137,3 +140,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_TensorIteratorSimple,
                          TensorIteratorCPUTest::getTestCaseName);
 
 }  // namespace
+

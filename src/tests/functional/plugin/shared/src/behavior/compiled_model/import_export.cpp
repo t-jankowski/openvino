@@ -11,6 +11,16 @@
 
 #include "common_test_utils/subgraph_builders/multiple_input_outpput_double_concat.hpp"
 #include "openvino/pass/serialize.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/split.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/split.hpp"
 
 namespace ov {
 namespace test {
@@ -795,3 +805,5 @@ TEST_P(OVExecGraphSerializationTest, ExecutionGraph) {
 }  // namespace behavior
 }  // namespace test
 }  // namespace ov
+
+

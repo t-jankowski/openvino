@@ -28,6 +28,10 @@
 #include "ov_lpt_models/concat.hpp"
 #include "ov_lpt_models/common/builders.hpp"
 #include "ov_lpt_models/common/fake_quantize_on_data.hpp"
+#include "openvino/op/avg_pool.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/fake_quantize.hpp"
 
 using namespace testing;
 using namespace ov;
@@ -313,3 +317,4 @@ INSTANTIATE_TEST_SUITE_P(
         ::testing::ValuesIn(testValues)),
     ConcatWithNotQuantizedParentTransformation::getTestCaseName);
 }  // namespace
+

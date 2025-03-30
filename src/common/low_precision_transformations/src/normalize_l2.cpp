@@ -19,6 +19,9 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/multiply.hpp"
 #include "openvino/op/normalize_l2.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/normalize_l2.hpp"
 
 using namespace ov;
 using namespace ov::pass;
@@ -158,3 +161,4 @@ bool NormalizeL2Transformation::transform(ov::pass::pattern::Matcher &m) {
 bool NormalizeL2Transformation::isPrecisionPreserved(std::shared_ptr<Node> layer) const noexcept {
     return false;
 }
+

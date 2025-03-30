@@ -19,6 +19,12 @@
 #include "openvino/op/multiply.hpp"
 #include "openvino/op/subtract.hpp"
 #include "openvino/op/transpose.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/subtract.hpp"
+#include "openvino/op/transpose.hpp"
 
 using namespace ov;
 
@@ -137,3 +143,4 @@ ov::pass::low_precision::PullTransposeThroughDequantization::PullTransposeThroug
     auto m = std::make_shared<ov::pass::pattern::Matcher>(matcherTranspose, matcher_name);
     this->register_matcher(m, callback);
 }
+

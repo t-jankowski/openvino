@@ -11,6 +11,8 @@
 #include "openvino/core/type/element_type.hpp"
 #include "openvino/runtime/properties.hpp"
 #include "utils/cpu_test_utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 
@@ -158,3 +160,4 @@ TEST_P(BitwiseShiftLayerCPUTest, CompareWithRefs) {
 
 }  // namespace test
 }  // namespace ov
+

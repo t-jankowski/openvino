@@ -3,6 +3,10 @@
 //
 
 #include "shared_test_classes/single_op/experimental_detectron_roifeatureextractor.hpp"
+#include "openvino/op/experimental_detectron_roi_feature.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/experimental_detectron_roi_feature.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -76,3 +80,5 @@ void ExperimentalDetectronROIFeatureExtractorLayerTest::SetUp() {
 }
 } // namespace test
 } // namespace ov
+
+

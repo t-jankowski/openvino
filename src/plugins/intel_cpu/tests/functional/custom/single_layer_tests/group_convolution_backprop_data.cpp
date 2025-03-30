@@ -12,6 +12,8 @@
 #include "utils/cpu_test_utils.hpp"
 #include "utils/filter_cpu_info.hpp"
 #include "utils/fusing_test_utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 namespace ov {
@@ -729,3 +731,4 @@ INSTANTIATE_TEST_SUITE_P(nightly_GroupDeconv_2D_AutoPadding_FP32,
 
 }  // namespace test
 }  // namespace ov
+

@@ -6,6 +6,7 @@
 
 #include "single_op_tests/non_max_suppression.hpp"
 #include "common_test_utils/test_constants.hpp"
+#include "openvino/op/non_max_suppression.hpp"
 
 namespace {
 using ov::test::NmsLayerTest;

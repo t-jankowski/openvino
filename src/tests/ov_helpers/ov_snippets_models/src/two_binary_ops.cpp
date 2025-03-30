@@ -3,8 +3,13 @@
 //
 
 #include "two_binary_ops.hpp"
-#include "openvino/opsets/opset1.hpp"
 #include "snippets/op/convert_saturation.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -32,8 +37,8 @@ std::shared_ptr<ov::Model> TwoBinaryOpsFunction::get(
         const ov::element::Type precision,
         const ov::PartialShape& inputShape,
         const size_t index,
-        const element::Type convertion_type) -> std::pair<std::shared_ptr<ov::opset1::Parameter>, std::shared_ptr<ov::Node>> {
-            const auto parameter = std::make_shared<ov::opset1::Parameter>(precision, inputShape);
+        const element::Type convertion_type) -> std::pair<std::shared_ptr<ov::op::v0::Parameter>, std::shared_ptr<ov::Node>> {
+            const auto parameter = std::make_shared<ov::op::v0::Parameter>(precision, inputShape);
             parameter->set_friendly_name("parameter" + std::to_string(index));
 
             std::shared_ptr<Node> parent = create_convert(parameter, convertion_type);
@@ -52,7 +57,7 @@ std::shared_ptr<ov::Model> TwoBinaryOpsFunction::get(
     parent = std::make_shared<DummyOperation2>(
         create_convert(parent, convertion_before_op2_2.first),
         create_convert(
-            std::make_shared<ov::opset1::Constant>(constant_precision, Shape{}, std::vector<float>{0.f}),
+            std::make_shared<ov::op::v0::Constant>(constant_precision, Shape{}, std::vector<float>{0.f}),
             convertion_before_op2_2.second));
     parent->set_friendly_name("operation2");
 
@@ -60,7 +65,7 @@ std::shared_ptr<ov::Model> TwoBinaryOpsFunction::get(
 
     parent = create_convert(parent, convertion_before_result);
 
-    const auto result = std::make_shared<ov::opset1::Result>(parent);
+    const auto result = std::make_shared<ov::op::v0::Result>(parent);
     auto& result_out_tensor = result->get_output_tensor(0);
     result_out_tensor.set_names({ "result_tensor" });
     result->set_friendly_name("result");
@@ -101,3 +106,5 @@ std::shared_ptr<ov::Model> TwoBinaryOpsFunction::initReference() const {
 }  // namespace snippets
 }  // namespace test
 }  // namespace ov
+
+

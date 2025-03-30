@@ -4,6 +4,8 @@
 
 #include "utils/cpu_test_utils.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/region_yolo.hpp"
 
 using namespace CPUTestUtils;
 
@@ -229,3 +231,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_TestsRegionYoloCaffeCPUDynamic, RegionYoloCPULaye
 }  // namespace
 }  // namespace test
 }  // namespace ov
+

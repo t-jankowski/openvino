@@ -8,6 +8,8 @@
 #include <vector>
 
 #include "ov_lpt_models/reduce.hpp"
+#include "openvino/op/reduce_max.hpp"
+#include "openvino/op/reduce_max.hpp"
 
 namespace LayerTestsDefinitions {
 
@@ -67,3 +69,5 @@ TEST_P(ReduceMaxTransformation, CompareWithRefImpl) {
 };
 
 } // namespace LayerTestsDefinitions
+
+

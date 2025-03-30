@@ -12,6 +12,7 @@
 #include "openvino/op/batch_to_space.hpp"
 #include "openvino/pass/pattern/op/wrap_type.hpp"
 #include "low_precision/network_helper.hpp"
+#include "openvino/op/batch_to_space.hpp"
 
 namespace ov {
 namespace pass {
@@ -65,3 +66,4 @@ bool BatchToSpaceTransformation::isPrecisionPreserved(std::shared_ptr<Node> laye
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

@@ -6,6 +6,7 @@
 
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/fusing_test_utils.hpp"
+#include "openvino/op/interpolate.hpp"
 
 using namespace CPUTestUtils;
 
@@ -58,3 +59,4 @@ namespace Interpolate {
 }  // namespace Interpolate
 }  // namespace test
 }  // namespace ov
+

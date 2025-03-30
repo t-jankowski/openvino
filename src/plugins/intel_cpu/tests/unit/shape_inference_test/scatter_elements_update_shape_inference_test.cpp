@@ -5,11 +5,14 @@
 #include <gtest/gtest.h>
 
 #include "common_test_utils/test_assertions.hpp"
-#include "openvino/opsets/opset10.hpp"
 #include "utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/scatter_elements_update.hpp"
 
 using namespace ov;
-using namespace ov::opset10;
+using ov::op::v0::Constant;
+using ov::op::v0::Parameter;
 using namespace ov::intel_cpu;
 using namespace testing;
 

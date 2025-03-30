@@ -3,7 +3,6 @@
 //
 
 #include "ov_lpt_models/common/fake_quantize_on_weights.hpp"
-#include "openvino/opsets/opset1.hpp"
 
 namespace ov {
 namespace builder {
@@ -30,3 +29,4 @@ bool FakeQuantizeOnWeights::empty() const {
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+

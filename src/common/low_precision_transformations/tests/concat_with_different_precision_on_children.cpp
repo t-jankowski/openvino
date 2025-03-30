@@ -20,6 +20,10 @@
 #include "ov_lpt_models/common/fake_quantize_on_data.hpp"
 #include "simple_low_precision_transformer.hpp"
 #include "low_precision/common/quantization_granularity_restriction.hpp"
+#include "openvino/op/avg_pool.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/max_pool.hpp"
 
 
 using namespace testing;
@@ -283,3 +287,4 @@ INSTANTIATE_TEST_SUITE_P(
         ::testing::ValuesIn(testValues)),
     ConcatWithDifferentChildrenTransformation::getTestCaseName);
 }  // namespace
+

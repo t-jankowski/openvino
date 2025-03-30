@@ -26,6 +26,16 @@
 #include "common_test_utils/subgraph_builders/conv_bias.hpp"
 #include "common_test_utils/subgraph_builders/read_concat_split_assign.hpp"
 #include "common_test_utils/subgraph_builders/matmul_bias.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
 
 #define GTEST_COUT std::cout << "[          ] [ INFO ] "
 
@@ -965,3 +975,5 @@ TEST_P(CompileModelWithCacheEncryptionTest, CanImportModelWithoutException) {
 } // namespace behavior
 } // namespace test
 } // namespace ov
+
+

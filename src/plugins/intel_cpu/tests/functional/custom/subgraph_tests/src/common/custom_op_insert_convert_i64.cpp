@@ -6,6 +6,8 @@
 #include "openvino/op/op.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
+#include "openvino/op/logical_not.hpp"
+#include "openvino/op/parameter.hpp"
 
 //         ---------------------                                                ---------------------
 //        |      PARAMETER      |                                              |      PARAMETER      |
@@ -215,3 +217,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_CustomOp,
                          CustomOpConvertI64CPUTest::getTestCaseName);
 }  // namespace test
 }  // namespace ov
+

@@ -6,6 +6,12 @@
 #include "common_test_utils/node_builders/rdft.hpp"
 #include "common_test_utils/ov_tensor_utils.hpp"
 #include "shared_test_classes/base/utils/ranges.hpp"
+#include "openvino/op/irdft.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/rdft.hpp"
+#include "openvino/op/irdft.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/rdft.hpp"
 
 namespace ov {
 namespace test {
@@ -90,3 +96,4 @@ void RDFTLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+

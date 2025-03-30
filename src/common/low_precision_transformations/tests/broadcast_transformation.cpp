@@ -14,6 +14,7 @@
 #include "ov_lpt_models/broadcast.hpp"
 #include "simple_low_precision_transformer.hpp"
 #include "openvino/op/broadcast.hpp"
+#include "openvino/op/broadcast.hpp"
 
 namespace {
 using namespace ov::pass;
@@ -195,3 +196,4 @@ INSTANTIATE_TEST_SUITE_P(
 } // chw_broadcast
 
 } // namespace
+

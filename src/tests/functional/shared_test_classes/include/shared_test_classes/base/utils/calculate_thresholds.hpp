@@ -10,6 +10,10 @@
 #include "openvino/core/node.hpp"
 
 #include "openvino/op/unsqueeze.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/fake_quantize.hpp"
 
 namespace ov {
 namespace test {
@@ -42,3 +46,5 @@ std::pair<double, double> calculate_thresholds_by_model(
 } // namespace utils
 } // namespace test
 } // namespace ov
+
+

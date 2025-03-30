@@ -8,6 +8,12 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/result.hpp"
 #include "openvino/op/eye.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/eye.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/eye.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -72,3 +78,5 @@ void EyeLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

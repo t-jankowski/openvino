@@ -3,6 +3,12 @@
 //
 
 #include "shared_test_classes/single_op/concat.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -102,3 +108,5 @@ void ConcatStringLayerTest::generate_inputs(const std::vector<ov::Shape>& target
 
 }  // namespace test
 }  // namespace ov
+
+

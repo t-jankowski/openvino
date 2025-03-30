@@ -12,6 +12,9 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/convert.hpp"
 #include "openvino/op/subtract.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/subtract.hpp"
 
 namespace ov {
 namespace pass {
@@ -74,3 +77,4 @@ bool FoldConvertTransformation::isPrecisionPreserved(std::shared_ptr<Node> layer
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

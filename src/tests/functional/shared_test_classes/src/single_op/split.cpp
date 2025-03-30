@@ -3,6 +3,12 @@
 //
 
 #include "shared_test_classes/single_op/split.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/split.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/split.hpp"
 
 namespace ov {
 namespace test {
@@ -60,3 +66,5 @@ void SplitLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

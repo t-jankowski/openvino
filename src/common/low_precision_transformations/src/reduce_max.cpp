@@ -12,6 +12,9 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/multiply.hpp"
 #include "openvino/op/reduce_max.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/reduce_max.hpp"
 
 namespace ov {
 namespace pass {
@@ -62,3 +65,4 @@ bool ReduceMaxTransformation::getUpdatePrecision(const std::shared_ptr<Node>& re
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

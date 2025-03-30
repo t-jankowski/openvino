@@ -6,6 +6,20 @@
 #include "common_test_utils/data_utils.hpp"
 #include <snippets/op/convert_truncation.hpp>
 #include <snippets/op/subgraph.hpp>
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/roll.hpp"
+#include "openvino/op/subtract.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/roll.hpp"
+#include "openvino/op/subtract.hpp"
 
 namespace ov {
 namespace test {
@@ -159,3 +173,5 @@ std::shared_ptr<ov::Model> ConvertManyOnInputOutputFunction::initReference() con
 }  // namespace snippets
 }  // namespace test
 }  // namespace ov
+
+

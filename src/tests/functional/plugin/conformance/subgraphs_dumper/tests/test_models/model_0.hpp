@@ -12,6 +12,16 @@
 #include "openvino/op/parameter.hpp"
 #include "openvino/op/result.hpp"
 #include "matchers/subgraph/repeat_pattern.hpp"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
 
 class Model_0 {
 private:
@@ -94,3 +104,5 @@ protected:
     std::vector<std::vector<ov::NodeVector>> ref_nodes;
     std::vector<std::vector<PatternBorders>> ref_borders;
 };
+
+

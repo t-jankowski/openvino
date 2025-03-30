@@ -16,6 +16,18 @@
 #include "openvino/op/read_value.hpp"
 #include "openvino/op/util/variable.hpp"
 #include "openvino/op/tensor_iterator.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/assign.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/read_value.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/tensor_iterator.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/assign.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/read_value.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/tensor_iterator.hpp"
 
 namespace ov {
 namespace test {
@@ -169,4 +181,6 @@ void MemoryV3LayerTest::SetUp() {
 
 }  // namespace test
 }  // namespace ov
+
+
 

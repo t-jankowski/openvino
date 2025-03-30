@@ -5,6 +5,11 @@
 #include "common_test_utils/ov_tensor_utils.hpp"
 #include "common_test_utils/node_builders/constant.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/experimental_detectron_topkrois.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/variadic_split.hpp"
 
 namespace ov {
 namespace test {
@@ -59,3 +64,4 @@ TEST_F(StaticZeroDims, smoke_CompareWithRefs) {
 
 }  // namespace test
 }  // namespace ov
+

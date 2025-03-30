@@ -20,6 +20,7 @@
 #include "ov_lpt_models/reduce.hpp"
 #include "ov_lpt_models/common/dequantization_operations.hpp"
 #include "ov_lpt_models/common/constant.hpp"
+#include "openvino/op/reduce_max.hpp"
 
 namespace {
 using namespace testing;
@@ -345,3 +346,4 @@ INSTANTIATE_TEST_SUITE_P(
     ReduceMaxTransformation::getTestCaseName);
 } // namespace testValues2
 } // namespace
+

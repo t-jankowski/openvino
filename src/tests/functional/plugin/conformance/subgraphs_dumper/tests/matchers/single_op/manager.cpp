@@ -9,6 +9,10 @@
 #include "matchers/single_op/single_op.hpp"
 
 #include "base_test.hpp"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace {
 
@@ -64,3 +68,5 @@ TEST_F(MatchersManagerTest, match) {
 }
 
 }  // namespace
+
+

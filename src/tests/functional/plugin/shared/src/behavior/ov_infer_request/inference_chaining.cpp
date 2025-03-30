@@ -24,6 +24,8 @@
 #include "openvino/runtime/tensor.hpp"
 #include "behavior/ov_infer_request/inference_chaining.hpp"
 #include "common_test_utils/node_builders/eltwise.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -207,3 +209,5 @@ TEST_P(OVInferenceChaining, DynamicInputToDynamicOutput) {
 }  // namespace behavior
 }  // namespace test
 }  // namespace ov
+
+

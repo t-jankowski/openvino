@@ -10,12 +10,18 @@
 #include <memory>
 
 #include <openvino/core/model.hpp>
-#include <openvino/opsets/opset1.hpp>
 #include "ov_ops/fully_connected.hpp"
 #include <transformations/init_node_info.hpp>
 #include <transformations/utils/utils.hpp>
 
 #include "common_test_utils/ov_test_utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/subtract.hpp"
+#include "openvino/op/transpose.hpp"
 
 using namespace testing;
 using namespace ov::intel_cpu;
@@ -81,12 +87,12 @@ public:
                                                 const bool add_reshape) {
         const auto decompression_prc = ov::element::f32;
         const auto weights_prc = ov::element::u8;
-        auto data = std::make_shared<ov::opset1::Parameter>(decompression_prc, data_shape);
+        auto data = std::make_shared<ov::op::v0::Parameter>(decompression_prc, data_shape);
         auto transposed_shape = weights_shape;
         if (add_transpose)
             std::swap(*(transposed_shape.rbegin() + 1), *transposed_shape.rbegin());
-        std::shared_ptr<ov::Node> weights_path = ov::opset1::Constant::create(weights_prc, transposed_shape, {1});
-        weights_path = std::make_shared<ov::opset1::Convert>(weights_path, decompression_prc);
+        std::shared_ptr<ov::Node> weights_path = ov::op::v0::Constant::create(weights_prc, transposed_shape, {1});
+        weights_path = std::make_shared<ov::op::v0::Convert>(weights_path, decompression_prc);
 
         ov::Shape decompression_shape(weights_shape.size(), 1);
         const size_t n_idx = add_transpose ? transposed_shape.size() - 1 : transposed_shape.size() - 2;
@@ -94,26 +100,26 @@ public:
         ov::Shape subtract_shape = zp_shape != ZeroPointShape::SCALAR ? decompression_shape : ov::Shape(weights_shape.size(), 1);
 
         if (zp_type == ZeroPointType::ZP_DECOMPRESSION_PRC) {
-            auto sub_const = ov::opset1::Constant::create(weights_prc, subtract_shape, {1});
-            auto sub_convert = std::make_shared<ov::opset1::Convert>(sub_const, decompression_prc);
-            weights_path = std::make_shared<ov::opset1::Subtract>(weights_path, sub_convert);
+            auto sub_const = ov::op::v0::Constant::create(weights_prc, subtract_shape, {1});
+            auto sub_convert = std::make_shared<ov::op::v0::Convert>(sub_const, decompression_prc);
+            weights_path = std::make_shared<ov::op::v1::Subtract>(weights_path, sub_convert);
         } else if (zp_type == ZeroPointType::ZP_WEIGHTS_PRC) {
-            auto sub_const = ov::opset1::Constant::create(decompression_prc, subtract_shape, {1});
-            weights_path = std::make_shared<ov::opset1::Subtract>(weights_path, sub_const);
+            auto sub_const = ov::op::v0::Constant::create(decompression_prc, subtract_shape, {1});
+            weights_path = std::make_shared<ov::op::v1::Subtract>(weights_path, sub_const);
         }
 
-        auto mul_const = ov::opset1::Constant::create(decompression_prc, decompression_shape, {1});
-        weights_path = std::make_shared<ov::opset1::Multiply>(weights_path, mul_const);
+        auto mul_const = ov::op::v0::Constant::create(decompression_prc, decompression_shape, {1});
+        weights_path = std::make_shared<ov::op::v1::Multiply>(weights_path, mul_const);
 
         if (add_reshape) {
             auto target_shape = transposed_shape;
             target_shape.erase(target_shape.begin());
-            auto reshape_const = ov::opset1::Constant::create(ov::element::i32, {2}, target_shape);
-            weights_path = std::make_shared<ov::opset1::Reshape>(weights_path, reshape_const, false);
+            auto reshape_const = ov::op::v0::Constant::create(ov::element::i32, {2}, target_shape);
+            weights_path = std::make_shared<ov::op::v1::Reshape>(weights_path, reshape_const, false);
         }
         if (add_transpose) {
-            auto transpose_const = ov::opset1::Constant::create(ov::element::i32, {2}, {1, 0});
-            weights_path = std::make_shared<ov::opset1::Transpose>(weights_path, transpose_const);
+            auto transpose_const = ov::op::v0::Constant::create(ov::element::i32, {2}, {1, 0});
+            weights_path = std::make_shared<ov::op::v1::Transpose>(weights_path, transpose_const);
         }
 
         auto fully_connected = std::make_shared<ov::op::internal::FullyConnected>(

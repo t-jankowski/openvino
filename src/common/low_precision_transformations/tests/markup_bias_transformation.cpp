@@ -13,6 +13,7 @@
 #include "layer_transformation.hpp"
 #include "ov_lpt_models/markup_bias.hpp"
 #include "simple_low_precision_transformer.hpp"
+#include "openvino/op/add.hpp"
 
 using namespace testing;
 
@@ -106,3 +107,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_LPT_2D_Positive,
                          MarkupBiasTests::getTestCaseName);
 
 }  // namespace MarkupBiasTestsInstantiation
+

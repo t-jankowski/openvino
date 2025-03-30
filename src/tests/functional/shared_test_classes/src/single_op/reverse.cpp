@@ -3,6 +3,12 @@
 //
 
 #include "shared_test_classes/single_op/reverse.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reverse.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reverse.hpp"
 
 namespace ov {
 namespace test {
@@ -47,3 +53,5 @@ void ReverseLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

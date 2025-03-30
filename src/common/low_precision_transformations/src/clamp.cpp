@@ -12,6 +12,8 @@
 #include "low_precision/network_helper.hpp"
 #include "openvino/op/clamp.hpp"
 #include "openvino/op/multiply.hpp"
+#include "openvino/op/clamp.hpp"
+#include "openvino/op/multiply.hpp"
 
 namespace ov {
 namespace pass {
@@ -104,3 +106,4 @@ bool ClampTransformation::isPrecisionPreserved(std::shared_ptr<Node> layer) cons
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

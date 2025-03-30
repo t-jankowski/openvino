@@ -12,6 +12,9 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/multiply.hpp"
 #include "openvino/op/variadic_split.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/variadic_split.hpp"
 
 namespace ov {
 namespace pass {
@@ -39,3 +42,4 @@ VariadicSplitTransformation::VariadicSplitTransformation(const Params& params) :
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

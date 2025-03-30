@@ -11,6 +11,7 @@
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
 #include "openvino/pass/manager.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 
@@ -124,3 +125,4 @@ TEST_P(RMSNormLayerCPUTest, CompareWithRefs) {
 
 }  // namespace test
 }  // namespace ov
+

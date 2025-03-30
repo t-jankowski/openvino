@@ -5,6 +5,9 @@
 #include "utils/fusing_test_utils.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "common_test_utils/ov_tensor_utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/normalize_l2.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 
@@ -337,3 +340,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_Dynamic_4D_FusingPerChannel, NormalizeL2LayerCPUT
 
 }  // namespace test
 }  // namespace ov
+

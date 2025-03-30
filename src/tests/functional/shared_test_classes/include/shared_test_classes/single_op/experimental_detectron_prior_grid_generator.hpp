@@ -3,6 +3,8 @@
 //
 
 #include "shared_test_classes/base/ov_subgraph.hpp"
+#include "openvino/op/experimental_detectron_prior_grid_generator.hpp"
+#include "openvino/op/experimental_detectron_prior_grid_generator.hpp"
 
 namespace ov {
 namespace test {
@@ -27,3 +29,5 @@ public:
 };
 } // namespace test
 } // namespace ov
+
+

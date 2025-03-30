@@ -5,6 +5,14 @@
 #include "shared_test_classes/subgraph/range_add.hpp"
 
 #include "common_test_utils/node_builders/eltwise.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/range.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/range.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -80,3 +88,5 @@ void RangeNumpyAddSubgraphTest::SetUp() {
 
 }  // namespace test
 }  // namespace ov
+
+

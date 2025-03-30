@@ -6,6 +6,10 @@
 
 #include "common_test_utils/node_builders/comparison.hpp"
 #include "common_test_utils/ov_tensor_utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -77,3 +81,5 @@ void ComparisonLayerTest::SetUp() {
 }
 } // namespace test
 } // namespace ov
+
+

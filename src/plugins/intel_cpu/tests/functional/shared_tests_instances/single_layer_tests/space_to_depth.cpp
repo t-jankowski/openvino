@@ -6,6 +6,7 @@
 
 #include "single_op_tests/space_to_depth.hpp"
 #include "common_test_utils/test_constants.hpp"
+#include "openvino/op/space_to_depth.hpp"
 
 using ov::test::SpaceToDepthLayerTest;
 
@@ -52,3 +53,4 @@ const auto space_to_depth_BS3 = ::testing::Combine(
 INSTANTIATE_TEST_SUITE_P(smoke_SpaceToDepthBS3, SpaceToDepthLayerTest, space_to_depth_BS3, SpaceToDepthLayerTest::getTestCaseName);
 
 }  // namespace
+

@@ -16,6 +16,7 @@
 #include "ov_lpt_models/common/dequantization_operations.hpp"
 #include "ov_lpt_models/reshape.hpp"
 #include "simple_low_precision_transformer.hpp"
+#include "openvino/op/reshape.hpp"
 
 namespace {
 
@@ -622,3 +623,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_LPT,
                          ReshapeTransformation::getTestCaseName);
 
 }  // namespace
+

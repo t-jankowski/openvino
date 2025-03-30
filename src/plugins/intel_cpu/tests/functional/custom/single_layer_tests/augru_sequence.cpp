@@ -8,6 +8,7 @@
 #include "transformations/op_conversions/bidirectional_sequences_decomposition.hpp"
 #include "transformations/op_conversions/convert_sequences_to_tensor_iterator.hpp"
 #include "common_test_utils/ov_test_utils.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 
@@ -405,3 +406,4 @@ INSTANTIATE_TEST_SUITE_P(nightly_dynamic_bf16,
 }  // namespace
 }  // namespace test
 }  // namespace ov
+

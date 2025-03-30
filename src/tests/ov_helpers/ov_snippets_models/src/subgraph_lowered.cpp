@@ -5,6 +5,16 @@
 #include "subgraph_lowered.hpp"
 #include "common_test_utils/data_utils.hpp"
 #include <snippets/snippets_isa.hpp>
+#include "openvino/op/add.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/subtract.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/subtract.hpp"
 
 namespace ov {
 namespace test {
@@ -130,3 +140,5 @@ std::shared_ptr<ov::Model> BroadcastAddLoweredFunction::initLowered() const {
 }  // namespace snippets
 }  // namespace test
 }  // namespace ov
+
+

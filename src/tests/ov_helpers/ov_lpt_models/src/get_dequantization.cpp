@@ -12,6 +12,18 @@
 #include <low_precision/network_helper.hpp>
 
 #include "ov_lpt_models/common/builders.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/subtract.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/subtract.hpp"
 
 namespace ov {
 namespace builder {
@@ -22,7 +34,7 @@ std::shared_ptr<ov::Model> GetDequantizationFunction::get(
     const Shape& shape,
     const FakeQuantizeOnData& fakeQuantize,
     const ov::builder::subgraph::DequantizationOperations& dequantization) {
-    const std::shared_ptr<ov::Node> input = std::make_shared<ov::opset1::Parameter>(
+    const std::shared_ptr<ov::Node> input = std::make_shared<ov::op::v0::Parameter>(
         ov::element::f32,
         shape);
 
@@ -37,7 +49,7 @@ std::shared_ptr<ov::Model> GetDequantizationFunction::get(
     }
 
     return std::make_shared<ov::Model>(
-        ov::ResultVector{ std::make_shared<ov::opset1::Result>(parent) },
+        ov::ResultVector{ std::make_shared<ov::op::v0::Result>(parent) },
         ov::ParameterVector{ ov::as_type_ptr<op::v0::Parameter>(input) },
         "DequantizationFunction");
 }
@@ -47,7 +59,7 @@ std::shared_ptr<ov::Model> GetDequantizationFunction::get(
     const Shape& shape,
     const FakeQuantizeOnData& fakeQuantize,
     const ov::pass::low_precision::FakeQuantizeDequantization& dequantization) {
-    const std::shared_ptr<ov::Node> input = std::make_shared<ov::opset1::Parameter>(
+    const std::shared_ptr<ov::Node> input = std::make_shared<ov::op::v0::Parameter>(
         ov::element::f32,
         shape);
 
@@ -81,36 +93,36 @@ std::shared_ptr<ov::Model> GetDequantizationFunction::get(
     }
 
     return std::make_shared<ov::Model>(
-        ov::ResultVector{ std::make_shared<ov::opset1::Result>(parent) },
+        ov::ResultVector{ std::make_shared<ov::op::v0::Result>(parent) },
         ov::ParameterVector{ ov::as_type_ptr<op::v0::Parameter>(input) },
         "DequantizationFunction");
 }
 
 std::shared_ptr<ov::Model> GetDequantizationFunction::getOriginal(
     bool isConvert, bool isSubtract, size_t subDataInput, size_t mulDataInput) {
-    const std::shared_ptr<ov::Node> input = std::make_shared<ov::opset1::Parameter>(
+    const std::shared_ptr<ov::Node> input = std::make_shared<ov::op::v0::Parameter>(
         ov::element::f32,
         ov::Shape{ 1, 3, 10, 10 });
 
-    const auto convert = isConvert ? std::make_shared<ov::opset1::Convert>(input, ov::element::f32) : nullptr;
+    const auto convert = isConvert ? std::make_shared<ov::op::v0::Convert>(input, ov::element::f32) : nullptr;
     std::shared_ptr<ov::Node> parent = isConvert ? convert : input;
 
-    auto subConst = std::make_shared<ov::opset1::Constant>(ov::element::f32, Shape{}, 1.f);
+    auto subConst = std::make_shared<ov::op::v0::Constant>(ov::element::f32, Shape{}, 1.f);
     const auto& subArg0 = subDataInput == 0 ? parent : subConst;
     const auto& subArg1 = subDataInput == 0 ? subConst : parent;
-    const auto subtract = isSubtract ? std::make_shared<ov::opset1::Subtract>(subArg0, subArg1) : nullptr;
+    const auto subtract = isSubtract ? std::make_shared<ov::op::v1::Subtract>(subArg0, subArg1) : nullptr;
 
     if (subtract != nullptr) {
         parent = subtract;
     }
 
-    auto mulConst = std::make_shared<ov::opset1::Constant>(ov::element::f32, Shape{}, 1.f);
+    auto mulConst = std::make_shared<ov::op::v0::Constant>(ov::element::f32, Shape{}, 1.f);
     const auto& mulArg0 = mulDataInput == 0 ? parent : mulConst;
     const auto& mulArg1 = mulDataInput == 0 ? mulConst : parent;
-    const auto multiply = std::make_shared<ov::opset1::Multiply>(mulArg0, mulArg1);
+    const auto multiply = std::make_shared<ov::op::v1::Multiply>(mulArg0, mulArg1);
 
     return std::make_shared<ov::Model>(
-        ov::ResultVector{ std::make_shared<ov::opset1::Result>(multiply) },
+        ov::ResultVector{ std::make_shared<ov::op::v0::Result>(multiply) },
         ov::ParameterVector{ ov::as_type_ptr<op::v0::Parameter>(input) },
         "Dequantization");
 }
@@ -118,7 +130,7 @@ std::shared_ptr<ov::Model> GetDequantizationFunction::getOriginal(
 std::shared_ptr<ov::Model> GetDequantizationFunction::getReference(
     ov::pass::low_precision::FakeQuantizeDequantization dequantization) {
     return std::make_shared<ov::Model>(
-        ov::ResultVector{ std::make_shared<ov::opset1::Result>(dequantization.multiply) },
+        ov::ResultVector{ std::make_shared<ov::op::v0::Result>(dequantization.multiply) },
         ov::ParameterVector{ ov::as_type_ptr<op::v0::Parameter>(dequantization.data.get_node_shared_ptr()) },
         "Dequantization");
 }
@@ -126,3 +138,5 @@ std::shared_ptr<ov::Model> GetDequantizationFunction::getReference(
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

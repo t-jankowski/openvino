@@ -11,6 +11,8 @@
 
 #include "openvino/op/detection_output.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
+#include "openvino/op/detection_output.hpp"
+#include "openvino/op/detection_output.hpp"
 
 namespace ov {
 namespace test {
@@ -71,3 +73,5 @@ class DetectionOutputLayerTest : public testing::WithParamInterface<DetectionOut
 
 } // namespace test
 } // namespace ov
+
+

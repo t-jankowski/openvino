@@ -10,6 +10,14 @@
 #include "snippets/codegen_gelu.hpp"
 #include "subgraph_simple.hpp"
 #include "functional_test_utils/skip_tests_config.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/gelu.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/gelu.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -77,3 +85,5 @@ TEST_P(CodegenGelu, CompareWithRefImpl) {
 } // namespace snippets
 } // namespace test
 } // namespace ov
+
+

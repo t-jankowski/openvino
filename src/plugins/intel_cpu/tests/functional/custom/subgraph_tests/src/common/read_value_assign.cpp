@@ -6,6 +6,10 @@
 #include "common_test_utils/node_builders/constant.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
+#include "openvino/op/assign.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/read_value.hpp"
+#include "openvino/op/result.hpp"
 
 /* The main purpose of this test set is to test ReadValue->Assign direct connection optimizations, i.e.
    dropping the MemoryOutput node.

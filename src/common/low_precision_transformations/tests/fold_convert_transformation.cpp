@@ -20,6 +20,9 @@
 #include "low_precision/fold_convert.hpp"
 #include "ov_lpt_models/common/builders.hpp"
 #include "ov_lpt_models/common/dequantization_operations.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace {
 using namespace testing;
@@ -185,3 +188,4 @@ INSTANTIATE_TEST_SUITE_P(
         ::testing::ValuesIn(testValues)),
     FoldConvertTransformation::getTestCaseName);
 } // namespace
+

@@ -6,6 +6,14 @@
 
 #include "ov_ops/gather_compressed.hpp"
 #include "shared_test_classes/subgraph/weights_decompression_builders.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/gather.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/gather.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -216,3 +224,5 @@ void GatherWeightsDecompressionWithoutScale::check_results() {
 
 }  // namespace test
 }  // namespace ov
+
+

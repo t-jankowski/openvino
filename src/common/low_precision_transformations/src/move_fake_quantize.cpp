@@ -20,6 +20,12 @@
 #include "openvino/op/fake_quantize.hpp"
 #include "openvino/op/relu.hpp"
 #include "openvino/op/split.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/split.hpp"
 
 namespace ov {
 namespace pass {
@@ -211,3 +217,4 @@ bool MoveFakeQuantize::isPrecisionPreserved(std::shared_ptr<Node>) const noexcep
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

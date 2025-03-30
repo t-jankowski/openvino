@@ -7,6 +7,11 @@
 #include <tuple>
 #include <string>
 #include <vector>
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/interpolate.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -110,3 +115,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_ConcResizeConc,
 }  // namespace
 }  // namespace test
 }  // namespace ov
+

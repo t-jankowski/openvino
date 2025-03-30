@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#include "openvino/opsets/opset1.hpp"
 #include <ov_ops/type_relaxed.hpp>
 
 #include "low_precision/network_helper.hpp"
@@ -10,6 +9,20 @@
 
 #include "ov_lpt_models/markup_avg_pool_precisions.hpp"
 #include "common_test_utils/node_builders/fake_quantize.hpp"
+#include "openvino/op/avg_pool.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/max_pool.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/avg_pool.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/max_pool.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace builder {
@@ -25,7 +38,7 @@ std::shared_ptr<Node> createConvolution(
     const size_t inputChannels = inputShape[1];
     const auto shape = Shape{ outputChannels, inputChannels, 1, 1 };
     const auto fakeQuantizeOnWeights = ov::test::utils::make_fake_quantize(
-        std::make_shared<ov::opset1::Constant>(ov::element::f32, shape, std::vector<float>(1.f, ov::shape_size(shape))),
+        std::make_shared<ov::op::v0::Constant>(ov::element::f32, shape, std::vector<float>(1.f, ov::shape_size(shape))),
         precision,
         255,
         {outputChannels, 1, 1, 1},
@@ -35,7 +48,7 @@ std::shared_ptr<Node> createConvolution(
         std::vector<float>(outputChannels, 1.27f));
     fakeQuantizeOnWeights->set_friendly_name("fakeQuantizeOnWeights");
 
-    auto convolution = std::make_shared<ov::opset1::Convolution>(
+    auto convolution = std::make_shared<ov::op::v1::Convolution>(
         ov::op::TemporaryReplaceOutputType(parent, precision).get(),
         ov::op::TemporaryReplaceOutputType(fakeQuantizeOnWeights, precision).get(),
         ov::Strides{ 1, 1 },
@@ -58,8 +71,8 @@ std::shared_ptr<ov::Model> MarkupAvgPoolPrecisionsFunction::getOriginal(
     const int convoutionBranch,
     // -1 - no FakeQuantize, 2 - on both branches
     const int fakeQuantizeBranch) {
-    std::shared_ptr<ov::opset1::Parameter> input1;
-    std::shared_ptr<ov::opset1::Parameter> input2;
+    std::shared_ptr<ov::op::v0::Parameter> input1;
+    std::shared_ptr<ov::op::v0::Parameter> input2;
     std::shared_ptr<ov::Node> parent;
     {
         auto createBranch = [](
@@ -74,7 +87,7 @@ std::shared_ptr<ov::Model> MarkupAvgPoolPrecisionsFunction::getOriginal(
             newParent->set_friendly_name("fakeQuantizeOnActivations");
 
             // if (additionalLayer == "maxpool") {
-            //     newParent = std::make_shared<ov::opset1::MaxPool>(
+            //     newParent = std::make_shared<ov::op::v1::MaxPool>(
             //         newParent,
             //         Strides{ 1, 1 },
             //         Shape{ 1, 1 },
@@ -85,17 +98,17 @@ std::shared_ptr<ov::Model> MarkupAvgPoolPrecisionsFunction::getOriginal(
             // }
             return newParent;
         };
-        input1 = std::make_shared<ov::opset1::Parameter>(inputPrecision, ov::Shape(inputShape));
+        input1 = std::make_shared<ov::op::v0::Parameter>(inputPrecision, ov::Shape(inputShape));
         auto parent1 = createBranch(precision, additionalLayer, input1);
 
-        //input2 = std::make_shared<ov::opset1::Parameter>(inputPrecision, ov::Shape(inputShape));
+        //input2 = std::make_shared<ov::op::v0::Parameter>(inputPrecision, ov::Shape(inputShape));
         //auto parent2 = createBranch(precision, additionalLayer, input2);
         //
-        //parent = std::make_shared<ov::opset1::Concat>(OutputVector{ parent1, parent2 }, 1ul);
+        //parent = std::make_shared<ov::op::v0::Concat>(OutputVector{ parent1, parent2 }, 1ul);
         parent = parent1;
     }
 
-    parent = std::make_shared<ov::opset1::AvgPool>(parent,
+    parent = std::make_shared<ov::op::v1::AvgPool>(parent,
                                                    Strides{1, 1},
                                                    Shape{1, 1},
                                                    Shape{0, 0},
@@ -105,7 +118,7 @@ std::shared_ptr<ov::Model> MarkupAvgPoolPrecisionsFunction::getOriginal(
     parent->set_friendly_name("avgPool");
 
     if (additionalLayer == "maxpool") {
-        parent = std::make_shared<ov::opset1::MaxPool>(parent,
+        parent = std::make_shared<ov::op::v1::MaxPool>(parent,
                                                        Strides{1, 1},
                                                        Shape{1, 1},
                                                        Shape{0, 0},
@@ -114,14 +127,14 @@ std::shared_ptr<ov::Model> MarkupAvgPoolPrecisionsFunction::getOriginal(
         parent->set_friendly_name("maxPool2");
     }
 
-    std::shared_ptr<ov::Node> parent1 = std::make_shared<ov::opset1::MaxPool>(parent,
+    std::shared_ptr<ov::Node> parent1 = std::make_shared<ov::op::v1::MaxPool>(parent,
                                                                               Strides{1, 1},
                                                                               Shape{1, 1},
                                                                               Shape{0, 0},
                                                                               Shape{2, 2},
                                                                               ov::op::RoundingType::FLOOR);
 
-    std::shared_ptr<ov::Node> parent2 = std::make_shared<ov::opset1::MaxPool>(parent,
+    std::shared_ptr<ov::Node> parent2 = std::make_shared<ov::op::v1::MaxPool>(parent,
                                                                               Strides{1, 1},
                                                                               Shape{1, 1},
                                                                               Shape{0, 0},
@@ -159,8 +172,8 @@ std::shared_ptr<ov::Model> MarkupAvgPoolPrecisionsFunction::getOriginal(
     parent2->set_friendly_name("output");
 
     ov::ResultVector results{
-        std::make_shared<ov::opset1::Result>(parent1),
-        std::make_shared<ov::opset1::Result>(parent2)
+        std::make_shared<ov::op::v0::Result>(parent1),
+        std::make_shared<ov::op::v0::Result>(parent2)
     };
 
     return std::make_shared<ov::Model>(
@@ -173,13 +186,13 @@ std::shared_ptr<ov::Model> MarkupAvgPoolPrecisionsFunction::getOriginal(
     const ov::element::Type originalFunctionPrecision,
     const ov::Shape& inputShape,
     const FakeQuantizeOnData& fakeQuantizeOnData) {
-    const auto input = std::make_shared<ov::opset1::Parameter>(originalFunctionPrecision, ov::Shape(inputShape));
+    const auto input = std::make_shared<ov::op::v0::Parameter>(originalFunctionPrecision, ov::Shape(inputShape));
 
     const auto fakeQuantize = ov::test::utils::make_fake_quantize(
         input, originalFunctionPrecision, fakeQuantizeOnData.quantizationLevel, fakeQuantizeOnData.constantShape,
         fakeQuantizeOnData.inputLowValues, fakeQuantizeOnData.inputHighValues, fakeQuantizeOnData.outputLowValues, fakeQuantizeOnData.outputHighValues);
 
-    const std::shared_ptr<ov::Node> avgPool = std::make_shared<ov::opset1::AvgPool>(fakeQuantize,
+    const std::shared_ptr<ov::Node> avgPool = std::make_shared<ov::op::v1::AvgPool>(fakeQuantize,
                                                                                     Strides{1, 1},
                                                                                     Shape{1, 1},
                                                                                     Shape{0, 0},
@@ -187,7 +200,7 @@ std::shared_ptr<ov::Model> MarkupAvgPoolPrecisionsFunction::getOriginal(
                                                                                     true,
                                                                                     ov::op::RoundingType::FLOOR);
 
-    ov::ResultVector results{ std::make_shared<ov::opset1::Result>(avgPool) };
+    ov::ResultVector results{ std::make_shared<ov::op::v0::Result>(avgPool) };
     return std::make_shared<ov::Model>(results, ov::ParameterVector{ input }, "MarkupAvgPoolPrecisions");
 }
 
@@ -200,12 +213,12 @@ std::shared_ptr<ov::Model> MarkupAvgPoolPrecisionsFunction::getReference(
     const ov::builder::subgraph::DequantizationOperations& dequantizationBefore,
     const ov::element::Type precisionAfterOperation,
     const ov::builder::subgraph::DequantizationOperations& dequantizationAfter) {
-    auto input = std::make_shared<ov::opset1::Parameter>(inputPrecision, ov::Shape(inputShape));
+    auto input = std::make_shared<ov::op::v0::Parameter>(inputPrecision, ov::Shape(inputShape));
 
     const auto deqBefore = makeDequantization(input, dequantizationBefore);
     auto outPrecision = precisionAfterOperation;
     const std::shared_ptr<ov::Node> avgPool =
-        std::make_shared<ov::op::TypeRelaxed<ov::opset1::AvgPool>>(ov::opset1::AvgPool(deqBefore,
+        std::make_shared<ov::op::TypeRelaxed<ov::op::v1::AvgPool>>(ov::op::v1::AvgPool(deqBefore,
                                                                                        Strides{1, 1},
                                                                                        Shape{1, 1},
                                                                                        Shape{0, 0},
@@ -216,7 +229,7 @@ std::shared_ptr<ov::Model> MarkupAvgPoolPrecisionsFunction::getReference(
 
     std::shared_ptr<Node> lastLayer = avgPool;
     if (additionalLayer == "maxpool") {
-        lastLayer = std::make_shared<ov::opset1::MaxPool>(lastLayer,
+        lastLayer = std::make_shared<ov::op::v1::MaxPool>(lastLayer,
                                                           Strides{1, 1},
                                                           Shape{1, 1},
                                                           Shape{0, 0},
@@ -234,10 +247,12 @@ std::shared_ptr<ov::Model> MarkupAvgPoolPrecisionsFunction::getReference(
 
     lastLayer->set_friendly_name("output");
 
-    ov::ResultVector results{ std::make_shared<ov::opset1::Result>(lastLayer) };
+    ov::ResultVector results{ std::make_shared<ov::op::v0::Result>(lastLayer) };
     return std::make_shared<ov::Model>(results, ov::ParameterVector{ input }, "MarkupAvgPoolPrecisions");
 }
 
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

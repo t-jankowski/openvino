@@ -7,6 +7,9 @@
 #include "common_test_utils/ov_tensor_utils.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/precision_support.h"
+#include "openvino/op/col2im.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 
@@ -248,3 +251,4 @@ const std::vector<Col2ImSpecificParams> col2ImParamsVector = {
 }  // namespace Col2Im
 }  // namespace test
 }  // namespace ov
+

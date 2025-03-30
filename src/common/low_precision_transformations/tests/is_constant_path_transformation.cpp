@@ -17,6 +17,12 @@
 #include "openvino/op/group_conv.hpp"
 #include "openvino/op/matmul.hpp"
 #include "openvino/op/parameter.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace testing;
 using namespace ov::pass;
@@ -144,3 +150,4 @@ TEST(LPT, isConstantPathGroupConvParentDqTransformation) {
 
     ASSERT_EQ(false, result);
 }
+

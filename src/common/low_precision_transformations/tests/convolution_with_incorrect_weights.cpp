@@ -21,6 +21,8 @@
 #include "simple_low_precision_transformer.hpp"
 #include "openvino/op/convolution.hpp"
 #include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/fake_quantize.hpp"
 
 namespace {
 class ConvolutionWithIncorrectWeightsTestValues {
@@ -137,3 +139,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_LPT,
                          ConvolutionWithIncorrectWeightsTransformation::getTestCaseName);
 
 }  // namespace
+

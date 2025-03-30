@@ -3,6 +3,10 @@
 //
 
 #include "shared_test_classes/single_op/psroi_pooling.hpp"
+#include "openvino/op/psroi_pooling.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/psroi_pooling.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -65,3 +69,5 @@ void PSROIPoolingLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

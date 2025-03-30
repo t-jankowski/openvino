@@ -11,6 +11,8 @@
 #include "openvino/runtime/core.hpp"
 #include "openvino/util/file_util.hpp"
 #include "template/properties.hpp"
+#include "openvino/op/tensor_iterator.hpp"
+#include "openvino/op/tensor_iterator.hpp"
 
 namespace ov {
 namespace pass {
@@ -168,3 +170,5 @@ bool is_tensor_iterator_exist(const std::shared_ptr<ov::Model>& model) {
 }  // namespace utils
 }  // namespace test
 }  // namespace ov
+
+

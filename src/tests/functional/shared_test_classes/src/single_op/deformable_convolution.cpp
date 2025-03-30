@@ -8,6 +8,12 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/result.hpp"
 #include "openvino/op/deformable_convolution.hpp"
+#include "openvino/op/deformable_convolution.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/deformable_convolution.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 
 namespace ov {
@@ -96,3 +102,5 @@ void DeformableConvolutionLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

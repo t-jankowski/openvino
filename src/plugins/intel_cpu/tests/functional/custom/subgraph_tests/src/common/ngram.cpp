@@ -7,6 +7,16 @@
 #include "internal_properties.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/equal.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/select.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/strided_slice.hpp"
 
 using namespace CPUTestUtils;
 
@@ -237,3 +247,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_Ngram,
 }  // namespace
 }  // namespace test
 }  // namespace ov
+

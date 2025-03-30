@@ -19,6 +19,7 @@
 
 #include "ov_lpt_models/strided_slice.hpp"
 #include "ov_lpt_models/common/dequantization_operations.hpp"
+#include "openvino/op/strided_slice.hpp"
 
 namespace {
 using namespace testing;
@@ -726,3 +727,4 @@ INSTANTIATE_TEST_SUITE_P(
 } // namespace inputs_3d
 
 } // namespace
+

@@ -18,6 +18,8 @@
 #include "low_precision/network_helper.hpp"
 #include "openvino/op/constant.hpp"
 #include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
 
 namespace ov {
 namespace pass {
@@ -445,3 +447,4 @@ bool FakeQuantizeDecompositionTransformation::isPrecisionPreserved(std::shared_p
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

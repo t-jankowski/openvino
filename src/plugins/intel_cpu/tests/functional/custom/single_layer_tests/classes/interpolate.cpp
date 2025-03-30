@@ -8,6 +8,9 @@
 #include "utils/general_utils.h"
 #include "openvino/pass/manager.hpp"
 #include "transformations/op_conversions/convert_interpolate11_downgrade.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/interpolate.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 using namespace ov::intel_cpu;
@@ -262,3 +265,4 @@ const std::vector<double> cubeCoefs() {
 }  // namespace Interpolate
 }  // namespace test
 }  // namespace ov
+

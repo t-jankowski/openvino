@@ -3,6 +3,12 @@
 //
 
 #include "shared_test_classes/single_op/tile.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/tile.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/tile.hpp"
 
 namespace ov {
 namespace test {
@@ -47,3 +53,5 @@ void TileLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

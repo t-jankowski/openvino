@@ -4,6 +4,8 @@
 
 #include "openvino/util/file_util.hpp"
 #include "utils/model.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/constant.hpp"
 
 namespace ov {
 namespace util {
@@ -120,3 +122,5 @@ bool build_control_dependency(std::shared_ptr<ov::Model> &model) {
 
 }  // namespace util
 }  // namespace ov
+
+

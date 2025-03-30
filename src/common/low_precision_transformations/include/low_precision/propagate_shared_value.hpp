@@ -16,6 +16,8 @@
 #include "lpt_itt.hpp"
 #include "openvino/op/convert.hpp"
 #include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/fake_quantize.hpp"
 
 namespace ov {
 namespace pass {
@@ -166,3 +168,4 @@ private:
         }
     }
 };
+

@@ -2,13 +2,38 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#include "openvino/opsets/opset13.hpp"
 #include "transformations/op_conversions/scaled_dot_product_attention_decomposition.hpp"
 
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
 #include "common_test_utils/include/common_test_utils/ov_tensor_utils.hpp"
 #include "openvino/pass/manager.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/assign.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/gather.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/read_value.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/scaled_dot_product_attention.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/transpose.hpp"
+#include "openvino/op/unsqueeze.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/assign.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/gather.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/read_value.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/scaled_dot_product_attention.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/transpose.hpp"
+#include "openvino/op/unsqueeze.hpp"
 
 using namespace ov::test;
 using namespace CPUTestUtils;
@@ -164,7 +189,7 @@ public:
         auto transposeK = std::make_shared<ov::op::v1::Transpose>(reshapeK, preOrder);
         auto transposeV = std::make_shared<ov::op::v1::Transpose>(reshapeV, preOrder);
 
-        auto sdp = std::make_shared<ov::opset13::ScaledDotProductAttention>(transposeQ, transposeK, transposeV, false);
+        auto sdp = std::make_shared<ov::op::v13::ScaledDotProductAttention>(transposeQ, transposeK, transposeV, false);
         sdp->set_friendly_name("mha");
 
         // post SDPA transpose + reshape
@@ -410,3 +435,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_ConcatMultiQuerySDPTest,
 }  // namespace
 }  // namespace test
 }  // namespace ov
+

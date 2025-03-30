@@ -7,6 +7,13 @@
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "transformations/op_conversions/scaled_dot_product_attention_decomposition.hpp"
 #include "utils/cpu_test_utils.hpp"
+#include "openvino/op/assign.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/read_value.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/scaled_dot_product_attention.hpp"
+#include "openvino/op/transpose.hpp"
 
 using namespace ov::test;
 using namespace CPUTestUtils;
@@ -243,3 +250,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_FuseSDPAReshapeTransposeTest,
 }  // namespace
 }  // namespace test
 }  // namespace ov
+

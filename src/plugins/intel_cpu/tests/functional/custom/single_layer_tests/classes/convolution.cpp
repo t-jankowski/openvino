@@ -7,6 +7,8 @@
 #include "gtest/gtest.h"
 #include "utils/cpu_test_utils.hpp"
 #include "utils/general_utils.h"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 using namespace ov::intel_cpu;
@@ -754,3 +756,4 @@ const convParams_ExplicitPadding_1x1_Type& convParams_ExplicitPadding_1x1_2D() {
 }  // namespace Convolution
 }  // namespace test
 }  // namespace ov
+

@@ -17,6 +17,7 @@
 #include "common_test_utils/ov_test_utils.hpp"
 #include "ov_lpt_models/convolution.hpp"
 #include "openvino/op/convolution.hpp"
+#include "openvino/op/convolution.hpp"
 
 using namespace testing;
 using namespace ov;
@@ -106,3 +107,4 @@ INSTANTIATE_TEST_SUITE_P(
         ::testing::ValuesIn(testValues),
         ::testing::ValuesIn(explicitly)),
     OperationQuantizationRestrictionTest::getTestCaseName);
+

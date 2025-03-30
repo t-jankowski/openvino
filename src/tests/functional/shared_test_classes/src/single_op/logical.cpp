@@ -6,6 +6,12 @@
 
 #include "common_test_utils/ov_tensor_utils.hpp"
 #include "common_test_utils/node_builders/logical.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/logical_not.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/logical_not.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -72,3 +78,5 @@ void LogicalLayerTest::SetUp() {
 }
 } // namespace test
 } // namespace ov
+
+

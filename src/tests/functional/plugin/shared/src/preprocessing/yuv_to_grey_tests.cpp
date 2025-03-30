@@ -5,6 +5,14 @@
 #include "functional_test_utils/common_utils.hpp"
 #include "preprocessing/yuv_to_grey_tests.hpp"
 #include "shared_test_classes/base/utils/generate_inputs.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace preprocess {
@@ -260,3 +268,5 @@ TEST_P(PreprocessingYUV2GreyTest, convert_two_plane_nv12_use_opencv) {
 }
 }  // namespace preprocess
 }  // namespace ov
+
+

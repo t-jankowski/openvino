@@ -13,6 +13,14 @@
 #include "openvino/op/add.hpp"
 
 #include "execution_graph_tests/num_inputs_fusing_bin_conv.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ExecutionGraphTests {
 
@@ -75,3 +83,5 @@ TEST_P(ExecGraphInputsFusingBinConv, CheckNumInputsInBinConvFusingWithConv) {
 };
 
 }  // namespace ExecutionGraphTests
+
+

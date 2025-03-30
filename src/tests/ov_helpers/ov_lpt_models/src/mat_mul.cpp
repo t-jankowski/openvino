@@ -7,12 +7,29 @@
 #include <queue>
 #include <memory>
 
-#include "openvino/opsets/opset1.hpp"
 #include "ov_ops/type_relaxed.hpp"
 #include "low_precision/network_helper.hpp"
 #include "ov_lpt_models/common/builders.hpp"
 #include "common_test_utils/node_builders/constant.hpp"
 #include "common_test_utils/node_builders/fake_quantize.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/prelu.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/prelu.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace builder {
@@ -23,19 +40,19 @@ std::shared_ptr<ov::Model> MatMulFunction::getOriginal(
     const ov::PartialShape inputShape,
     const float low,
     const float high) {
-    const auto input1 = std::make_shared<ov::opset1::Parameter>(precision, inputShape);
+    const auto input1 = std::make_shared<ov::op::v0::Parameter>(precision, inputShape);
     const auto fakeQuantize1 = ov::test::utils::make_fake_quantize(
         input1, precision, 256ul, { 1ul },
         { low / 4.f }, { high / 4.f }, { low / 4.f }, { high / 4.f });
     fakeQuantize1->set_friendly_name("fakeQuantize1");
 
-    const auto input2 = std::make_shared<ov::opset1::Parameter>(precision, inputShape);
+    const auto input2 = std::make_shared<ov::op::v0::Parameter>(precision, inputShape);
     const auto fakeQuantize2 = ov::test::utils::make_fake_quantize(
         input2, precision, 256ul, { 1ul },
         { low / 8.f }, { high / 8.f }, { low / 8.f }, { high / 8.f });
     fakeQuantize2->set_friendly_name("fakeQuantize2");
 
-    const auto matMul = std::make_shared<ov::opset1::MatMul>(
+    const auto matMul = std::make_shared<ov::op::v0::MatMul>(
         fakeQuantize1->output(0),
         fakeQuantize2->output(0),
         false,
@@ -43,7 +60,7 @@ std::shared_ptr<ov::Model> MatMulFunction::getOriginal(
     matMul->set_friendly_name("matMul");
 
     std::shared_ptr<ov::Model> function = std::make_shared<ov::Model>(
-        ov::ResultVector{ std::make_shared<ov::opset1::Result>(matMul) },
+        ov::ResultVector{ std::make_shared<ov::op::v0::Result>(matMul) },
         ov::ParameterVector{ input1, input2 },
         "GemmTransformation");
 
@@ -75,7 +92,7 @@ std::shared_ptr<ov::Model> MatMulFunction::getOriginal(
         const bool perChannelWeightsDequantization,
         const bool relu,
         const bool fq) {
-    const auto paramNode = std::make_shared<ov::opset1::Parameter>(precision, inputShape1);
+    const auto paramNode = std::make_shared<ov::op::v0::Parameter>(precision, inputShape1);
     const std::vector<size_t> constShapes(inputShape1.rank().get_length(), 1ul);
     const auto fakeQuantizeOnAcitvations = signedOnWeights ?
             ov::test::utils::make_fake_quantize(
@@ -111,15 +128,15 @@ std::shared_ptr<ov::Model> MatMulFunction::getOriginal(
             shape[shape.size() - 2ull] = 1;
         }
         auto weightsConst = ov::test::utils::make_constant(signedOnWeights ? element::i8 : element::u8, inputShape2.to_shape(), {});
-        const auto convert = std::make_shared<opset1::Convert>(weightsConst, precision);
+        const auto convert = std::make_shared<op::v0::Convert>(weightsConst, precision);
 
         const auto multiplyConst = ov::test::utils::make_constant(precision, shape);
-        parentOnWeights = std::make_shared<opset1::Multiply>(convert, multiplyConst);
+        parentOnWeights = std::make_shared<op::v1::Multiply>(convert, multiplyConst);
     }
 
     parentOnWeights->set_friendly_name("fakeQuantizeOnWeights");
 
-    std::shared_ptr<Node> parent = std::make_shared<ov::opset1::MatMul>(
+    std::shared_ptr<Node> parent = std::make_shared<ov::op::v0::MatMul>(
         fakeQuantizeOnAcitvations->output(0),
         parentOnWeights->output(0),
         transpose1,
@@ -130,16 +147,16 @@ std::shared_ptr<ov::Model> MatMulFunction::getOriginal(
         ov::Shape bias_shape(parent->get_output_partial_shape(0).size(), 1);
         bias_shape.back() = parent->get_output_partial_shape(0).rbegin()->get_length();
         auto bias = ov::test::utils::make_constant(precision, bias_shape);
-        parent = std::make_shared<ov::opset1::Add>(parent, bias);
+        parent = std::make_shared<ov::op::v1::Add>(parent, bias);
         parent->set_friendly_name("add");
     }
 
     if (relu) {
-        parent = std::make_shared<ov::opset1::Relu>(parent);
+        parent = std::make_shared<ov::op::v0::Relu>(parent);
         parent->set_friendly_name("relu");
     }
 
-    ov::ResultVector results{ std::make_shared<ov::opset1::Result>(parent) };
+    ov::ResultVector results{ std::make_shared<ov::op::v0::Result>(parent) };
     std::shared_ptr<ov::Model> function = std::make_shared<ov::Model>(
         results,
         ov::ParameterVector{ paramNode },
@@ -156,10 +173,10 @@ std::shared_ptr<ov::Model> MatMulFunction::getOriginal(
     const ov::Shape& inputShape2,
     const FakeQuantizeOnData& fqOnData2,
     const bool requantization) {
-    const std::shared_ptr<ov::opset1::Parameter> input1 = std::make_shared<ov::opset1::Parameter>(precision, inputShape1);
+    const std::shared_ptr<ov::op::v0::Parameter> input1 = std::make_shared<ov::op::v0::Parameter>(precision, inputShape1);
     input1->set_friendly_name("input1");
 
-    const std::shared_ptr<ov::opset1::Parameter> input2 = std::make_shared<ov::opset1::Parameter>(precision, inputShape2);
+    const std::shared_ptr<ov::op::v0::Parameter> input2 = std::make_shared<ov::op::v0::Parameter>(precision, inputShape2);
     input2->set_friendly_name("input2");
 
     std::shared_ptr<ov::Node> parent1 = input1;
@@ -172,7 +189,7 @@ std::shared_ptr<ov::Model> MatMulFunction::getOriginal(
         parent2 = makeFakeQuantize(parent2, precision, fqOnData2);
     }
 
-    std::shared_ptr<Node> parent = std::make_shared<ov::opset1::MatMul>(
+    std::shared_ptr<Node> parent = std::make_shared<ov::op::v0::MatMul>(
         parent1,
         parent2,
         false,
@@ -181,13 +198,13 @@ std::shared_ptr<ov::Model> MatMulFunction::getOriginal(
 
     if (requantization) {
         parent = makeFakeQuantize(parent, precision, fqOnData1);
-        parent = std::make_shared<ov::opset1::PRelu>(
+        parent = std::make_shared<ov::op::v0::PRelu>(
                 parent,
-                std::make_shared<ov::opset1::Constant>(ov::element::f32, Shape{1}, std::vector<float>{0.f}));
+                std::make_shared<ov::op::v0::Constant>(ov::element::f32, Shape{1}, std::vector<float>{0.f}));
         parent->set_friendly_name("prelu");
     }
 
-    std::shared_ptr<ov::opset1::Result> result = std::make_shared<ov::opset1::Result>(parent);
+    std::shared_ptr<ov::op::v0::Result> result = std::make_shared<ov::op::v0::Result>(parent);
 
     std::shared_ptr<ov::Model> function = std::make_shared<ov::Model>(
         ov::ResultVector{ result },
@@ -211,10 +228,10 @@ std::shared_ptr<ov::Model> MatMulFunction::getOriginal(const ov::element::Type n
         throw std::runtime_error("unexpected input arguments for branch 2");
     }
 
-    const auto input1 = std::make_shared<ov::opset1::Parameter>(precisionBeforeDequantization1, inputShape1);
+    const auto input1 = std::make_shared<ov::op::v0::Parameter>(precisionBeforeDequantization1, inputShape1);
     input1->set_friendly_name("input1");
 
-    const auto input2 = std::make_shared<ov::opset1::Parameter>(precisionBeforeDequantization2, inputShape2);
+    const auto input2 = std::make_shared<ov::op::v0::Parameter>(precisionBeforeDequantization2, inputShape2);
     input2->set_friendly_name("input2");
 
     DequantizationOperations deqSructure1 = dequantization1;
@@ -222,14 +239,14 @@ std::shared_ptr<ov::Model> MatMulFunction::getOriginal(const ov::element::Type n
     DequantizationOperations deqSructure2 = dequantization2;
     deqSructure2.multiply.outPrecision = netPrecision;
 
-    const std::shared_ptr<ov::opset1::MatMul> matMul = std::make_shared<ov::opset1::MatMul>(
+    const std::shared_ptr<ov::op::v0::MatMul> matMul = std::make_shared<ov::op::v0::MatMul>(
         makeDequantization(input1, deqSructure1),
         makeDequantization(input2, deqSructure2),
         false,
         false);
     matMul->set_friendly_name("matMul");
 
-    std::shared_ptr<ov::opset1::Result> result = std::make_shared<ov::opset1::Result>(matMul);
+    std::shared_ptr<ov::op::v0::Result> result = std::make_shared<ov::op::v0::Result>(matMul);
 
     std::shared_ptr<ov::Model> function = std::make_shared<ov::Model>(
         ov::ResultVector{ result },
@@ -251,12 +268,12 @@ std::shared_ptr<ov::Model> MatMulFunction::getOriginal(
     const Constant& weights,
     const FakeQuantizeOnWeights& fqOnWeights,
     const DequantizationOperations& deqOnWeights) {
-    const auto input = std::make_shared<ov::opset1::Parameter>(precisionBeforeDequantization, inputShape);
+    const auto input = std::make_shared<ov::op::v0::Parameter>(precisionBeforeDequantization, inputShape);
     input->set_friendly_name("input1");
 
     const auto dequantizationOnData = makeDequantization(input, deqOnData);
 
-    const std::shared_ptr<ov::Node> weightsConst = std::make_shared<ov::opset1::Constant>(
+    const std::shared_ptr<ov::Node> weightsConst = std::make_shared<ov::op::v0::Constant>(
         weights.outPrecision,
         weights.shape,
         weights.values);
@@ -264,7 +281,7 @@ std::shared_ptr<ov::Model> MatMulFunction::getOriginal(
     const std::shared_ptr<ov::Node> fakeQuantize = fqOnWeights.empty() ? nullptr : makeFakeQuantize(weightsConst, precision, fqOnWeights);
     const auto dequantizationOnWeights = makeDequantization(fakeQuantize == nullptr ? weightsConst : fakeQuantize, deqOnWeights);
 
-    const auto matMul = std::make_shared<ov::opset1::MatMul>(
+    const auto matMul = std::make_shared<ov::op::v0::MatMul>(
         dequantizationOnData,
         dequantizationOnWeights,
         false,
@@ -273,7 +290,7 @@ std::shared_ptr<ov::Model> MatMulFunction::getOriginal(
     auto& rtInfo = matMul->get_rt_info();
     rtInfo["Variant::std::string"] = "matMul";
 
-    const auto result = std::make_shared<ov::opset1::Result>(matMul);
+    const auto result = std::make_shared<ov::op::v0::Result>(matMul);
     std::shared_ptr<ov::Model> function = std::make_shared<ov::Model>(
         ov::ResultVector{ result },
         std::vector<std::shared_ptr<ov::op::v0::Parameter>> { input },
@@ -299,10 +316,10 @@ std::shared_ptr<ov::Model> MatMulFunction::getReference(
         throw std::runtime_error("unexpected input arguments for branch 2");
     }
 
-    const auto input1 = std::make_shared<ov::opset1::Parameter>(precisionBeforeDequantization1, inputShape1);
+    const auto input1 = std::make_shared<ov::op::v0::Parameter>(precisionBeforeDequantization1, inputShape1);
     input1->set_friendly_name("input1");
 
-    const auto input2 = std::make_shared<ov::opset1::Parameter>(precisionBeforeDequantization2, inputShape2);
+    const auto input2 = std::make_shared<ov::op::v0::Parameter>(precisionBeforeDequantization2, inputShape2);
     input2->set_friendly_name("input2");
 
     DequantizationOperations deqSructure1 = dequantization1;
@@ -313,7 +330,7 @@ std::shared_ptr<ov::Model> MatMulFunction::getReference(
     auto dequantization1Op = makeDequantization(input1, deqSructure1);
     auto dequantization2Op = makeDequantization(input2, deqSructure2);
 
-    std::shared_ptr<ov::opset1::MatMul> matMul = std::make_shared<ov::op::TypeRelaxed<ov::opset1::MatMul>>(
+    std::shared_ptr<ov::op::v0::MatMul> matMul = std::make_shared<ov::op::TypeRelaxed<ov::op::v0::MatMul>>(
         std::vector<ov::element::Type>{ov::element::f32, ov::element::f32},
         std::vector<ov::element::Type>{ov::element::f32},
         ov::op::TemporaryReplaceOutputType(dequantization1Op, ov::element::f32).get(),
@@ -327,7 +344,7 @@ std::shared_ptr<ov::Model> MatMulFunction::getReference(
     auto dequantizationAfter = makeDequantization(matMul, deqSructureAfter);
     dequantizationAfter->set_friendly_name("matMul");
 
-    std::shared_ptr<ov::opset1::Result> result = std::make_shared<ov::opset1::Result>(dequantizationAfter);
+    std::shared_ptr<ov::op::v0::Result> result = std::make_shared<ov::op::v0::Result>(dequantizationAfter);
 
     std::shared_ptr<ov::Model> function = std::make_shared<ov::Model>(
         ov::ResultVector{ result },
@@ -343,17 +360,17 @@ std::shared_ptr<ov::Model> MatMulFunction::getReference(
     const DequantizationOperations& dequantization,
     const Constant& weights,
     const DequantizationOperations& resultDequantization) {
-    const auto input = std::make_shared<ov::opset1::Parameter>(precisionBeforeDequantization, inputShape);
+    const auto input = std::make_shared<ov::op::v0::Parameter>(precisionBeforeDequantization, inputShape);
     input->set_friendly_name("input1");
 
     const std::shared_ptr<ov::Node> lastDequantizationBefore = makeDequantization(input, dequantization);
 
-    const std::shared_ptr<ov::opset1::Constant> weightsConst = std::make_shared<ov::opset1::Constant>(
+    const std::shared_ptr<ov::op::v0::Constant> weightsConst = std::make_shared<ov::op::v0::Constant>(
         weights.outPrecision,
         weights.shape,
         weights.values);
 
-    const std::shared_ptr<ov::opset1::MatMul> matMul = std::make_shared<ov::op::TypeRelaxed<ov::opset1::MatMul>>(
+    const std::shared_ptr<ov::op::v0::MatMul> matMul = std::make_shared<ov::op::TypeRelaxed<ov::op::v0::MatMul>>(
         std::vector<ov::element::Type>{ov::element::f32, ov::element::f32},
         std::vector<ov::element::Type>{},
         ov::op::TemporaryReplaceOutputType(lastDequantizationBefore, ov::element::f32).get(),
@@ -368,7 +385,7 @@ std::shared_ptr<ov::Model> MatMulFunction::getReference(
     const std::shared_ptr<ov::Node> lastDequantizationAfter = makeDequantization(matMul, resultDequantization);
     lastDequantizationAfter->set_friendly_name("matMul");
 
-    std::shared_ptr<ov::opset1::Result> result = std::make_shared<ov::opset1::Result>(lastDequantizationAfter);
+    std::shared_ptr<ov::op::v0::Result> result = std::make_shared<ov::op::v0::Result>(lastDequantizationAfter);
 
     std::shared_ptr<ov::Model> function = std::make_shared<ov::Model>(
         ov::ResultVector{ result },
@@ -384,12 +401,12 @@ std::shared_ptr<ov::Model> MatMulFunction::getOriginal(
     const Constant& weights,
     const FakeQuantizeOnDataWithConstant& fqOnWeights,
     const DequantizationOperations& deqOnWeights) {
-    const auto input = std::make_shared<ov::opset1::Parameter>(precision, inputShape);
+    const auto input = std::make_shared<ov::op::v0::Parameter>(precision, inputShape);
     input->set_friendly_name("input1");
 
     const auto dequantizationOnData = makeFakeQuantize(input, precision, fqOnData);
 
-    const std::shared_ptr<ov::Node> weightsConst = std::make_shared<ov::opset1::Constant>(
+    const std::shared_ptr<ov::Node> weightsConst = std::make_shared<ov::op::v0::Constant>(
         weights.outPrecision.is_real() ? precision : weights.outPrecision,
         weights.shape,
         weights.values);
@@ -400,14 +417,14 @@ std::shared_ptr<ov::Model> MatMulFunction::getOriginal(
     deqStructure.setPrecision(precision);
     const auto dequantizationOnWeights = makeDequantization(fakeQuantize == nullptr ? weightsConst : fakeQuantize, deqStructure);
 
-    const std::shared_ptr<ov::opset1::MatMul> matMul = std::make_shared<ov::opset1::MatMul>(
+    const std::shared_ptr<ov::op::v0::MatMul> matMul = std::make_shared<ov::op::v0::MatMul>(
         dequantizationOnData,
         dequantizationOnWeights,
         false,
         true);
     matMul->set_friendly_name("matMul");
 
-    const std::shared_ptr<ov::opset1::Result> result = std::make_shared<ov::opset1::Result>(matMul);
+    const std::shared_ptr<ov::op::v0::Result> result = std::make_shared<ov::op::v0::Result>(matMul);
     result->set_friendly_name("result");
 
     std::shared_ptr<ov::Model> function = std::make_shared<ov::Model>(
@@ -421,3 +438,5 @@ std::shared_ptr<ov::Model> MatMulFunction::getOriginal(
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

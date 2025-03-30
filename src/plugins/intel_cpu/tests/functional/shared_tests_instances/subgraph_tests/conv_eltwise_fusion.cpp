@@ -7,13 +7,25 @@
 #include <vector>
 
 #include "common_test_utils/test_constants.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/multiply.hpp"
 
 using namespace ov::test;
 
 namespace {
 const std::vector<ov::element::Type> types{ov::element::f32, ov::element::f16};
 const std::vector<ov::NodeTypeInfo> eltwise_types{ov::op::v1::Multiply::get_type_info_static(),
-                                                  /* ov::opset4::Add::get_type_info_static() */};
+                                                  /* ov::op::v1::Add::get_type_info_static() */};
 
 INSTANTIATE_TEST_SUITE_P(smoke_Convolution_1D,
                          ConvEltwiseFusion,
@@ -194,3 +206,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_GroupConvolutionBackpropData_2D_Negative,
                                             ::testing::Values(ov::test::utils::DEVICE_CPU)),
                          ConvEltwiseFusion::getTestCaseName);
 }  // namespace
+

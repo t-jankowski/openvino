@@ -3,7 +3,6 @@
 //
 
 #include "ov_lpt_models/common/multiply.hpp"
-#include "openvino/opsets/opset1.hpp"
 
 namespace ov {
 namespace builder {
@@ -48,3 +47,4 @@ bool Multiply::empty() const noexcept {
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+

@@ -15,6 +15,8 @@
 #include "ov_lpt_models/convolution.hpp"
 #include "openvino/op/constant.hpp"
 #include "openvino/op/convolution.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convolution.hpp"
 
 using namespace testing;
 using namespace ov;
@@ -114,3 +116,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_LPT,
                                             ::testing::ValuesIn(suitablePartialShapes),
                                             ::testing::ValuesIn(testValues)),
                          IsAsymmetricOnWeightsDequantizationTransformation::getTestCaseName);
+

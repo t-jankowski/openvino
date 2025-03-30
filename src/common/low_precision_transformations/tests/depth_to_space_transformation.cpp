@@ -18,6 +18,7 @@
 #include "simple_low_precision_transformer.hpp"
 #include "ov_lpt_models/depth_to_space.hpp"
 #include "openvino/op/depth_to_space.hpp"
+#include "openvino/op/depth_to_space.hpp"
 
 namespace {
 using namespace ov::pass;
@@ -311,3 +312,4 @@ INSTANTIATE_TEST_SUITE_P(
     DepthToSpaceTransformation::getTestCaseName);
 } // namespace testValues3
 } // namespace
+

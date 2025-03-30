@@ -11,6 +11,8 @@
 #include "openvino/op/parameter.hpp"
 #include "common_test_utils/ov_plugin_cache.hpp"
 #include "base/ov_behavior_test_utils.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -40,3 +42,5 @@ protected:
 };
 }  // namespace test
 }  // namespace ov
+
+

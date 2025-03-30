@@ -6,6 +6,10 @@
 
 #include "common_test_utils/test_enums.hpp"
 #include "common_test_utils/ov_tensor_utils.hpp"
+#include "openvino/op/multiclass_nms.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/multiclass_nms.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -175,3 +179,5 @@ void MulticlassNmsLayerTest8::SetUp() {
 }
 } // namespace test
 } // namespace ov
+
+

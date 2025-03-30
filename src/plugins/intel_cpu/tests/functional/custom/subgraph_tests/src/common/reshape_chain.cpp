@@ -6,6 +6,10 @@
 #include "common_test_utils/node_builders/constant.hpp"
 #include "functional_test_utils/skip_tests_config.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -43,3 +47,4 @@ TEST_F(ReshapeChain, smoke_ReshapeChain) {
 
 }  // namespace test
 }  // namespace ov
+

@@ -20,6 +20,7 @@
 #include "low_precision/add.hpp"
 #include "ov_lpt_models/elementwise_with_multi_parent_dequantization.hpp"
 #include "ov_lpt_models/common/dequantization_operations.hpp"
+#include "openvino/op/add.hpp"
 
 using namespace testing;
 using namespace ov::pass;
@@ -145,3 +146,4 @@ INSTANTIATE_TEST_SUITE_P(
     ElementwiseWithMultiParentDequantizationTransformation,
     ::testing::ValuesIn(addTransformationTestValues),
     ElementwiseWithMultiParentDequantizationTransformation::getTestCaseName);
+

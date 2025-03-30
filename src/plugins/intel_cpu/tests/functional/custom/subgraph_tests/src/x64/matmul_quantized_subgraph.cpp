@@ -9,6 +9,9 @@
 #include "shared_test_classes/base/ov_subgraph.hpp"
 
 #include <algorithm>
+#include "openvino/op/add.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 
@@ -160,3 +163,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_matmulBrgemmInt8,
 
 }  // namespace test
 }  // namespace ov
+

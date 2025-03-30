@@ -3,6 +3,12 @@
 //
 
 #include "shared_test_classes/single_op/multinomial.hpp"
+#include "openvino/op/multinomial.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/multinomial.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace ov::test;
 
@@ -100,7 +106,7 @@ void MultinomialLayerTest::SetUp() {
                                                                   global_seed,
                                                                   op_seed);
 
-    ov::ResultVector results{std::make_shared<ov::opset10::Result>(multinomial)};
+    ov::ResultVector results{std::make_shared<ov::op::v0::Result>(multinomial)};
     function = std::make_shared<ov::Model>(results, params, "Multinomial");
 }
 
@@ -115,3 +121,5 @@ void MultinomialLayerTest::generate_inputs(const std::vector<ov::Shape>& target_
 }
 }  // namespace test
 }  // namespace ov
+
+

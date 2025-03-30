@@ -10,6 +10,8 @@
 #include <vector>
 
 #include "shared_test_classes/base/ov_subgraph.hpp"
+#include "openvino/op/scatter_nd_update.hpp"
+#include "openvino/op/scatter_nd_update.hpp"
 
 namespace ov {
 namespace test {
@@ -53,3 +55,5 @@ protected:
 };
 }  // namespace test
 }  // namespace ov
+
+

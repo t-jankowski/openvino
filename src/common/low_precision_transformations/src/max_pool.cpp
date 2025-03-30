@@ -13,6 +13,8 @@
 #include "low_precision/network_helper.hpp"
 #include "openvino/op/max_pool.hpp"
 #include "openvino/op/multiply.hpp"
+#include "openvino/op/max_pool.hpp"
+#include "openvino/op/multiply.hpp"
 
 namespace ov {
 namespace pass {
@@ -71,3 +73,4 @@ bool MaxPoolTransformation::isPrecisionPreserved(std::shared_ptr<Node> layer) co
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

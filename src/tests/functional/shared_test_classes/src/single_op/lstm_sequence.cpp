@@ -14,6 +14,14 @@
 #include "openvino/op/lstm_sequence.hpp"
 #include "common_test_utils/ov_tensor_utils.hpp"
 #include "common_test_utils/ov_test_utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/lstm_sequence.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/lstm_sequence.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 
 namespace ov {
@@ -199,3 +207,5 @@ void LSTMSequenceTest::generate_inputs(const std::vector<ov::Shape>& targetInput
     }}
 }  // namespace test
 }  // namespace ov
+
+

@@ -7,6 +7,10 @@
 #include <vector>
 
 #include "common_test_utils/test_constants.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/group_conv.hpp"
 
 using namespace ov::test;
 
@@ -267,3 +271,4 @@ INSTANTIATE_TEST_SUITE_P(
     MulConvFusion::getTestCaseName);
 
 }  // namespace
+

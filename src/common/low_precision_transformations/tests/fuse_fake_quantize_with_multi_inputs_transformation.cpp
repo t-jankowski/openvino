@@ -20,6 +20,7 @@
 #include "ov_lpt_models/fuse_fake_quantize.hpp"
 
 #include "simple_low_precision_transformer.hpp"
+#include "openvino/op/fake_quantize.hpp"
 
 namespace {
 
@@ -141,3 +142,4 @@ INSTANTIATE_TEST_SUITE_P(
     FuseFakeQuantizeWithMultiInputsTransformation::getTestCaseName);
 
 } // namespace
+

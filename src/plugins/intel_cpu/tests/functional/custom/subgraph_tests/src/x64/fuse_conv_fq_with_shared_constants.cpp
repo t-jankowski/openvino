@@ -6,6 +6,9 @@
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
 #include "utils/fusing_test_utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 
@@ -70,3 +73,4 @@ TEST_F(ConvAndFQWithSharedConstants, smoke_ConvAndFQWithSharedConstants_CPU) {
 }  // namespace
 }  // namespace test
 }  // namespace ov
+

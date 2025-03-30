@@ -21,6 +21,12 @@
 #include "openvino/op/fake_quantize.hpp"
 #include "openvino/op/multiply.hpp"
 #include "openvino/op/subtract.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/subtract.hpp"
 
 namespace ov {
 namespace pass {
@@ -146,3 +152,4 @@ bool FuseConvertTransformation::isPrecisionPreserved(std::shared_ptr<Node> layer
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

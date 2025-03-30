@@ -3,6 +3,10 @@
 //
 
 #include "shared_test_classes/single_op/range.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/range.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/range.hpp"
 
 
 namespace ov {
@@ -39,3 +43,5 @@ void RangeLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

@@ -23,6 +23,11 @@
 #include "openvino/op/matmul.hpp"
 #include "openvino/op/multiply.hpp"
 #include "openvino/op/reshape.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/reshape.hpp"
 
 namespace ov {
 namespace pass {
@@ -292,3 +297,4 @@ bool ReshapeTransformation::canBeTransformed(
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

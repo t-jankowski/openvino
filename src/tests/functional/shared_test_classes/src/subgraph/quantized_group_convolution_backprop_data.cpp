@@ -7,6 +7,12 @@
 #include "common_test_utils/node_builders/constant.hpp"
 #include "common_test_utils/node_builders/fake_quantize.hpp"
 #include "openvino/op/group_conv.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -85,3 +91,5 @@ void QuantGroupConvBackpropDataLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

@@ -21,6 +21,9 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/mvn.hpp"
 #include "openvino/op/multiply.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/mvn.hpp"
+#include "openvino/op/multiply.hpp"
 
 using namespace ov;
 using namespace ov::pass;
@@ -178,3 +181,4 @@ bool MVNTransformation::transform(ov::pass::pattern::Matcher &m) {
 bool MVNTransformation::isPrecisionPreserved(std::shared_ptr<Node> layer) const noexcept {
     return false;
 }
+

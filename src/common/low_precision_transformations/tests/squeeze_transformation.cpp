@@ -15,6 +15,7 @@
 #include "simple_low_precision_transformer.hpp"
 #include "transformations/init_node_info.hpp"
 #include "transformations/utils/utils.hpp"
+#include "openvino/op/squeeze.hpp"
 
 namespace {
 using namespace testing;
@@ -364,3 +365,4 @@ INSTANTIATE_TEST_SUITE_P(
     ::testing::ValuesIn(testValues),
     SqueezeTransformation::getTestCaseName);
 } // namespace
+

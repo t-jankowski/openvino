@@ -4,6 +4,14 @@
 
 #include "shared_test_classes/subgraph/integer_reduce_mean.hpp"
 #include "common_test_utils/node_builders/fake_quantize.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reduce_mean.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reduce_mean.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -66,3 +74,5 @@ void IntegerReduceMeanTest::SetUp() {
 
 }  // namespace test
 }  // namespace ov
+
+

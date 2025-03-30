@@ -6,6 +6,14 @@
 #include "common_test_utils/node_builders/dft.hpp"
 #include "common_test_utils/ov_tensor_utils.hpp"
 #include "shared_test_classes/base/utils/ranges.hpp"
+#include "openvino/op/dft.hpp"
+#include "openvino/op/idft.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/dft.hpp"
+#include "openvino/op/idft.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -106,3 +114,5 @@ void DFTLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

@@ -16,6 +16,20 @@
 #include "openvino/op/reduce_mean.hpp"
 #include "openvino/op/floor_mod.hpp"
 #include "openvino/op/reshape.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/floor_mod.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reduce_mean.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/floor_mod.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reduce_mean.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace testing;
 using namespace ov::util;
@@ -277,4 +291,6 @@ TEST(RangesTests, not_intersection) {
     ASSERT_EQ(floorMod_range->range, floorMod_range_ref.range);
     ASSERT_EQ(floorMod_range->resolution, floorMod_range_ref.resolution);
 }
+
+
 

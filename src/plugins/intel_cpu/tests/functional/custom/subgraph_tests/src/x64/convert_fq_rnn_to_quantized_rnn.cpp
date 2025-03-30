@@ -17,6 +17,10 @@
 #include <cassert>
 #include <memory>
 #include <vector>
+#include "openvino/op/constant.hpp"
+#include "openvino/op/gru_sequence.hpp"
+#include "openvino/op/lstm_sequence.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 
@@ -224,3 +228,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_static, ConvertFqRnnToQuantizedRnn,
 
 }  // namespace test
 }  // namespace ov
+

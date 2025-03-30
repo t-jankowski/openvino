@@ -3,11 +3,18 @@
 //
 
 #include <gtest/gtest.h>
-#include "openvino/opsets/opset8.hpp"
 #include "common_test_utils/ov_plugin_cache.hpp"
 #include "behavior/ov_infer_request/batched_tensors.hpp"
 #include "common_test_utils/file_utils.hpp"
 #include <chrono>
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -56,7 +63,7 @@ std::shared_ptr<Model> OVInferRequestBatchedTests::create_n_inputs(size_t n, ele
         data1->set_friendly_name("input" + index_str);
         data1->get_output_tensor(0).set_names({"tensor_input" + index_str});
         data1->set_layout(layout);
-        auto constant = opset8::Constant::create(type, {1}, {1});
+        auto constant = op::v0::Constant::create(type, {1}, {1});
         auto op1 = std::make_shared<ov::op::v1::Add>(data1, constant);
         op1->set_friendly_name("Add" + index_str);
         auto res1 = std::make_shared<ov::op::v0::Result>(op1);
@@ -518,3 +525,5 @@ TEST_P(OVInferRequestBatchedTests, SetInputTensors_Incorrect_tensor_shape) {
 }  // namespace behavior
 }  // namespace test
 }  // namespace ov
+
+

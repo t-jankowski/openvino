@@ -4,6 +4,12 @@
 #pragma once
 #include "common_test_utils/common_utils.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
+#include "openvino/op/group_normalization.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/group_normalization.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -98,3 +104,4 @@ protected:
 
 }  // namespace test
 }  // namespace ov
+

@@ -6,7 +6,6 @@
 
 #include <memory>
 
-#include "openvino/opsets/opset1.hpp"
 #include "openvino/op/constant.hpp"
 #include <ov_ops/type_relaxed.hpp>
 #include "low_precision/network_helper.hpp"
@@ -15,6 +14,14 @@
 #include "ov_lpt_models/common/dequantization_operations.hpp"
 #include "common_test_utils/node_builders/constant.hpp"
 #include "common_test_utils/node_builders/fake_quantize.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace ov::pass::low_precision;
 
@@ -30,8 +37,8 @@ struct BranchNodes {
 
 BranchNodes getBranch(const MultiplyPartialBranch& branch) {
     const std::shared_ptr<Node> parent = branch.constant.empty() ?
-        std::make_shared<ov::opset1::Parameter>(branch.precisionBeforeDequantization, branch.inputShape) :
-        std::dynamic_pointer_cast<Node>(std::make_shared<ov::opset1::Constant>(
+        std::make_shared<ov::op::v0::Parameter>(branch.precisionBeforeDequantization, branch.inputShape) :
+        std::dynamic_pointer_cast<Node>(std::make_shared<ov::op::v0::Constant>(
             branch.constant.outPrecision,
             branch.constant.shape,
             branch.constant.values));
@@ -54,10 +61,10 @@ std::shared_ptr<ov::Model> MultiplyPartialFunction::get(const ov::element::Type 
     const auto branchNodes2 = multiply_partial_function::getBranch(actualValues.branch2);
 
     auto multiplyOriginal =
-        ov::opset1::Multiply(ov::op::TemporaryReplaceOutputType(branchNodes1.dequantization, ov::element::f32).get(),
+        ov::op::v1::Multiply(ov::op::TemporaryReplaceOutputType(branchNodes1.dequantization, ov::element::f32).get(),
                              ov::op::TemporaryReplaceOutputType(branchNodes2.dequantization, ov::element::f32).get());
 
-    const std::shared_ptr<ov::Node> multiply = std::make_shared<ov::op::TypeRelaxed<ov::opset1::Multiply>>(
+    const std::shared_ptr<ov::Node> multiply = std::make_shared<ov::op::TypeRelaxed<ov::op::v1::Multiply>>(
         multiplyOriginal,
         std::vector<ov::element::Type>{ov::element::f32, ov::element::f32},
         std::vector<ov::element::Type>{precision});
@@ -65,14 +72,14 @@ std::shared_ptr<ov::Model> MultiplyPartialFunction::get(const ov::element::Type 
     rtInfo["Variant::std::string"] = "multiply";
     multiply->set_friendly_name("output");
 
-    ov::ResultVector results{ std::make_shared<ov::opset1::Result>(multiply) };
+    ov::ResultVector results{ std::make_shared<ov::op::v0::Result>(multiply) };
 
     ov::ParameterVector inputs;
-    if (ov::is_type<ov::opset1::Parameter>(branchNodes1.input)) {
-        inputs.push_back(ov::as_type_ptr<ov::opset1::Parameter>(branchNodes1.input));
+    if (ov::is_type<ov::op::v0::Parameter>(branchNodes1.input)) {
+        inputs.push_back(ov::as_type_ptr<ov::op::v0::Parameter>(branchNodes1.input));
     }
-    if (ov::is_type<ov::opset1::Parameter>(branchNodes2.input)) {
-        inputs.push_back(ov::as_type_ptr<ov::opset1::Parameter>(branchNodes2.input));
+    if (ov::is_type<ov::op::v0::Parameter>(branchNodes2.input)) {
+        inputs.push_back(ov::as_type_ptr<ov::op::v0::Parameter>(branchNodes2.input));
     }
 
     return std::make_shared<ov::Model>(results, inputs, "MultiplyTransformation");
@@ -104,7 +111,7 @@ std::shared_ptr<ov::Model> MultiplyPartialFunction::get(
         }
     }
 
-    const auto input1 = std::make_shared<ov::opset1::Parameter>(precision, inputShape1);
+    const auto input1 = std::make_shared<ov::op::v0::Parameter>(precision, inputShape1);
     const auto fakeQuantize1 = fq1.empty() ?
         nullptr :
         ov::test::utils::make_fake_quantize(
@@ -117,7 +124,7 @@ std::shared_ptr<ov::Model> MultiplyPartialFunction::get(
     const std::shared_ptr<ov::Node> input2 =
         secondInputIsConstant
             ? static_cast<std::shared_ptr<ov::Node>>(ov::op::v0::Constant::create(ov::element::f32, ov::Shape{}, std::vector<float>{0.5f}))
-            : static_cast<std::shared_ptr<ov::Node>>(std::make_shared<ov::opset1::Parameter>(precision, inputShape2));
+            : static_cast<std::shared_ptr<ov::Node>>(std::make_shared<ov::op::v0::Parameter>(precision, inputShape2));
     const auto fakeQuantize2 = fq2.empty() ?
         nullptr :
         ov::test::utils::make_fake_quantize(
@@ -127,7 +134,7 @@ std::shared_ptr<ov::Model> MultiplyPartialFunction::get(
         fakeQuantize2->set_friendly_name("fakeQuantize2");
     }
 
-    const auto multiply = std::make_shared<ov::opset1::Multiply>(
+    const auto multiply = std::make_shared<ov::op::v1::Multiply>(
         fq1.empty() ? input1 : fakeQuantize1,
         fq2.empty() ? input2 : fakeQuantize2);
     multiply->set_friendly_name("multiply");
@@ -140,12 +147,12 @@ std::shared_ptr<ov::Model> MultiplyPartialFunction::get(
     }
 
     const std::shared_ptr<Node> result = fakeQuantizeAfter == nullptr ? std::dynamic_pointer_cast<Node>(multiply) : fakeQuantizeAfter;
-    ov::ResultVector results{ std::make_shared<ov::opset1::Result>(result) };
+    ov::ResultVector results{ std::make_shared<ov::op::v0::Result>(result) };
     std::shared_ptr<ov::Model> function = std::make_shared<ov::Model>(
         results,
         secondInputIsConstant ?
             ov::ParameterVector{ input1 } :
-            ov::ParameterVector{ input1, ov::as_type_ptr<ov::opset1::Parameter>(input2) },
+            ov::ParameterVector{ input1, ov::as_type_ptr<ov::op::v0::Parameter>(input2) },
         "MultiplyTransformation");
 
     return function;
@@ -154,3 +161,5 @@ std::shared_ptr<ov::Model> MultiplyPartialFunction::get(
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

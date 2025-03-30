@@ -13,6 +13,7 @@
 #include "itt.hpp"
 #include "openvino/pass/manager.hpp"
 #include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/fake_quantize.hpp"
 
 using namespace ov;
 using namespace ov::pass::low_precision;
@@ -30,3 +31,4 @@ bool ov::pass::low_precision::PropagatePrecisions::run_on_model(const std::share
     manager.run_passes(f);
     return false;
 }
+

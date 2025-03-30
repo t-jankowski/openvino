@@ -17,6 +17,11 @@
 #include "ov_lpt_models/common/dequantization_operations.hpp"
 #include "ov_lpt_models/common/fake_quantize_on_data.hpp"
 #include "simple_low_precision_transformer.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace testing;
 using namespace ov;
@@ -99,3 +104,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_LPT,
                          ::testing::ValuesIn(std::vector<bool>{false, true}),
                          FQDecompositionWithSharedConstants::getTestCaseName);
 }  // namespace
+

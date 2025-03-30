@@ -7,12 +7,13 @@
 
 #include "common_test_utils/test_assertions.hpp"
 #include "embeddingbag_offsets_shape_inference.hpp"
-#include "openvino/opsets/opset10.hpp"
 #include "utils.hpp"
+#include "openvino/op/embeddingbag_offsets_sum.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
-using namespace ov::opset10;
+using ov::op::v0::Parameter;
 using namespace testing;
 
 class EmbeddingBagOffsetsSumV3StaticShapeInferenceTest : public OpStaticShapeInferenceTest<op::v3::EmbeddingBagOffsetsSum> {

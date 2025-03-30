@@ -33,6 +33,8 @@
 #include "shared_test_classes/base/utils/calculate_thresholds.hpp"
 
 #include "shared_test_classes/base/utils/ranges.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/constant.hpp"
 
 namespace ov {
 namespace test {
@@ -645,3 +647,5 @@ void SubgraphBaseTest::compare_models_param_res(const std::shared_ptr<ov::Model>
 
 }  // namespace test
 }  // namespace ov
+
+

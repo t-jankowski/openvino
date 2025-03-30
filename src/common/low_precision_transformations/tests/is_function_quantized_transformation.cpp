@@ -12,6 +12,8 @@
 
 #include <gtest/gtest.h>
 #include "ov_lpt_models/common/builders.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace testing;
 using namespace ov;
@@ -116,3 +118,4 @@ INSTANTIATE_TEST_SUITE_P(
     IsFunctionQuantizedTransformation,
     ::testing::ValuesIn(testValues),
     IsFunctionQuantizedTransformation::getTestCaseName);
+

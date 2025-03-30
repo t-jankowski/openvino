@@ -11,6 +11,8 @@
 #include "utils/cpu_test_utils.hpp"
 #include "utils/filter_cpu_info.hpp"
 #include "utils/fusing_test_utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 namespace ov {
@@ -2264,3 +2266,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_BRGEMM_EXPECT_FALLBACK_GroupConv,
 
 }  // namespace test
 }  // namespace ov
+

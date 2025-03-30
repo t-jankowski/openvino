@@ -8,6 +8,8 @@
 #include <vector>
 
 #include "ov_lpt_models/reduce.hpp"
+#include "openvino/op/reduce_min.hpp"
+#include "openvino/op/reduce_min.hpp"
 
 namespace LayerTestsDefinitions {
 
@@ -67,3 +69,5 @@ TEST_P(ReduceMinTransformation, CompareWithRefImpl) {
 };
 
 } // namespace LayerTestsDefinitions
+
+

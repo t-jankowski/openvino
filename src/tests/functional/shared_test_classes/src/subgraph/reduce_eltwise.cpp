@@ -13,6 +13,14 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/result.hpp"
 #include "openvino/op/reduce_sum.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reduce_sum.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reduce_sum.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -75,3 +83,5 @@ void ReduceEltwiseTest::SetUp() {
 }
 } // namespace test
 } // namespace ov
+
+

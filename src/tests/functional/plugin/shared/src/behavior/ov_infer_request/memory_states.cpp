@@ -9,6 +9,18 @@
 #include "openvino/op/multiply.hpp"
 #include "openvino/op/sigmoid.hpp"
 #include "openvino/op/constant.hpp"
+#include "openvino/op/assign.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/read_value.hpp"
+#include "openvino/op/sigmoid.hpp"
+#include "openvino/op/assign.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/read_value.hpp"
+#include "openvino/op/sigmoid.hpp"
 
 namespace ov {
 namespace test {
@@ -268,3 +280,4 @@ TEST_P(OVInferRequestVariableStateTest, inferreq_smoke_VariableState_2infers) {
 }  // namespace behavior
 }  // namespace test
 }  // namespace ov
+

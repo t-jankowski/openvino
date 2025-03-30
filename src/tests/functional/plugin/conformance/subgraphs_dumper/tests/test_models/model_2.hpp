@@ -11,6 +11,18 @@
 #include "openvino/op/relu.hpp"
 #include "openvino/op/parameter.hpp"
 #include "openvino/op/result.hpp"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/clamp.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/clamp.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
 
 class Model_2 {
 private:
@@ -72,3 +84,5 @@ protected:
     std::vector<std::vector<ov::NodeVector>> ref_nodes;
     std::vector<std::vector<PatternBorders>> ref_borders;
 };
+
+

@@ -13,6 +13,20 @@
 #include "openvino/op/less.hpp"
 #include "openvino/pass/manager.hpp"
 #include "transformations/control_flow/unroll_tensor_iterator.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/less.hpp"
+#include "openvino/op/loop.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/less.hpp"
+#include "openvino/op/loop.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -254,3 +268,5 @@ void StaticShapeLoopLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

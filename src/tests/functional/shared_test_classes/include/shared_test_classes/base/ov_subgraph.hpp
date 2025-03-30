@@ -10,6 +10,8 @@
 #include "openvino/core/model.hpp"
 #include "transformations/convert_precision.hpp"
 #include "functional_test_utils/skip_tests_config.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -140,3 +142,5 @@ public:
 };
 }  // namespace test
 }  // namespace ov
+
+

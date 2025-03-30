@@ -12,6 +12,7 @@
 #include "shared_test_classes/single_op/eltwise.hpp"
 #include "utils/cpu_test_utils.hpp"
 #include "utils/fusing_test_utils.hpp"
+#include "openvino/op/constant.hpp"
 
 using namespace CPUTestUtils;
 
@@ -37,3 +38,4 @@ private:
 };
 }  // namespace test
 }  // namespace ov
+

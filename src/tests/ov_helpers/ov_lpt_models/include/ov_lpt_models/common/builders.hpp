@@ -10,7 +10,6 @@
 #include "low_precision/rt_info/intervals_alignment_attribute.hpp"
 #include "low_precision/rt_info/quantization_alignment_attribute.hpp"
 #include "openvino/op/constant.hpp"
-#include "openvino/opsets/opset1.hpp"
 #include "ov_lpt_models/common/add.hpp"
 #include "ov_lpt_models/common/convolution.hpp"
 #include "ov_lpt_models/common/dequantization_operations.hpp"
@@ -18,6 +17,18 @@
 #include "ov_lpt_models/common/reshape.hpp"
 #include "ov_lpt_models/common/transpose.hpp"
 #include "ov_ops/type_relaxed.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/subtract.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/subtract.hpp"
 
 namespace ov {
 namespace builder {
@@ -37,7 +48,7 @@ std::shared_ptr<Node> makeElementwise(const std::shared_ptr<ov::Node> data, cons
         }
     }
 
-    const auto operationConst = std::make_shared<ov::opset1::Constant>(
+    const auto operationConst = std::make_shared<ov::op::v0::Constant>(
         description.outPrecision,
         shape,
         description.values);
@@ -57,10 +68,10 @@ std::shared_ptr<Node> makeElementwise(const std::shared_ptr<ov::Node> data, cons
         ov::pass::low_precision::NetworkHelper::setOutDataPrecision(operation, description.outPrecision);
     }
 
-    if (ov::is_type<ov::opset1::Subtract>(operation) || ov::is_type<ov::opset1::Add>(operation)) {
+    if (ov::is_type<ov::op::v1::Subtract>(operation) || ov::is_type<ov::op::v1::Add>(operation)) {
         replace_node(
             operationConst,
-            ov::pass::low_precision::fold<ov::opset1::Convert>(operationConst, data->get_output_element_type(0)));
+            ov::pass::low_precision::fold<ov::op::v0::Convert>(operationConst, data->get_output_element_type(0)));
     }
 
     return operation;
@@ -76,25 +87,25 @@ std::shared_ptr<Node> makeReshape(const ov::Output<Node>& data, const Reshape& r
 
 std::shared_ptr<Node> makeTranspose(const ov::Output<Node>& data, const Transpose& reshape);
 
-std::shared_ptr<ov::opset1::FakeQuantize> makeFakeQuantize(
+std::shared_ptr<ov::op::v0::FakeQuantize> makeFakeQuantize(
     const ov::Output<Node>& output,
     const ov::element::Type precision,
     const FakeQuantizeOnData& fqOnData);
 
-std::shared_ptr<ov::opset1::Convolution> makeConvolution(const ov::Output<Node>& output, const Convolution& convolution);
+std::shared_ptr<ov::op::v1::Convolution> makeConvolution(const ov::Output<Node>& output, const Convolution& convolution);
 
-std::shared_ptr<ov::opset1::FakeQuantize> makeFakeQuantizeTypeRelaxed(
+std::shared_ptr<ov::op::v0::FakeQuantize> makeFakeQuantizeTypeRelaxed(
     const ov::Output<ov::Node>& output,
     const ov::element::Type precision,
     const FakeQuantizeOnData& fqOnData);
 
-std::shared_ptr<ov::opset1::FakeQuantize> makeFakeQuantize(
+std::shared_ptr<ov::op::v0::FakeQuantize> makeFakeQuantize(
     const ov::Output<Node>& input,
     const ov::element::Type constantPrecision,
     const FakeQuantizeOnDataWithConstant& fqOnData,
     const bool subgraphOnConstantPath = false);
 
-std::shared_ptr<ov::opset1::FakeQuantize> makeFakeQuantizeTypeRelaxed(
+std::shared_ptr<ov::op::v0::FakeQuantize> makeFakeQuantizeTypeRelaxed(
     const std::shared_ptr<ov::Node>& input,
     const ov::element::Type constantPrecision,
     const FakeQuantizeOnDataWithConstant& fqOnData);
@@ -109,3 +120,5 @@ std::shared_ptr<Node> makeConvolution(const std::shared_ptr<Node>& parent,
 } // namespace subgraph
 } // namespace builder
 } // namespace ov
+
+

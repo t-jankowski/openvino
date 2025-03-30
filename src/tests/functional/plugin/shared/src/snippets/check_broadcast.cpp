@@ -7,6 +7,12 @@
 #include "common_test_utils/common_utils.hpp"
 #include "subgraph_converts.hpp"
 #include "common_test_utils/ov_tensor_utils.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -96,3 +102,5 @@ TEST_P(CheckBroadcast, CompareWithRefImpl) {
 } // namespace snippets
 } // namespace test
 } // namespace ov
+
+

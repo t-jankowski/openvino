@@ -4,6 +4,8 @@
 
 #include "matmul_weights_decompression.hpp"
 #include "openvino/runtime/intel_cpu/properties.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace CPUTestUtils;
 
@@ -173,3 +175,4 @@ TEST_P(MatmulWeightsDecompression, CompareWithRefs) {
 
 }  // namespace test
 }  // namespace ov
+

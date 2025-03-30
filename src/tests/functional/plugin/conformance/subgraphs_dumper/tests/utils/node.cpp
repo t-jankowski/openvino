@@ -3,8 +3,14 @@
 //
 
 #include "utils/node.hpp"
-#include "openvino/op/ops.hpp"
+
 #include "base_test.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/erf.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/shape_of.hpp"
 
 namespace {
 

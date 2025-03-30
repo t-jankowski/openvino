@@ -15,6 +15,7 @@
 #include "ov_lpt_models/concat.hpp"
 #include "ov_lpt_models/common/builders.hpp"
 #include "simple_low_precision_transformer.hpp"
+#include "openvino/op/concat.hpp"
 
 using namespace testing;
 using namespace ov;
@@ -358,3 +359,4 @@ INSTANTIATE_TEST_SUITE_P(
         ::testing::ValuesIn(testValues)),
     ConcatTransformation::getTestCaseName);
 } // namespace
+

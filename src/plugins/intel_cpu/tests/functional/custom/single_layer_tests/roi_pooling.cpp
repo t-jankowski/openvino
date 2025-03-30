@@ -10,6 +10,9 @@
 
 #include "utils/cpu_test_utils.hpp"
 #include "utils/bfloat16.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/roi_pooling.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace CPUTestUtils;
 
@@ -381,3 +384,4 @@ INSTANTIATE_TEST_SUITE_P(
 } // namespace
 }  // namespace test
 }  // namespace ov
+

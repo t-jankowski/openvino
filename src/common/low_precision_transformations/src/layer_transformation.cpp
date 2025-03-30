@@ -21,6 +21,10 @@
 #include "openvino/op/convert.hpp"
 #include "openvino/op/fake_quantize.hpp"
 #include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace pass {
@@ -431,3 +435,4 @@ bool LayerTransformation::updateOutput(const std::shared_ptr<ov::Node>& lastNode
 }  // namespace low_precision
 }  // namespace pass
 }  // namespace ov
+

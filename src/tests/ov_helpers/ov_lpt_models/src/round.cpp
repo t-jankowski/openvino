@@ -2,10 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#include "openvino/opsets/opset1.hpp"
 
 #include "ov_lpt_models/round.hpp"
 #include "ov_lpt_models/common/builders.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 
 using namespace ov::pass::low_precision;
@@ -23,7 +26,7 @@ namespace subgraph {
         const auto deq = makeDequantization(input, dequantization);
         deq->set_friendly_name("output");
 
-        const auto result = std::make_shared<ov::opset1::Result>(deq);
+        const auto result = std::make_shared<ov::op::v0::Result>(deq);
         result->set_friendly_name("result");
 
         return std::make_shared<ov::Model>(
@@ -42,7 +45,7 @@ namespace subgraph {
         const auto deq = makeDequantization(input, dequantization);
         deq->set_friendly_name("output");
 
-        const auto result = std::make_shared<ov::opset1::Result>(deq);
+        const auto result = std::make_shared<ov::op::v0::Result>(deq);
         result->set_friendly_name("result");
 
         return std::make_shared<ov::Model>(
@@ -54,3 +57,5 @@ namespace subgraph {
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

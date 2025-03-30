@@ -8,6 +8,16 @@
 #include "functional_test_utils/skip_tests_config.hpp"
 #include "common_test_utils/node_builders/convolution.hpp"
 #include "common_test_utils/node_builders/constant.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/transpose.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/transpose.hpp"
 
 namespace ov {
 namespace test {
@@ -102,3 +112,5 @@ void PermConvPermConcat::SetUp() {
 
 }  // namespace test
 }  // namespace ov
+
+

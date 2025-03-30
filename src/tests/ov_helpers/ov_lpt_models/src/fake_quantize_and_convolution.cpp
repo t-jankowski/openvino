@@ -4,9 +4,24 @@
 
 #include "ov_lpt_models/fake_quantize_and_convolution.hpp"
 
-#include "openvino/opsets/opset1.hpp"
 #include "ov_lpt_models/common/builders.hpp"
 #include "common_test_utils/node_builders/fake_quantize.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/max_pool.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/max_pool.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace builder {
@@ -21,7 +36,7 @@ std::shared_ptr<ov::Model> FakeQuantizeAndConvolutionFunction::get(
     const auto rankLength = inputShape.rank().is_dynamic() ? 4 : inputShape.rank().get_length();
     OPENVINO_ASSERT(rankLength == 3ul || rankLength == 4ul || rankLength == 5ul, "not supported input shape rank: ", rankLength);
 
-    const auto input = std::make_shared<ov::opset1::Parameter>(precision, inputShape);
+    const auto input = std::make_shared<ov::op::v0::Parameter>(precision, inputShape);
     const auto fakeQuantizeOnActivations = fqOnData.empty() ?
         nullptr :
         ov::test::utils::make_fake_quantize(
@@ -33,14 +48,14 @@ std::shared_ptr<ov::Model> FakeQuantizeAndConvolutionFunction::get(
 
     const size_t inputChannelsCount = inputShape[1].get_length();
     const size_t outputChannelsCount = 2 * inputShape[1].get_length();
-    const auto weights = ov::opset1::Constant::create(
+    const auto weights = ov::op::v0::Constant::create(
         precision,
         rankLength == 3ul ?
             (ov::Shape{ outputChannelsCount, inputChannelsCount, 1}) :
             (ov::Shape{ outputChannelsCount, inputChannelsCount, 1, 1 }),
         std::vector<float>(outputChannelsCount * inputChannelsCount, 1));
 
-    auto maxPool = std::make_shared<ov::opset1::MaxPool>(fqOnData.empty() ? input : fakeQuantizeOnActivations,
+    auto maxPool = std::make_shared<ov::op::v1::MaxPool>(fqOnData.empty() ? input : fakeQuantizeOnActivations,
                                                          Strides(rankLength - 2, 1ul),
                                                          Shape(rankLength - 2, 1ul),
                                                          Shape(rankLength - 2, 0ul),
@@ -48,7 +63,7 @@ std::shared_ptr<ov::Model> FakeQuantizeAndConvolutionFunction::get(
                                                          ov::op::RoundingType::FLOOR);
     maxPool->set_friendly_name("maxPool");
 
-    const auto convolution = std::make_shared<ov::opset1::Convolution>(
+    const auto convolution = std::make_shared<ov::op::v1::Convolution>(
         maxPool, //fqOnData.empty() ? input : fakeQuantizeOnActivations,
         fqOnWeights.empty() ?
             weights->output(0) :
@@ -61,7 +76,7 @@ std::shared_ptr<ov::Model> FakeQuantizeAndConvolutionFunction::get(
         ov::Strides(rankLength - 2, 1ul));
     convolution->set_friendly_name("convolution");
 
-    ov::ResultVector results{ std::make_shared<ov::opset1::Result>(convolution) };
+    ov::ResultVector results{ std::make_shared<ov::op::v0::Result>(convolution) };
     return std::make_shared<ov::Model>(results, ov::ParameterVector{ input }, "FakeQuantizeAndConvolutionFunction");
 }
 
@@ -112,7 +127,7 @@ std::shared_ptr<ov::Model> FakeQuantizeAndConvolutionFunction::get(
     const DequantizationOperations& dequantizationAfter,
     const std::string operation,
     bool multiplyAfter) {
-    const auto input = std::make_shared<ov::opset1::Parameter>(precision, inputShape);
+    const auto input = std::make_shared<ov::op::v0::Parameter>(precision, inputShape);
 
     std::shared_ptr<Node> parentOnActivation = input;
     {
@@ -123,7 +138,7 @@ std::shared_ptr<ov::Model> FakeQuantizeAndConvolutionFunction::get(
         }
 
         if (!convertOnData.empty()) {
-            parentOnActivation = std::make_shared<ov::opset1::Convert>(parentOnActivation, convertOnData.outPrecision);
+            parentOnActivation = std::make_shared<ov::op::v0::Convert>(parentOnActivation, convertOnData.outPrecision);
         }
 
         if (!dequantizationOnData.empty()) {
@@ -144,7 +159,7 @@ std::shared_ptr<ov::Model> FakeQuantizeAndConvolutionFunction::get(
         }
 
         const Shape shape = constantOnWeights.shapeIsDefined ? constantOnWeights.shape : ov::Shape{ outputChannelsCount, inputChannelsCount, 1, 1 };
-        parentOnWeights = ov::opset1::Constant::create(
+        parentOnWeights = ov::op::v0::Constant::create(
             constantOnWeights.outPrecision,
             shape,
             constantOnWeights.values.size() != ov::shape_size(shape) ?
@@ -163,7 +178,7 @@ std::shared_ptr<ov::Model> FakeQuantizeAndConvolutionFunction::get(
         }
 
         if (!convertOnWeights.empty()) {
-            parentOnWeights = std::make_shared<ov::opset1::Convert>(parentOnWeights, convertOnWeights.outPrecision);
+            parentOnWeights = std::make_shared<ov::op::v0::Convert>(parentOnWeights, convertOnWeights.outPrecision);
         }
 
         if (!dequantizationOnWeights.empty()) {
@@ -189,8 +204,8 @@ std::shared_ptr<ov::Model> FakeQuantizeAndConvolutionFunction::get(
 
     std::shared_ptr<Node> lastOperation;
     if (operation == "Convolution") {
-        lastOperation = std::make_shared<ov::op::TypeRelaxed<ov::opset1::Convolution>>(
-            ov::opset1::Convolution(ov::op::TemporaryReplaceOutputType(parentOnActivation, ov::element::f32).get(),
+        lastOperation = std::make_shared<ov::op::TypeRelaxed<ov::op::v1::Convolution>>(
+            ov::op::v1::Convolution(ov::op::TemporaryReplaceOutputType(parentOnActivation, ov::element::f32).get(),
                                     ov::op::TemporaryReplaceOutputType(parentOnWeights, ov::element::f32).get(),
                                     ov::Strides{1, 1},
                                     ov::CoordinateDiff{0, 0},
@@ -199,8 +214,8 @@ std::shared_ptr<ov::Model> FakeQuantizeAndConvolutionFunction::get(
             std::vector<ov::element::Type>{ov::element::f32, ov::element::f32},
             std::vector<ov::element::Type>{});
     } else if (operation == "GroupConvolution") {
-        lastOperation = std::make_shared<ov::op::TypeRelaxed<ov::opset1::GroupConvolution>>(
-            ov::opset1::GroupConvolution(ov::op::TemporaryReplaceOutputType(parentOnActivation, ov::element::f32).get(),
+        lastOperation = std::make_shared<ov::op::TypeRelaxed<ov::op::v1::GroupConvolution>>(
+            ov::op::v1::GroupConvolution(ov::op::TemporaryReplaceOutputType(parentOnActivation, ov::element::f32).get(),
                                          ov::op::TemporaryReplaceOutputType(parentOnWeights, ov::element::f32).get(),
                                          ov::Strides{1, 1},
                                          ov::CoordinateDiff{0, 0},
@@ -211,8 +226,8 @@ std::shared_ptr<ov::Model> FakeQuantizeAndConvolutionFunction::get(
         if (multiplyAfter) {
             const auto& O = lastOperation->get_shape()[1];
             std::vector<float> weights_val(O, 1);
-            auto constant = ov::opset1::Constant::create(ov::element::f32, Shape{O, 1, 1}, weights_val);
-            lastOperation = std::make_shared<ov::opset1::Multiply>(lastOperation, constant);
+            auto constant = ov::op::v0::Constant::create(ov::element::f32, Shape{O, 1, 1}, weights_val);
+            lastOperation = std::make_shared<ov::op::v1::Multiply>(lastOperation, constant);
         }
     } else {
         OPENVINO_THROW("Unknown operation type ", operation);
@@ -226,10 +241,12 @@ std::shared_ptr<ov::Model> FakeQuantizeAndConvolutionFunction::get(
         lastOperation->set_friendly_name("output");
     }
 
-    ov::ResultVector results{ std::make_shared<ov::opset1::Result>(lastOperation) };
+    ov::ResultVector results{ std::make_shared<ov::op::v0::Result>(lastOperation) };
     return std::make_shared<ov::Model>(results, ov::ParameterVector{ input }, "FakeQuantizeAndConvolutionFunction");
 }
 
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

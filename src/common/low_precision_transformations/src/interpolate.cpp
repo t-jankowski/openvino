@@ -18,6 +18,9 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/interpolate.hpp"
 #include "openvino/op/multiply.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/interpolate.hpp"
+#include "openvino/op/multiply.hpp"
 
 using namespace ov;
 using namespace ov::pass;
@@ -140,3 +143,4 @@ bool InterpolateTransformation::canBeTransformed(const std::shared_ptr<Node>& la
 
     return true;
 }
+

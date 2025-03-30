@@ -3,6 +3,14 @@
 //
 
 #include "shared_test_classes/single_op/batch_to_space.hpp"
+#include "openvino/op/batch_to_space.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/batch_to_space.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -51,3 +59,5 @@ void BatchToSpaceLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

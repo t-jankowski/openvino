@@ -3,6 +3,12 @@
 //
 
 #include "shared_test_classes/single_op/slice.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/slice.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/slice.hpp"
 
 namespace ov {
 namespace test {
@@ -62,3 +68,5 @@ void Slice8LayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

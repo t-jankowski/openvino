@@ -17,6 +17,14 @@
 #include <string>
 #include <algorithm>
 #include <utility>
+#include "openvino/op/constant.hpp"
+#include "openvino/op/non_max_suppression.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/non_max_suppression.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ExecutionGraphTests {
 
@@ -76,3 +84,5 @@ TEST_P(ExecGraphNmsTransformLastNode, CheckIfCanBeInfered) {
 }
 
 } // namespace ExecutionGraphTests
+
+

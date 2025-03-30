@@ -3,6 +3,14 @@
 //
 
 #include "shared_test_classes/subgraph/relu_shape_of.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/shape_of.hpp"
 
 namespace ov {
 namespace test {
@@ -33,3 +41,5 @@ void ReluShapeOfSubgraphTest::SetUp() {
 
 }  // namespace test
 }  // namespace ov
+
+

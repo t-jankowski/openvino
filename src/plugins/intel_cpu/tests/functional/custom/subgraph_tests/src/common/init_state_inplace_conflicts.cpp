@@ -4,6 +4,12 @@
 
 #include <shared_test_classes/base/ov_subgraph.hpp>
 #include "utils/cpu_test_utils.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/assign.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/read_value.hpp"
+#include "openvino/op/result.hpp"
 
 using namespace CPUTestUtils;
 using namespace ov::test;

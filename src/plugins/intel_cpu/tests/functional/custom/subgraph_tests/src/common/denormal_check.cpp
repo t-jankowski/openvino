@@ -5,6 +5,10 @@
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "common_test_utils/data_utils.hpp"
 #include "openvino/runtime/aligned_buffer.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -87,3 +91,4 @@ TEST_F(DenormalNullifyCheck, smoke_CPU_Denormal_Check) {
 
 }  // namespace test
 }  // namespace ov
+

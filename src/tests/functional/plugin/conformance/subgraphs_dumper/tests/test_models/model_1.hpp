@@ -13,6 +13,22 @@
 #include "openvino/op/result.hpp"
 #include "openvino/op/subtract.hpp"
 #include "matchers/subgraph/repeat_pattern.hpp"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/clamp.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/subtract.hpp"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/clamp.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/subtract.hpp"
 
 class Model_1 {
 private:
@@ -222,3 +238,5 @@ protected:
     std::unordered_set<std::shared_ptr<ov::Node>> out_nodes;
     std::shared_ptr<ov::Node> start_node;
 };
+
+

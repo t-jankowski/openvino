@@ -14,6 +14,16 @@
 #include "openvino/op/avg_pool.hpp"
 #include "common_test_utils/data_utils.hpp"
 #include "functional_test_utils/skip_tests_config.hpp"
+#include "openvino/op/avg_pool.hpp"
+#include "openvino/op/batch_norm.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/avg_pool.hpp"
+#include "openvino/op/batch_norm.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
 
 namespace ov {
 namespace test {
@@ -198,3 +208,5 @@ TEST_P(OVInferConsistencyTest, AsyncInfer) {
 }  // namespace behavior
 }  // namespace test
 }  // namespace ov
+
+

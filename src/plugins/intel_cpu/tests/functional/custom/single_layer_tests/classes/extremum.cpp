@@ -6,6 +6,7 @@
 #include "internal_properties.hpp"
 #include "common_test_utils/node_builders/extremum.hpp"
 #include "shared_test_classes/single_op/minimum_maximum.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
@@ -134,3 +135,4 @@ const std::vector<CPUSpecificParams>& cpuParams4D() {
 }  // namespace extremum
 }  // namespace test
 }  // namespace ov
+

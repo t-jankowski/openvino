@@ -10,6 +10,7 @@
 #include "low_precision/network_helper.hpp"
 #include "low_precision/reduce_base_transformation.hpp"
 #include "openvino/op/constant.hpp"
+#include "openvino/op/constant.hpp"
 
 namespace ov {
 namespace pass {
@@ -110,3 +111,4 @@ bool ReduceBaseTransformation::getUpdatePrecision(const std::shared_ptr<Node>& r
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

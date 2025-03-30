@@ -4,7 +4,6 @@
 
 #include "ov_lpt_models/convolution.hpp"
 
-#include "openvino/opsets/opset1.hpp"
 #include <ov_ops/type_relaxed.hpp>
 #include "low_precision/network_helper.hpp"
 #include "low_precision/rt_info/quantization_granularity_attribute.hpp"
@@ -16,6 +15,24 @@
 #include "low_precision/network_helper.hpp"
 #include "common_test_utils/node_builders/constant.hpp"
 #include "common_test_utils/node_builders/fake_quantize.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/subtract.hpp"
+#include "openvino/op/transpose.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/subtract.hpp"
+#include "openvino/op/transpose.hpp"
 
 using namespace ov::pass::low_precision;
 
@@ -28,7 +45,7 @@ std::shared_ptr<ov::Model> ConvolutionFunction::getOriginal(
     const ov::element::Type inputPrecision,
     const ov::PartialShape& inputShape,
     const ov::builder::subgraph::DequantizationOperations& dequantizationOnActivations,
-    std::shared_ptr<ov::opset1::Constant> weights,
+    std::shared_ptr<ov::op::v0::Constant> weights,
     const ov::builder::subgraph::FakeQuantizeOnWeights fqOnWeights,
     const ov::builder::subgraph::DequantizationOperations& dequantizationOnWeights,
     const bool transposeOnData,
@@ -36,7 +53,7 @@ std::shared_ptr<ov::Model> ConvolutionFunction::getOriginal(
     const bool transposeOnInputHigh,
     const bool transposeOnOutputLow,
     const bool transposeOnOutputHigh) {
-    const auto input = std::make_shared<ov::opset1::Parameter>(inputPrecision, inputShape);
+    const auto input = std::make_shared<ov::op::v0::Parameter>(inputPrecision, inputShape);
     auto dequantizationStructure = dequantizationOnActivations;
     dequantizationStructure.multiply.outPrecision = netPrecision;
     const auto dequantization = makeDequantization(input, dequantizationStructure);
@@ -52,13 +69,13 @@ std::shared_ptr<ov::Model> ConvolutionFunction::getOriginal(
 
     if (weights->cast_vector<float>().size() == 1ul) {
         auto targetShape = ov::Shape{ outputChannelsCount, inputChannelsCount, 1, 1 };
-        weights = ov::as_type_ptr<ov::opset1::Constant>(fold<ov::opset1::Broadcast>(
-            weights, ov::opset1::Constant::create(ov::element::i64, Shape{ targetShape.size() }, targetShape)));
+        weights = ov::as_type_ptr<ov::op::v0::Constant>(fold<ov::op::v1::Broadcast>(
+            weights, ov::op::v0::Constant::create(ov::element::i64, Shape{ targetShape.size() }, targetShape)));
     }
 
     std::shared_ptr<Node> convertedWeights;
     if (dequantizationOnWeights.empty()) {
-        const auto convertOnWeights = std::make_shared<ov::opset1::Convert>(weights, netPrecision);
+        const auto convertOnWeights = std::make_shared<ov::op::v0::Convert>(weights, netPrecision);
         OutputVector convertedOutput(1);
         convertOnWeights->constant_fold(convertedOutput, convertOnWeights->input_values());
         convertedWeights = convertedOutput[0].get_node_shared_ptr();
@@ -66,36 +83,36 @@ std::shared_ptr<ov::Model> ConvolutionFunction::getOriginal(
         convertedWeights = weights;
     }
 
-    const std::shared_ptr<ov::Node> constant = ov::opset1::Constant::create(ov::element::u64, ov::Shape{4}, {0, 1, 2, 3});
+    const std::shared_ptr<ov::Node> constant = ov::op::v0::Constant::create(ov::element::u64, ov::Shape{4}, {0, 1, 2, 3});
     std::shared_ptr<Node> onWeights;
     if (fqOnWeights.empty()) {
         onWeights = dequantizationOnWeights.empty() ? convertedWeights : makeDequantization(convertedWeights, dequantizationOnWeights);
     } else {
-        onWeights = std::make_shared<ov::opset1::FakeQuantize>(
-            transposeOnData ? std::make_shared<ov::opset1::Transpose>(convertedWeights, constant) : convertedWeights,
+        onWeights = std::make_shared<ov::op::v0::FakeQuantize>(
+            transposeOnData ? std::make_shared<ov::op::v1::Transpose>(convertedWeights, constant) : convertedWeights,
             transposeOnInputLow ?
-                std::make_shared<ov::opset1::Transpose>(
+                std::make_shared<ov::op::v1::Transpose>(
                     ov::test::utils::make_constant(
                         netPrecision, fqOnWeights.constantShape, fqOnWeights.inputLowValues),
                     constant->clone_with_new_inputs({})) :
                 ov::test::utils::make_constant(
                     netPrecision, fqOnWeights.constantShape, fqOnWeights.inputLowValues),
             transposeOnInputHigh ?
-                std::make_shared<ov::opset1::Transpose>(
+                std::make_shared<ov::op::v1::Transpose>(
                     ov::test::utils::make_constant(
                         netPrecision, fqOnWeights.constantShape, fqOnWeights.inputHighValues),
                     constant->clone_with_new_inputs({})) :
                 ov::test::utils::make_constant(
                     netPrecision, fqOnWeights.constantShape, fqOnWeights.inputHighValues),
             transposeOnOutputLow ?
-                std::make_shared<ov::opset1::Transpose>(
+                std::make_shared<ov::op::v1::Transpose>(
                     ov::test::utils::make_constant(
                         netPrecision, fqOnWeights.constantShape, fqOnWeights.outputLowValues),
                     constant->clone_with_new_inputs({})) :
                 ov::test::utils::make_constant(
                     netPrecision, fqOnWeights.constantShape, fqOnWeights.outputLowValues),
             transposeOnOutputHigh ?
-                std::make_shared<ov::opset1::Transpose>(
+                std::make_shared<ov::op::v1::Transpose>(
                     ov::test::utils::make_constant(
                         netPrecision, fqOnWeights.constantShape, fqOnWeights.outputHighValues),
                     constant->clone_with_new_inputs({})) :
@@ -104,15 +121,15 @@ std::shared_ptr<ov::Model> ConvolutionFunction::getOriginal(
             fqOnWeights.quantizationLevel);
     }
 
-    auto convolutionOriginal = ov::opset1::Convolution(
+    auto convolutionOriginal = ov::op::v1::Convolution(
         ov::op::TemporaryReplaceOutputType(dequantization, netPrecision).get(),
         ov::op::TemporaryReplaceOutputType(onWeights, netPrecision).get(),
         ov::Strides{ 1, 1 },
         ov::CoordinateDiff{ 0, 0 },
         ov::CoordinateDiff{ 0, 0 },
         ov::Strides{ 1, 1 });
-    std::shared_ptr<ov::opset1::Convolution> convolution =
-        std::make_shared<ov::op::TypeRelaxed<ov::opset1::Convolution>>(
+    std::shared_ptr<ov::op::v1::Convolution> convolution =
+        std::make_shared<ov::op::TypeRelaxed<ov::op::v1::Convolution>>(
             convolutionOriginal,
             std::vector<ov::element::Type>{netPrecision, netPrecision},
             std::vector<ov::element::Type>{netPrecision});
@@ -120,7 +137,7 @@ std::shared_ptr<ov::Model> ConvolutionFunction::getOriginal(
     auto& rtInfo = convolution->get_rt_info();
     rtInfo["Variant::std::string"] = "convolution";
 
-    ov::ResultVector results{ std::make_shared<ov::opset1::Result>(convolution) };
+    ov::ResultVector results{ std::make_shared<ov::op::v0::Result>(convolution) };
     return std::make_shared<ov::Model>(results, ov::ParameterVector{ input }, "ConvolutionTransformation");
 }
 
@@ -130,12 +147,12 @@ std::shared_ptr<ov::Model> ConvolutionFunction::getOriginalWithIncorrectWeights(
     ov::builder::subgraph::FakeQuantizeOnWeights fakeQuantizeOnWeights,
     ov::builder::subgraph::DequantizationOperations dequantization,
     bool isCorrect) {
-    const auto input = std::make_shared<ov::opset1::Parameter>(precision, ov::Shape(inputShape));
+    const auto input = std::make_shared<ov::op::v0::Parameter>(precision, ov::Shape(inputShape));
     const auto deq = makeDequantization(input, dequantization);
 
     const size_t inputChannelsCount = inputShape[1];
     const size_t outputChannelsCount = 2 * inputShape[1];
-    const auto weights = ov::opset1::Constant::create(
+    const auto weights = ov::op::v0::Constant::create(
         ov::element::f32,
         ov::Shape{ outputChannelsCount, inputChannelsCount, 1, 1 },
         std::vector<float>(outputChannelsCount * inputChannelsCount, 1));
@@ -147,10 +164,10 @@ std::shared_ptr<ov::Model> ConvolutionFunction::getOriginalWithIncorrectWeights(
             fakeQuantizeOnWeights.inputLowValues, fakeQuantizeOnWeights.inputHighValues,
             fakeQuantizeOnWeights.outputLowValues, fakeQuantizeOnWeights.outputHighValues);
 
-    const auto subtract = isCorrect ? nullptr : std::make_shared<ov::opset1::Subtract>(fqOnWeights,
-        std::make_shared<ov::opset1::Constant>(ov::element::f32, Shape{1, 1, 1, 1}, 3.0f));
+    const auto subtract = isCorrect ? nullptr : std::make_shared<ov::op::v1::Subtract>(fqOnWeights,
+        std::make_shared<ov::op::v0::Constant>(ov::element::f32, Shape{1, 1, 1, 1}, 3.0f));
 
-    const auto convolution = std::make_shared<ov::opset1::Convolution>(
+    const auto convolution = std::make_shared<ov::op::v1::Convolution>(
         deq,
         isCorrect ? fqOnWeights : subtract,
         ov::Strides{ 1, 1 },
@@ -158,7 +175,7 @@ std::shared_ptr<ov::Model> ConvolutionFunction::getOriginalWithIncorrectWeights(
         ov::CoordinateDiff{ 0, 0 },
         ov::Strides{ 1, 1 });
 
-    ov::ResultVector results{ std::make_shared<ov::opset1::Result>(convolution) };
+    ov::ResultVector results{ std::make_shared<ov::op::v0::Result>(convolution) };
     return std::make_shared<ov::Model>(results, ov::ParameterVector{ input }, "IncorrectWeightsAndConvolutionFunction");
 }
 
@@ -168,7 +185,7 @@ std::shared_ptr<ov::Model> ConvolutionFunction::getOriginalWithIncorrectWeights(
     ov::builder::subgraph::FakeQuantizeOnWeights fakeQuantizeOnWeights,
     ov::builder::subgraph::FakeQuantizeOnData fakeQuantizeOnData,
     bool isCorrect) {
-    const auto input = std::make_shared<ov::opset1::Parameter>(precision, inputShape);
+    const auto input = std::make_shared<ov::op::v0::Parameter>(precision, inputShape);
     const auto fqOnData = fakeQuantizeOnData.empty() ?
         nullptr :
         ov::test::utils::make_fake_quantize(
@@ -177,7 +194,7 @@ std::shared_ptr<ov::Model> ConvolutionFunction::getOriginalWithIncorrectWeights(
 
     const size_t inputChannelsCount = inputShape[1].get_length();
     const size_t outputChannelsCount = 2 * inputShape[1].get_length();
-    const auto weights = ov::opset1::Constant::create(
+    const auto weights = ov::op::v0::Constant::create(
         precision,
         ov::Shape{ outputChannelsCount, inputChannelsCount, 1, 1 },
         std::vector<float>(outputChannelsCount * inputChannelsCount, 1));
@@ -189,10 +206,10 @@ std::shared_ptr<ov::Model> ConvolutionFunction::getOriginalWithIncorrectWeights(
             fakeQuantizeOnWeights.inputLowValues, fakeQuantizeOnWeights.inputHighValues,
             fakeQuantizeOnWeights.outputLowValues, fakeQuantizeOnWeights.outputHighValues);
 
-    const auto subtract = isCorrect ? nullptr : std::make_shared<ov::opset1::Subtract>(fqOnWeights,
-        std::make_shared<ov::opset1::Constant>(precision, Shape{ 1, 1, 1, 1 }, 3.0f));
+    const auto subtract = isCorrect ? nullptr : std::make_shared<ov::op::v1::Subtract>(fqOnWeights,
+        std::make_shared<ov::op::v0::Constant>(precision, Shape{ 1, 1, 1, 1 }, 3.0f));
 
-    const auto convolution = std::make_shared<ov::opset1::Convolution>(
+    const auto convolution = std::make_shared<ov::op::v1::Convolution>(
         fakeQuantizeOnData.empty() ? input : fqOnData,
         isCorrect ? fqOnWeights : subtract,
         ov::Strides{ 1, 1 },
@@ -200,7 +217,7 @@ std::shared_ptr<ov::Model> ConvolutionFunction::getOriginalWithIncorrectWeights(
         ov::CoordinateDiff{ 0, 0 },
         ov::Strides{ 1, 1 });
 
-    ov::ResultVector results{ std::make_shared<ov::opset1::Result>(convolution) };
+    ov::ResultVector results{ std::make_shared<ov::op::v0::Result>(convolution) };
     return std::make_shared<ov::Model>(results, ov::ParameterVector{ input }, "IncorrectWeightsAndConvolutionFunction");
 }
 
@@ -211,7 +228,7 @@ std::shared_ptr<ov::Model> ConvolutionFunction::getReferenceWithIncorrectWeights
     ov::element::Type weightsPrecision,
     std::vector<float> weightsValues,
     ov::builder::subgraph::DequantizationOperations dequantizationAfter) {
-    const auto input = std::make_shared<ov::opset1::Parameter>(inputPrecision, ov::Shape(inputShape));
+    const auto input = std::make_shared<ov::op::v0::Parameter>(inputPrecision, ov::Shape(inputShape));
     input->set_friendly_name("input");
 
     const auto deqBefore = makeDequantization(input, dequantizationBefore);
@@ -223,7 +240,7 @@ std::shared_ptr<ov::Model> ConvolutionFunction::getReferenceWithIncorrectWeights
         throw std::runtime_error("unexpected actual weights values size");
     }
 
-    const std::shared_ptr<ov::Node> weights = ov::opset1::Constant::create(
+    const std::shared_ptr<ov::Node> weights = ov::op::v0::Constant::create(
         weightsPrecision,
         ov::Shape{ outputChannelsCount, inputChannelsCount, 1, 1 },
         weightsValues.size() == 1ul ?
@@ -231,22 +248,22 @@ std::shared_ptr<ov::Model> ConvolutionFunction::getReferenceWithIncorrectWeights
         weightsValues);
 
     auto convolutionOriginal =
-        ov::opset1::Convolution(ov::op::TemporaryReplaceOutputType(deqBefore, ov::element::f32).get(),
+        ov::op::v1::Convolution(ov::op::TemporaryReplaceOutputType(deqBefore, ov::element::f32).get(),
                                 ov::op::TemporaryReplaceOutputType(weights, ov::element::f32).get(),
                                 ov::Strides{1, 1},
                                 ov::CoordinateDiff{0, 0},
                                 ov::CoordinateDiff{0, 0},
                                 ov::Strides{1, 1});
 
-    std::shared_ptr<ov::opset1::Convolution> convolution =
-        std::make_shared<ov::op::TypeRelaxed<ov::opset1::Convolution>>(
+    std::shared_ptr<ov::op::v1::Convolution> convolution =
+        std::make_shared<ov::op::TypeRelaxed<ov::op::v1::Convolution>>(
             convolutionOriginal,
             std::vector<ov::element::Type>{ov::element::f32, ov::element::f32},
             std::vector<ov::element::Type>{});
 
     const auto deqAfter = makeDequantization(convolution, dequantizationAfter);
 
-    ov::ResultVector results{ std::make_shared<ov::opset1::Result>(deqAfter) };
+    ov::ResultVector results{ std::make_shared<ov::op::v0::Result>(deqAfter) };
     return std::make_shared<ov::Model>(results, ov::ParameterVector{ input }, "IncorrectWeightsAndConvolutionFunction");
 }
 
@@ -255,12 +272,12 @@ std::shared_ptr<ov::Model> ConvolutionFunction::getReference(
     const ov::element::Type inputPrecision,
     const ov::PartialShape& inputShape,
     const ov::builder::subgraph::DequantizationOperations& dequantizationBefore,
-    std::shared_ptr<ov::opset1::Constant> weights,
+    std::shared_ptr<ov::op::v0::Constant> weights,
     const ov::builder::subgraph::FakeQuantizeOnWeights fakeQuantizeOnWeights,
     const ov::element::Type precisionAfterOperation,
     const ov::builder::subgraph::DequantizationOperations& dequantizationAfter,
     const ov::element::Type precisionAfterDequantization) {
-    auto input = std::make_shared<ov::opset1::Parameter>(inputPrecision, inputShape);
+    auto input = std::make_shared<ov::op::v0::Parameter>(inputPrecision, inputShape);
     auto dequantizationBeforeStructure = dequantizationBefore;
     dequantizationBeforeStructure.multiply.outPrecision = netPrecision;
     const auto deqBefore = makeDequantization(input, dequantizationBeforeStructure);
@@ -276,11 +293,11 @@ std::shared_ptr<ov::Model> ConvolutionFunction::getReference(
 
     if (weights->cast_vector<float>().size() == 1ul) {
         auto targetShape = ov::Shape{ outputChannelsCount, inputChannelsCount, 1, 1 };
-        weights = ov::as_type_ptr<ov::opset1::Constant>(fold<ov::opset1::Broadcast>(
-            weights, ov::opset1::Constant::create(ov::element::i64, Shape{ targetShape.size() }, targetShape)));
+        weights = ov::as_type_ptr<ov::op::v0::Constant>(fold<ov::op::v1::Broadcast>(
+            weights, ov::op::v0::Constant::create(ov::element::i64, Shape{ targetShape.size() }, targetShape)));
     }
 
-    const auto convertOnWeights = std::make_shared<ov::opset1::Convert>(weights, netPrecision);
+    const auto convertOnWeights = std::make_shared<ov::op::v0::Convert>(weights, netPrecision);
     OutputVector convertedOutput(1);
     convertOnWeights->constant_fold(convertedOutput, convertOnWeights->input_values());
     const auto convertedWeights = convertedOutput[0].get_node_shared_ptr();
@@ -299,7 +316,7 @@ std::shared_ptr<ov::Model> ConvolutionFunction::getReference(
             fakeQuantizeOnWeights.outputLowValues,
             fakeQuantizeOnWeights.outputHighValues);
 
-    auto convolutionOriginal = ov::opset1::Convolution(
+    auto convolutionOriginal = ov::op::v1::Convolution(
         ov::op::TemporaryReplaceOutputType(deqBefore, netPrecision).get(),
         ov::op::TemporaryReplaceOutputType(onWeights, netPrecision).get(),
         ov::Strides{ 1, 1 },
@@ -307,8 +324,8 @@ std::shared_ptr<ov::Model> ConvolutionFunction::getReference(
         ov::CoordinateDiff{ 0, 0 },
         ov::Strides{ 1, 1 });
 
-    std::shared_ptr<ov::opset1::Convolution> convolution =
-        std::make_shared<ov::op::TypeRelaxed<ov::opset1::Convolution>>(
+    std::shared_ptr<ov::op::v1::Convolution> convolution =
+        std::make_shared<ov::op::TypeRelaxed<ov::op::v1::Convolution>>(
             convolutionOriginal,
             std::vector<ov::element::Type>{netPrecision, netPrecision},
             std::vector<ov::element::Type>{netPrecision});
@@ -325,7 +342,7 @@ std::shared_ptr<ov::Model> ConvolutionFunction::getReference(
     const auto deqAfter = makeDequantization(convolution, dequantizationStructure);
     deqAfter->set_friendly_name("output");
 
-    ov::ResultVector results{ std::make_shared<ov::opset1::Result>(deqAfter) };
+    ov::ResultVector results{ std::make_shared<ov::op::v0::Result>(deqAfter) };
     return std::make_shared<ov::Model>(results, ov::ParameterVector{ input }, "ConvolutionTransformation");
 }
 
@@ -336,10 +353,10 @@ std::shared_ptr<ov::Model> ConvolutionFunction::get(
     const std::vector<float>& weightsValues,
     const ov::builder::subgraph::FakeQuantizeOnWeights& fakeQuantizeOnWeights,
     const std::vector<ov::pass::low_precision::QuantizationGranularityRestriction>& restrictions) {
-    const auto input = std::make_shared<ov::opset1::Parameter>(precision, ov::Shape(inputShape));
+    const auto input = std::make_shared<ov::op::v0::Parameter>(precision, ov::Shape(inputShape));
     input->set_friendly_name("input");
 
-    const std::shared_ptr<ov::opset1::FakeQuantize> fqOnData = ov::as_type_ptr<ov::opset1::FakeQuantize>(ov::test::utils::make_fake_quantize(
+    const std::shared_ptr<ov::op::v0::FakeQuantize> fqOnData = ov::as_type_ptr<ov::op::v0::FakeQuantize>(ov::test::utils::make_fake_quantize(
         input,
         precision,
         fakeQuantizeOnData.quantizationLevel,
@@ -357,7 +374,7 @@ std::shared_ptr<ov::Model> ConvolutionFunction::get(
 
     const std::shared_ptr<ov::Node> parentOnData = fakeQuantizeOnData.empty() ? std::dynamic_pointer_cast<ov::Node>(input) : fqOnData;
 
-    const std::shared_ptr<ov::Node> weights = ov::opset1::Constant::create(
+    const std::shared_ptr<ov::Node> weights = ov::op::v0::Constant::create(
         precision,
         ov::Shape{ outputChannelsCount, inputChannelsCount, 1, 1 },
         weightsValues.size() == 1ul ?
@@ -372,15 +389,15 @@ std::shared_ptr<ov::Model> ConvolutionFunction::get(
             fakeQuantizeOnWeights.outputLowValues, fakeQuantizeOnWeights.outputHighValues);
 
     auto convolutionOriginal =
-        ov::opset1::Convolution(ov::op::TemporaryReplaceOutputType(parentOnData, ov::element::f32).get(),
+        ov::op::v1::Convolution(ov::op::TemporaryReplaceOutputType(parentOnData, ov::element::f32).get(),
                                 ov::op::TemporaryReplaceOutputType(parentOnWeights, ov::element::f32).get(),
                                 ov::Strides{1, 1},
                                 ov::CoordinateDiff{0, 0},
                                 ov::CoordinateDiff{0, 0},
                                 ov::Strides{1, 1});
 
-    const std::shared_ptr<ov::opset1::Convolution> convolution =
-        std::make_shared<ov::op::TypeRelaxed<ov::opset1::Convolution>>(
+    const std::shared_ptr<ov::op::v1::Convolution> convolution =
+        std::make_shared<ov::op::TypeRelaxed<ov::op::v1::Convolution>>(
             convolutionOriginal,
             std::vector<ov::element::Type>{ov::element::f32, ov::element::f32},
             std::vector<ov::element::Type>{});
@@ -393,10 +410,12 @@ std::shared_ptr<ov::Model> ConvolutionFunction::get(
         }
     }
 
-    ov::ResultVector results{ std::make_shared<ov::opset1::Result>(convolution) };
+    ov::ResultVector results{ std::make_shared<ov::op::v0::Result>(convolution) };
     return std::make_shared<ov::Model>(results, ov::ParameterVector{ input }, "ConvolutionFunction");
 }
 
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

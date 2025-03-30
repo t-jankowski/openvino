@@ -4,6 +4,10 @@
 
 #include "shared_test_classes/single_op/embedding_segments_sum.hpp"
 #include "common_test_utils/node_builders/embedding_segments_sum.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 
 namespace ov {
@@ -74,3 +78,5 @@ void EmbeddingSegmentsSumLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

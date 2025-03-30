@@ -16,6 +16,10 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/multiply.hpp"
 #include "openvino/op/pad.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/pad.hpp"
 
 namespace ov {
 namespace pass {
@@ -310,3 +314,4 @@ bool PadTransformation::isPrecisionPreserved(std::shared_ptr<Node> layer) const 
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

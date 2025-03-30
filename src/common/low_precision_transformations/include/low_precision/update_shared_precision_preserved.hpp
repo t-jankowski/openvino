@@ -15,6 +15,9 @@
 #include "openvino/op/convert.hpp"
 #include "openvino/op/fake_quantize.hpp"
 #include "openvino/op/result.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace pass {
@@ -121,3 +124,4 @@ private:
         return attribute;
     }
 };
+

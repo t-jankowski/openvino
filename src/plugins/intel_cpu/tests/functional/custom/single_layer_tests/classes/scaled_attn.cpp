@@ -5,10 +5,13 @@
 #include "scaled_attn.hpp"
 
 #include "gtest/gtest.h"
-#include "openvino/opsets/opset13.hpp"
 #include "utils/cpu_test_utils.hpp"
 #include "transformations/op_conversions/scaled_dot_product_attention_decomposition.hpp"
 #include "openvino/pass/manager.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/scaled_dot_product_attention.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/scaled_dot_product_attention.hpp"
 
 using namespace CPUTestUtils;
 
@@ -99,7 +102,7 @@ void ScaledAttnLayerCPUTest::SetUp() {
     for (auto& input : inputParams) {
         inputs.push_back(input);
     }
-    auto sdp = std::make_shared<ov::opset13::ScaledDotProductAttention>(inputs, is_causal);
+    auto sdp = std::make_shared<ov::op::v13::ScaledDotProductAttention>(inputs, is_causal);
     sdp->set_friendly_name("mha");
     function = makeNgraphFunction(inType, inputParams, sdp, "SDP");
 
@@ -149,3 +152,4 @@ namespace ScaledAttn {
 }  // namespace ScaledAttn
 }  // namespace test
 }  // namespace ov
+

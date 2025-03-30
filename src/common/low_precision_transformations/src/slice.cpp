@@ -12,6 +12,7 @@
 
 #include "low_precision/network_helper.hpp"
 #include "openvino/op/slice.hpp"
+#include "openvino/op/slice.hpp"
 
 namespace ov {
 namespace pass {
@@ -68,3 +69,4 @@ bool SliceTransformation::isPrecisionPreserved(std::shared_ptr<Node> layer) cons
 } // namespace low_precision
 } // namespace pass
 } // namespace ov
+

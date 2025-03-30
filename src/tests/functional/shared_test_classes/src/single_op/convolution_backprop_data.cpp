@@ -11,6 +11,12 @@
 #include "openvino/op/result.hpp"
 #include "openvino/op/convolution.hpp"
 #include "common_test_utils/node_builders/convolution_backprop_data.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -83,3 +89,5 @@ void ConvolutionBackpropDataLayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+
+

@@ -8,6 +8,8 @@
 #include <vector>
 
 #include "ov_lpt_models/reduce.hpp"
+#include "openvino/op/reduce_sum.hpp"
+#include "openvino/op/reduce_sum.hpp"
 
 namespace LayerTestsDefinitions {
 
@@ -67,3 +69,5 @@ TEST_P(ReduceSumTransformation, CompareWithRefImpl) {
 };
 
 } // namespace LayerTestsDefinitions
+
+

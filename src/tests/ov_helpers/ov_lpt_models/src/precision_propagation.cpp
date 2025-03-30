@@ -4,7 +4,6 @@
 
 #include "ov_lpt_models/precision_propagation.hpp"
 
-#include "openvino/opsets/opset1.hpp"
 #include "ov_ops/type_relaxed.hpp"
 #include "low_precision/network_helper.hpp"
 #include "low_precision/rt_info/precision_preserved_attribute.hpp"
@@ -16,6 +15,22 @@
 #include "ov_lpt_models/common/dequantization_operations.hpp"
 #include "ov_lpt_models/common/builders.hpp"
 #include "common_test_utils/node_builders/fake_quantize.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/max_pool.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/subtract.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/max_pool.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/subtract.hpp"
 
 namespace ov {
 namespace builder {
@@ -35,7 +50,7 @@ std::shared_ptr<ov::Model> PrecisionPropagationFunction::getOriginalWithNeighbor
     const FakeQuantizeOnData& fqOnData3,
     const DequantizationOperations::Convert& convert3,
     const DequantizationOperations& dequantization3) {
-    const auto input1 = std::make_shared<ov::opset1::Parameter>(precision, ov::Shape(inputShape));
+    const auto input1 = std::make_shared<ov::op::v0::Parameter>(precision, ov::Shape(inputShape));
     std::shared_ptr<Node> parent1;
     {
         input1->set_friendly_name("input1");
@@ -44,14 +59,14 @@ std::shared_ptr<ov::Model> PrecisionPropagationFunction::getOriginalWithNeighbor
         parent1 = fakeQuantize1;
 
         if (!convert1.empty()) {
-            parent1 = std::make_shared<ov::opset1::Convert>(parent1, convert1.outPrecision);
+            parent1 = std::make_shared<ov::op::v0::Convert>(parent1, convert1.outPrecision);
         }
         if (!dequantization1.empty()) {
             parent1 = makeDequantization(parent1, dequantization1);
         }
     }
 
-    const auto input2 = std::make_shared<ov::opset1::Parameter>(precision, ov::Shape(inputShape));
+    const auto input2 = std::make_shared<ov::op::v0::Parameter>(precision, ov::Shape(inputShape));
     std::shared_ptr<Node> parent2;
     {
         input2->set_friendly_name("input2");
@@ -60,14 +75,14 @@ std::shared_ptr<ov::Model> PrecisionPropagationFunction::getOriginalWithNeighbor
         parent2 = fakeQuantize2;
 
         if (!convert2.empty()) {
-            parent2 = std::make_shared<ov::opset1::Convert>(parent2, convert2.outPrecision);
+            parent2 = std::make_shared<ov::op::v0::Convert>(parent2, convert2.outPrecision);
         }
         if (!dequantization2.empty()) {
             parent2 = makeDequantization(parent2, dequantization2);
         }
     }
 
-    const auto input3 = std::make_shared<ov::opset1::Parameter>(precision, ov::Shape(inputShape));
+    const auto input3 = std::make_shared<ov::op::v0::Parameter>(precision, ov::Shape(inputShape));
     std::shared_ptr<Node> parent3;
     {
         input3->set_friendly_name("input3");
@@ -76,14 +91,14 @@ std::shared_ptr<ov::Model> PrecisionPropagationFunction::getOriginalWithNeighbor
         parent3 = fakeQuantize3;
 
         if (!convert3.empty()) {
-            parent3 = std::make_shared<ov::opset1::Convert>(parent3, convert3.outPrecision);
+            parent3 = std::make_shared<ov::op::v0::Convert>(parent3, convert3.outPrecision);
         }
         if (!dequantization3.empty()) {
             parent3 = makeDequantization(parent3, dequantization3);
         }
     }
 
-    const auto concat1 = std::make_shared<ov::opset1::Concat>(
+    const auto concat1 = std::make_shared<ov::op::v0::Concat>(
         ov::OutputVector { parent1->output(0), parent2->output(0) },
         1ull);
     concat1->set_friendly_name("concat1");
@@ -91,7 +106,7 @@ std::shared_ptr<ov::Model> PrecisionPropagationFunction::getOriginalWithNeighbor
     auto& rtInfo1 = concat1->get_rt_info();
     rtInfo1["Variant::std::string"] = "concat1";
 
-    const auto concat2 = std::make_shared<ov::opset1::Concat>(
+    const auto concat2 = std::make_shared<ov::op::v0::Concat>(
         ov::OutputVector { parent2->output(0), parent3->output(0) },
         1ull);
     concat2->set_friendly_name("concat2");
@@ -109,7 +124,7 @@ std::shared_ptr<ov::Model> PrecisionPropagationFunction::getOriginalWithNeighbor
         const ov::op::PadType padType = ov::op::PadType::NOTSET;
         const ov::op::RoundingType roundingType = ov::op::RoundingType::FLOOR;
 
-        result2 = std::make_shared<ov::opset1::MaxPool>(
+        result2 = std::make_shared<ov::op::v1::MaxPool>(
             result2,
             stride,
             padBegin,
@@ -123,7 +138,7 @@ std::shared_ptr<ov::Model> PrecisionPropagationFunction::getOriginalWithNeighbor
         const size_t inputChannels = 6ul;
         const auto shape = Shape{ outputChannels, inputChannels, 1, 1 };
         const auto fakeQuantizeOnWeights = ov::test::utils::make_fake_quantize(
-            std::make_shared<ov::opset1::Constant>(ov::element::f32,
+            std::make_shared<ov::op::v0::Constant>(ov::element::f32,
                                                    shape,
                                                    std::vector<float>(ov::shape_size(shape), 1.f)),
             precision,
@@ -135,7 +150,7 @@ std::shared_ptr<ov::Model> PrecisionPropagationFunction::getOriginalWithNeighbor
             std::vector<float>(outputChannels, 1.27f));
         fakeQuantizeOnWeights->set_friendly_name("fakeQuantizeOnWeights");
 
-        result2 = std::make_shared<ov::opset1::Convolution>(
+        result2 = std::make_shared<ov::op::v1::Convolution>(
             ov::op::TemporaryReplaceOutputType(result2, precision).get(),
             ov::op::TemporaryReplaceOutputType(fakeQuantizeOnWeights, precision).get(),
             ov::Strides{ 1, 1 },
@@ -147,8 +162,8 @@ std::shared_ptr<ov::Model> PrecisionPropagationFunction::getOriginalWithNeighbor
     }
 
     const ov::ResultVector results {
-        std::make_shared<ov::opset1::Result>(result1),
-        std::make_shared<ov::opset1::Result>(result2)
+        std::make_shared<ov::op::v0::Result>(result1),
+        std::make_shared<ov::op::v0::Result>(result2)
     };
 
     std::shared_ptr<ov::Model> function = std::make_shared<ov::Model>(
@@ -170,7 +185,7 @@ std::shared_ptr<ov::Model> PrecisionPropagationFunction::getReferenceWithNeighbo
     const ov::element::Type precisionAfterOperation,
     const DequantizationOperations& dequantizationOperations1,
     const DequantizationOperations& dequantizationOperations2) {
-    const auto input1 = std::make_shared<ov::opset1::Parameter>(precision, inputShape);
+    const auto input1 = std::make_shared<ov::op::v0::Parameter>(precision, inputShape);
     input1->set_friendly_name("input1");
 
     const auto fakeQuantize1 = makeFakeQuantizeTypeRelaxed(input1, precision, fqOnData1);
@@ -178,7 +193,7 @@ std::shared_ptr<ov::Model> PrecisionPropagationFunction::getReferenceWithNeighbo
     fakeQuantize1->set_friendly_name("fakeQuantize1");
     const auto deqBefore1 = makeDequantization(fakeQuantize1, dequantizationBefore);
 
-    const auto input2 = std::make_shared<ov::opset1::Parameter>(precision, inputShape);
+    const auto input2 = std::make_shared<ov::op::v0::Parameter>(precision, inputShape);
     input2->set_friendly_name("input2");
 
     const auto fakeQuantize2 = makeFakeQuantizeTypeRelaxed(input2, precision, fqOnData2);
@@ -186,7 +201,7 @@ std::shared_ptr<ov::Model> PrecisionPropagationFunction::getReferenceWithNeighbo
     fakeQuantize2->set_friendly_name("fakeQuantize2");
     const auto deqBefore2 = makeDequantization(fakeQuantize2, dequantizationBefore);
 
-    const auto input3 = std::make_shared<ov::opset1::Parameter>(precision, inputShape);
+    const auto input3 = std::make_shared<ov::op::v0::Parameter>(precision, inputShape);
     input3->set_friendly_name("input3");
 
     const auto fakeQuantize3 = makeFakeQuantizeTypeRelaxed(input3, precision, fqOnData3);
@@ -194,7 +209,7 @@ std::shared_ptr<ov::Model> PrecisionPropagationFunction::getReferenceWithNeighbo
     fakeQuantize3->set_friendly_name("fakeQuantize3");
     const auto deqBefore3 = makeDequantization(fakeQuantize3, dequantizationBefore);
 
-    const auto concat1 = std::make_shared<ov::opset1::Concat>(
+    const auto concat1 = std::make_shared<ov::op::v0::Concat>(
         ov::OutputVector { deqBefore1, deqBefore2 },
         1ull);
     concat1->set_friendly_name("concat1");
@@ -202,7 +217,7 @@ std::shared_ptr<ov::Model> PrecisionPropagationFunction::getReferenceWithNeighbo
     auto& rtInfo1 = concat1->get_rt_info();
     rtInfo1["Variant::std::string"] = "concat1";
 
-    const auto concat2 = std::make_shared<ov::opset1::Concat>(
+    const auto concat2 = std::make_shared<ov::op::v0::Concat>(
         ov::OutputVector { deqBefore2, deqBefore3 },
         1ull);
     concat2->set_friendly_name("concat2");
@@ -220,7 +235,7 @@ std::shared_ptr<ov::Model> PrecisionPropagationFunction::getReferenceWithNeighbo
         const ov::op::PadType padType = ov::op::PadType::NOTSET;
         const ov::op::RoundingType roundingType = ov::op::RoundingType::FLOOR;
 
-        result2 = std::make_shared<ov::opset1::MaxPool>(
+        result2 = std::make_shared<ov::op::v1::MaxPool>(
             result2,
             stride,
             padBegin,
@@ -236,11 +251,11 @@ std::shared_ptr<ov::Model> PrecisionPropagationFunction::getReferenceWithNeighbo
         {
             const auto shape = Shape{ 1, inputChannels, 1, 1 };
             std::shared_ptr<Node> subtractConst =
-                std::make_shared<ov::opset1::Constant>(ov::element::u8,
+                std::make_shared<ov::op::v0::Constant>(ov::element::u8,
                                                        shape,
                                                        std::vector<float>(ov::shape_size(shape), 128.f));
 
-            auto subtract = std::make_shared<ov::op::TypeRelaxed<ov::opset1::Subtract>>(
+            auto subtract = std::make_shared<ov::op::TypeRelaxed<ov::op::v1::Subtract>>(
                 std::vector<ov::element::Type>{ov::element::f32, ov::element::f32},
                 std::vector<ov::element::Type>{ov::element::f32},
                 ov::op::TemporaryReplaceOutputType(result2, ov::element::f32).get(),
@@ -250,12 +265,12 @@ std::shared_ptr<ov::Model> PrecisionPropagationFunction::getReferenceWithNeighbo
 
         const auto shape = Shape{ outputChannels, inputChannels, 1, 1 };
         const auto fakeQuantizeOnWeights =
-            std::make_shared<ov::opset1::Constant>(ov::element::i8,
+            std::make_shared<ov::op::v0::Constant>(ov::element::i8,
                                                    shape,
                                                    std::vector<float>(ov::shape_size(shape), 100.f));
         fakeQuantizeOnWeights->set_friendly_name("fakeQuantizeOnWeights");
 
-        result2 = std::make_shared<ov::opset1::Convolution>(
+        result2 = std::make_shared<ov::op::v1::Convolution>(
             ov::op::TemporaryReplaceOutputType(result2, precision).get(),
             ov::op::TemporaryReplaceOutputType(fakeQuantizeOnWeights, precision).get(),
             ov::Strides{ 1, 1 },
@@ -273,8 +288,8 @@ std::shared_ptr<ov::Model> PrecisionPropagationFunction::getReferenceWithNeighbo
     lastDequantization2->set_friendly_name("convolution");
 
     const ov::ResultVector results {
-        std::make_shared<ov::opset1::Result>(lastDequantization1),
-        std::make_shared<ov::opset1::Result>(lastDequantization2)
+        std::make_shared<ov::op::v0::Result>(lastDequantization1),
+        std::make_shared<ov::op::v0::Result>(lastDequantization2)
     };
 
     std::shared_ptr<ov::Model> function = std::make_shared<ov::Model>(
@@ -291,7 +306,7 @@ std::shared_ptr<Node> PrecisionPropagationFunction::makeMaxPool(const ov::Output
     const std::vector<size_t> padEnd = { 0, 0 };
     const ov::op::PadType padType = ov::op::PadType::NOTSET;
     const ov::op::RoundingType roundingType = ov::op::RoundingType::FLOOR;
-    const auto pooling = std::make_shared<ov::opset1::MaxPool>(
+    const auto pooling = std::make_shared<ov::op::v1::MaxPool>(
         parent,
         stride,
         padBegin,
@@ -305,3 +320,5 @@ std::shared_ptr<Node> PrecisionPropagationFunction::makeMaxPool(const ov::Output
 }  // namespace subgraph
 }  // namespace builder
 }  // namespace ov
+
+

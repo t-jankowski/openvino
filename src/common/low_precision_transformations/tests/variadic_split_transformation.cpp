@@ -14,6 +14,7 @@
 #include "ov_lpt_models/variadic_split.hpp"
 #include "simple_low_precision_transformer.hpp"
 #include "transformations/init_node_info.hpp"
+#include "openvino/op/variadic_split.hpp"
 
 namespace {
 using namespace testing;
@@ -418,3 +419,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_LPT,
                          ::testing::ValuesIn(testValues),
                          VariadicSplitTransformation::getTestCaseName);
 }  // namespace
+

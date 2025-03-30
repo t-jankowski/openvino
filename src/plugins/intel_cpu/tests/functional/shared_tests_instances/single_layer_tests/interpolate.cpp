@@ -6,6 +6,7 @@
 
 #include "single_op_tests/interpolate.hpp"
 #include "common_test_utils/test_constants.hpp"
+#include "openvino/op/interpolate.hpp"
 
 namespace {
 using ov::test::InterpolateLayerTest;
@@ -176,3 +177,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_Interpolate_Nearest_Down_Sample_Tail, Interpolate
     InterpolateLayerTest::getTestCaseName);
 
 } // namespace
+

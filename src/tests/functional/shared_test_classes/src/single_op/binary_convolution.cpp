@@ -6,6 +6,10 @@
 
 #include "common_test_utils/ov_tensor_utils.hpp"
 #include "common_test_utils/node_builders/binary_convolution.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -77,3 +81,5 @@ void BinaryConvolutionLayerTest::SetUp() {
 
 } // namespace test
 } // namespace ov
+
+

@@ -18,6 +18,7 @@
 #include "common_test_utils/ov_test_utils.hpp"
 #include "simple_low_precision_transformer.hpp"
 #include "ov_lpt_models/multiply.hpp"
+#include "openvino/op/multiply.hpp"
 
 namespace {
 using namespace testing;
@@ -825,3 +826,4 @@ INSTANTIATE_TEST_SUITE_P(
 } // namespace broadcast_left
 
 } // namespace
+

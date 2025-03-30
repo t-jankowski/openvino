@@ -9,6 +9,10 @@
 #include "openvino/runtime/core.hpp"
 #include "openvino/op/constant.hpp"
 #include "openvino/op/add.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace test {
@@ -86,3 +90,4 @@ INSTANTIATE_TEST_SUITE_P(AnyLayoutOnInputsAndOutputs,
 
 }  // namespace test
 }  // namespace ov
+

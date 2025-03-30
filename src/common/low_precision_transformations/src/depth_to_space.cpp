@@ -10,6 +10,8 @@
 #include "itt.hpp"
 #include "openvino/op/depth_to_space.hpp"
 #include "openvino/op/multiply.hpp"
+#include "openvino/op/depth_to_space.hpp"
+#include "openvino/op/multiply.hpp"
 
 using namespace ov::pass::low_precision;
 
@@ -49,3 +51,4 @@ bool DepthToSpaceTransformation::canBeTransformed(const std::shared_ptr<ov::Node
 
     return true;
 }
+
