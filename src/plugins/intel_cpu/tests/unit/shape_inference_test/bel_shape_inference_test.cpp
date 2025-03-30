@@ -7,6 +7,10 @@
 #include "common_test_utils/test_assertions.hpp"
 #include "openvino/op/parameter.hpp"
 #include "utils.hpp"
+#include "openvino/op/logical_and.hpp"
+#include "openvino/op/logical_or.hpp"
+#include "openvino/op/logical_xor.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -103,3 +107,4 @@ REGISTER_TYPED_TEST_SUITE_P(BELStaticShapeInferenceTest,
 
 using BinaryLogicOpTypes = Types<op::v1::LogicalAnd, op::v1::LogicalOr, op::v1::LogicalXor>;
 INSTANTIATE_TYPED_TEST_SUITE_P(shape_inference, BELStaticShapeInferenceTest, BinaryLogicOpTypes);
+

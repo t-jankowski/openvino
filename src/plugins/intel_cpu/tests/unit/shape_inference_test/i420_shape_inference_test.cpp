@@ -8,6 +8,9 @@
 #include "openvino/op/i420_to_bgr.hpp"
 #include "openvino/op/i420_to_rgb.hpp"
 #include "utils.hpp"
+#include "openvino/op/i420_to_bgr.hpp"
+#include "openvino/op/i420_to_rgb.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -122,3 +125,4 @@ REGISTER_TYPED_TEST_SUITE_P(ConvertColorI420Test,
 
 using I420Types = testing::Types<op::v8::I420toRGB, op::v8::I420toBGR>;
 INSTANTIATE_TYPED_TEST_SUITE_P(StaticShapeInference, ConvertColorI420Test, I420Types);
+

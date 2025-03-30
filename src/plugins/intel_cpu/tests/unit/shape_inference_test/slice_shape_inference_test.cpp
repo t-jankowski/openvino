@@ -7,6 +7,9 @@
 #include "openvino/op/slice.hpp"
 #include "slice_shape_inference.hpp"
 #include "utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/slice.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -107,3 +110,4 @@ TEST_F(SliceStaticShapeInferenceTest, forward_step_all_data_in_const_map) {
     EXPECT_EQ(output_shapes.size(), num_of_outputs);
     EXPECT_EQ(output_shapes.front(), StaticShape({10, 3, 0, 4, max_d, max_d, 3}));
 }
+

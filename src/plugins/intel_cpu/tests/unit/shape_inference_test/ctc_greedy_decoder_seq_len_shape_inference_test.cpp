@@ -6,8 +6,11 @@
 #include <gtest/gtest.h>
 
 #include "common_test_utils/test_assertions.hpp"
-#include "openvino/op/ops.hpp"
 #include "utils.hpp"
+#include "openvino/op/ctc_greedy_decoder_seq_len.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/ctc_greedy_decoder_seq_len.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -70,3 +73,5 @@ TEST_F(CTCGreedyDecoderSeqLenV6StaticShapeInferenceTest, incompatible_seq_len_ra
                     NodeValidationFailure,
                     HasSubstr("The rank of sequence len tensor must be equal to 1"))
 }
+
+

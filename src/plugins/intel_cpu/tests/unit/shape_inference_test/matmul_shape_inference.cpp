@@ -4,6 +4,8 @@
 #include <gtest/gtest.h>
 
 #include "utils.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
 using namespace ov;
 using namespace ov::intel_cpu;
 using namespace testing;
@@ -116,3 +118,4 @@ TEST_P(MatMulTest, transpose_inputs_a_b) {
     static_output_shapes = shape_inference(matmul.get(), static_input_shapes);
     ASSERT_EQ(static_output_shapes.front(), exp_shape);
 }
+

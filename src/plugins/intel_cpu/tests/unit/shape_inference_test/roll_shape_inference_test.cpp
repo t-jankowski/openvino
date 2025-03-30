@@ -10,6 +10,9 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/parameter.hpp"
 #include "openvino/op/roll.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/roll.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -102,3 +105,4 @@ TEST_F(RollV7StaticShapeInferenceTest, default_ctor) {
     output_shapes = shape_inference(op.get(), input_shapes, constant_data);
     EXPECT_EQ(output_shapes[0], input_shapes[0]);
 }
+

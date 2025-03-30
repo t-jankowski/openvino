@@ -6,6 +6,8 @@
 
 #include "common_test_utils/test_assertions.hpp"
 #include "utils.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/roi_align.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -123,3 +125,4 @@ REGISTER_TYPED_TEST_SUITE_P(StaticShapeROIAlignTest,
 
 using ROIAlignTypes = Types<op::v3::ROIAlign, op::v9::ROIAlign>;
 INSTANTIATE_TYPED_TEST_SUITE_P(shape_infer, StaticShapeROIAlignTest, ROIAlignTypes);
+

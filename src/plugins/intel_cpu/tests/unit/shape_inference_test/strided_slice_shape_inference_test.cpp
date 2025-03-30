@@ -7,6 +7,9 @@
 #include "openvino/op/parameter.hpp"
 #include "strided_slice_shape_inference.hpp"
 #include "utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/strided_slice.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -182,3 +185,4 @@ TEST_F(StridedSliceStaticShapeInferenceTest, default_stride) {
 
     ASSERT_EQ(output_shapes.front(), StaticShape({1, 2, 2}));
 }
+

@@ -5,6 +5,8 @@
 
 #include "openvino/op/einsum.hpp"
 #include "utils.hpp"
+#include "openvino/op/einsum.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -51,3 +53,4 @@ TEST_F(EinsumStaticShapeInferenceTest, multi_matmul) {
     output_shapes = shape_inference(op.get(), StaticShapeVector{{2, 5}, {5, 3, 6}, {5, 3}});
     EXPECT_THAT(output_shapes, ElementsAre(StaticShape{3, 2}));
 }
+

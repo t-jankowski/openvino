@@ -7,6 +7,8 @@
 #include "utils.hpp"
 #include "openvino/op/parameter.hpp"
 #include "openvino/op/shuffle_channels.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/shuffle_channels.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -41,3 +43,4 @@ TEST_F(ShuffleChannelsV0StaticShapeInferenceTest, correct_shape_infer) {
 
     EXPECT_EQ(output_shapes[0], input_shapes[0]);
 }
+

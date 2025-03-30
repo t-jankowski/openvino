@@ -8,6 +8,8 @@
 #include "common_test_utils/test_assertions.hpp"
 #include "region_yolo_shape_inference.hpp"
 #include "utils.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/region_yolo.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -58,3 +60,4 @@ TEST_F(StaticShapeRegionYoloTest, data_shape_not_compatible_rank_4) {
                     NodeValidationFailure,
                     HasSubstr("Input must be a tensor of rank 4, but got"));
 }
+

@@ -7,6 +7,8 @@
 #include "utils.hpp"
 #include "openvino/op/parameter.hpp"
 #include "openvino/op/scatter_nd_update.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/scatter_nd_update.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -55,3 +57,4 @@ TEST_F(ScatterNDUpdateV3StaticShapeInferenceTest, params_are_dynamic_rank) {
     EXPECT_EQ(output_shapes.size(), 1);
     EXPECT_EQ(output_shapes[0], StaticShape({5000, 256, 10, 15}));
 }
+

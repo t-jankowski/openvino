@@ -4,6 +4,8 @@
 #include <gtest/gtest.h>
 
 #include "utils.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/read_value.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -41,3 +43,4 @@ TEST(StaticShapeInferenceTest, ReadValueTest) {
     // Test v6 ReadValue
     readValueTest<op::v6::ReadValue>();
 }
+

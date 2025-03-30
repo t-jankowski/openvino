@@ -8,6 +8,8 @@
 #include "utils.hpp"
 #include "openvino/op/ctc_loss.hpp"
 #include "openvino/op/parameter.hpp"
+#include "openvino/op/ctc_loss.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using ov::op::v0::Parameter;
@@ -45,3 +47,4 @@ TEST_F(CTCLossV4StaticShapeInferenceTest, default_ctor) {
     EXPECT_EQ(output_shapes.size(), 1);
     EXPECT_EQ(output_shapes.front(), StaticShape({12}));
 }
+

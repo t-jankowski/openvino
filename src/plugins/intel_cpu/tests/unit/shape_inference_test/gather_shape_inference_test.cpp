@@ -10,6 +10,9 @@
 #include "openvino/util/common_util.hpp"
 #include "shape_inference/shape_inference.hpp"
 #include "utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/gather.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -86,3 +89,4 @@ TYPED_TEST_P(StaticShapeInferenceGatherTest, axis_in_const_map) {
 REGISTER_TYPED_TEST_SUITE_P(StaticShapeInferenceGatherTest, axis_const, axis_in_const_map);
 using GatherTypes = Types<op::v1::Gather, op::v7::Gather, op::v8::Gather>;
 INSTANTIATE_TYPED_TEST_SUITE_P(shape_infer, StaticShapeInferenceGatherTest, GatherTypes);
+

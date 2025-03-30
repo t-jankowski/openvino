@@ -6,6 +6,7 @@
 
 #include "ov_ops/augru_cell.hpp"
 #include "utils.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -65,3 +66,4 @@ TEST(StaticShapeInferenceTest, AUGRUCellTest_all_inputs_dynamic_rank) {
     static_output_shapes = shape_inference(augru.get(), static_input_shapes);
     EXPECT_EQ(static_output_shapes[0], StaticShape({batch_size, hidden_size}));
 }
+

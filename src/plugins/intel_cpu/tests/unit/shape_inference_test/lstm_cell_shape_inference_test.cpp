@@ -5,6 +5,9 @@
 #include <gtest/gtest.h>
 
 #include "utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/lstm_cell.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -81,3 +84,4 @@ TEST(StaticShapeInferenceTest, LSTMCellV0Test) {
     ASSERT_EQ(static_output_shapes[0], StaticShape({batch_size, hidden_size}));
     ASSERT_EQ(static_output_shapes[1], StaticShape({batch_size, hidden_size}));
 }
+

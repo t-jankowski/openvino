@@ -6,6 +6,7 @@
 
 #include "ov_ops/augru_sequence.hpp"
 #include "utils.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -75,3 +76,4 @@ TEST(StaticShapeInferenceTest, AGRUSequenceTest_FORWARD_all_inputs_dynamic_rank)
     EXPECT_EQ(static_output_shapes[0], StaticShape({batch_size, num_directions, seq_len, hidden_size}));
     EXPECT_EQ(static_output_shapes[1], StaticShape({batch_size, num_directions, hidden_size}));
 }
+

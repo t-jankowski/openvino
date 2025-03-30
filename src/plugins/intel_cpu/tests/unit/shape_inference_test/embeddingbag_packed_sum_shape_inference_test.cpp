@@ -10,6 +10,8 @@
 #include "utils.hpp"
 #include "openvino/op/embeddingbag_packedsum.hpp"
 #include "openvino/op/parameter.hpp"
+#include "openvino/op/embeddingbag_packedsum.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -66,3 +68,4 @@ TEST_F(EmbeddingBagPackedSumV3StaticShapeInferenceTest, basic_3in) {
     output_shapes = shape_inference(op.get(), input_shapes);
     EXPECT_EQ(output_shapes[0], (StaticShape{3, 2, 6}));
 }
+

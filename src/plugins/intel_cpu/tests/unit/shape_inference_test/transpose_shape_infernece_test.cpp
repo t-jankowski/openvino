@@ -8,6 +8,9 @@
 #include "transpose_shape_inference.hpp"
 #include "shape_inference/static_shape.hpp"
 #include "utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/transpose.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -100,3 +103,4 @@ TEST(StaticShapeInferenceTest, transpose_order_in_constant_map) {
 
     ASSERT_EQ(output_shapes[op::v1::Transpose::ARG_T], StaticShape({4, 6, 2, 8}));
 }
+

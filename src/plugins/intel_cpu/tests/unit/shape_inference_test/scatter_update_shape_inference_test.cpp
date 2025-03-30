@@ -5,6 +5,9 @@
 #include <gtest/gtest.h>
 
 #include "utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/scatter_update.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -128,3 +131,4 @@ TEST(StaticShapeInferenceTest, ScatterUpdate_params_dynamic_rank_incorrect_updat
     output_shapes = shape_inference(scatter_update.get(), input_shapes, constant_data);
     EXPECT_EQ(output_shapes[0], StaticShape({1000, 256, 10, 15}));
 }
+

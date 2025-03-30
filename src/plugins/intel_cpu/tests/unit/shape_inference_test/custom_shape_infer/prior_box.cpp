@@ -11,6 +11,9 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/parameter.hpp"
 #include "openvino/op/prior_box.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/prior_box.hpp"
 namespace ov {
 namespace intel_cpu {
 namespace unit_test {
@@ -206,3 +209,4 @@ INSTANTIATE_TEST_SUITE_P(
 } // namespace unit_test
 } // namespace intel_cpu
 } // namespace ov
+

@@ -7,6 +7,8 @@
 #include "common_test_utils/test_assertions.hpp"
 #include "openvino/op/rms_norm.hpp"
 #include "utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -136,3 +138,4 @@ TEST(StaticShapeInferenceTest, RMSNormIncorrectScaleShape) {
                     NodeValidationFailure,
                     HasSubstr("Scale input shape must be broadcastable to the shape of the data input"));
 }
+

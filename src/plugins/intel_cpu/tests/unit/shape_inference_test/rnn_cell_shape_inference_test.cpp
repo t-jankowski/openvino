@@ -5,6 +5,8 @@
 #include <gtest/gtest.h>
 
 #include "utils.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/rnn_cell.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -103,3 +105,4 @@ TEST_F(RNNCellV0StaticShapeInferenceTest, dynamic_rank_inputs) {
     output_shapes = shape_inference(gru.get(), input_shapes);
     EXPECT_EQ(output_shapes[0], StaticShape({batch_size, hidden_size}));
 }
+

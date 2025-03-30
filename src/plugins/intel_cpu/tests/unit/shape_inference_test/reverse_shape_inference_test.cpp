@@ -8,6 +8,9 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/parameter.hpp"
 #include "openvino/op/reverse.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reverse.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -104,3 +107,4 @@ TEST_F(ReverseV1StaticShapeInferenceTest, default_ctor) {
 
     EXPECT_EQ(output_shapes[0], StaticShape({11, 2, 3}));
 }
+

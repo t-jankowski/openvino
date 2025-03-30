@@ -7,6 +7,8 @@
 #include "common_test_utils/test_assertions.hpp"
 #include "ov_ops/glu.hpp"
 #include "utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -44,3 +46,4 @@ TEST(StaticShapeInferenceTest, GLUStaticShapeInferenceTestBasic) {
     ASSERT_EQ(static_output_shapes.size(), 1);
     EXPECT_EQ(static_output_shapes[0], StaticShape({20, 1, 48}));
 }
+

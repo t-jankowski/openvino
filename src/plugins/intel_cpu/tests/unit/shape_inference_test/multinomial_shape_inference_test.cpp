@@ -7,6 +7,8 @@
 #include <gtest/gtest.h>
 
 #include "utils.hpp"
+#include "openvino/op/multinomial.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -71,3 +73,4 @@ TEST(StaticShapeInferenceTest, MultinomialDynamicShapeInferenceTestDynamicProbsD
     auto partial_output_shapes = shape_infer(multinomial.get(), partial_input_shapes, make_tensor_accessor());
     ASSERT_EQ(partial_output_shapes[0], PartialShape::dynamic());
 }
+

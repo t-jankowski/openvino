@@ -8,6 +8,8 @@
 #include "utils.hpp"
 #include "openvino/op/binary_convolution.hpp"
 #include "openvino/op/parameter.hpp"
+#include "openvino/op/binary_convolution.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -137,3 +139,4 @@ TEST_F(BinaryConvolutionV1StaticShapeInferenceTest, data_rank_not_4) {
                     NodeValidationFailure,
                     HasSubstr("Expected 4D for the input. Got:"));
 }
+

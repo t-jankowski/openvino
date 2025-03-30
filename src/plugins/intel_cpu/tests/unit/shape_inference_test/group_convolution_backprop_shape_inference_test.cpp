@@ -9,6 +9,9 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/group_conv.hpp"
 #include "openvino/op/parameter.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -152,3 +155,4 @@ TEST_F(GroupConvolutionBackpropDataStaticShapeInferenceTest, 3d_auto_pad_same_up
     EXPECT_EQ(output_shapes.size(), 1);
     EXPECT_EQ(output_shapes[0], StaticShape({3, 1, 2, 6, 1}));
 }
+

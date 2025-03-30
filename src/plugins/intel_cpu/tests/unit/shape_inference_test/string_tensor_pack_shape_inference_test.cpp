@@ -7,6 +7,9 @@
 #include "common_test_utils/test_assertions.hpp"
 #include "utils.hpp"
 #include "string_tensor_pack_shape_inference.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/string_tensor_pack.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -253,3 +256,4 @@ TEST_F(StringTensorPackStaticShapeInferenceWithTensorAccessorTest, indices_valid
                         testing::HasSubstr("Indices must be in ascending order"));
     }
 }
+

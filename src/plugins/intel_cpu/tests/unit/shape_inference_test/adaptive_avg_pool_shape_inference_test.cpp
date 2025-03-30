@@ -9,6 +9,9 @@
 #include "openvino/op/adaptive_avg_pool.hpp"
 #include "openvino/op/constant.hpp"
 #include "openvino/op/parameter.hpp"
+#include "openvino/op/adaptive_avg_pool.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -76,3 +79,4 @@ TEST_F(AdaptiveAvgPoolV8StaticShapeInferenceTest, out_spatial_dims_in_const_map_
                     ov::NodeValidationFailure,
                     HasSubstr("Number of spatial dimensions is not compatible with input data rank"));
 }
+

@@ -9,6 +9,9 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/parameter.hpp"
 #include "openvino/op/scatter_elements_update.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/scatter_elements_update.hpp"
 
 using namespace ov;
 using ov::op::v0::Constant;
@@ -86,3 +89,4 @@ TEST_F(ScatterElementsUpdateV3StaticShapeInferenceTest, incorrect_axis_value) {
                     AssertFailure,
                     HasSubstr("Axis 4 out of the tensor rank range [-4, 3]"));
 }
+

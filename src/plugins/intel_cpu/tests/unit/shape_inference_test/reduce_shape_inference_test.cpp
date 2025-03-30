@@ -7,6 +7,17 @@
 #include "common_test_utils/test_assertions.hpp"
 #include "utils.hpp"
 #include "reduce_shape_inference.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reduce_l1.hpp"
+#include "openvino/op/reduce_l2.hpp"
+#include "openvino/op/reduce_logical_and.hpp"
+#include "openvino/op/reduce_logical_or.hpp"
+#include "openvino/op/reduce_max.hpp"
+#include "openvino/op/reduce_mean.hpp"
+#include "openvino/op/reduce_min.hpp"
+#include "openvino/op/reduce_prod.hpp"
+#include "openvino/op/reduce_sum.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -102,3 +113,4 @@ using ReduceOpTypes =
     Types<op::v4::ReduceL1, op::v4::ReduceL2, op::v1::ReduceMax, op::v1::ReduceMean, op::v1::ReduceMin, op::v1::ReduceProd, op::v1::ReduceSum,
           op::v1::ReduceLogicalAnd, op::v1::ReduceLogicalOr>;
 INSTANTIATE_TYPED_TEST_SUITE_P(shape_inference, ReduceStaticShapeInferenceTest, ReduceOpTypes);
+

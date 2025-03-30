@@ -8,6 +8,9 @@
 #include "openvino/op/nv12_to_bgr.hpp"
 #include "openvino/op/nv12_to_rgb.hpp"
 #include "utils.hpp"
+#include "openvino/op/nv12_to_bgr.hpp"
+#include "openvino/op/nv12_to_rgb.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -129,3 +132,4 @@ REGISTER_TYPED_TEST_SUITE_P(ConvertColorNV12Test,
 
 using NV12Types = testing::Types<op::v8::NV12toRGB, op::v8::NV12toBGR>;
 INSTANTIATE_TYPED_TEST_SUITE_P(StaticShapeInference, ConvertColorNV12Test, NV12Types);
+

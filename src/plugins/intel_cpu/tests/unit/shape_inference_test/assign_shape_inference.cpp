@@ -5,6 +5,9 @@
 #include <gtest/gtest.h>
 
 #include "utils.hpp"
+#include "openvino/op/assign.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/read_value.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -44,3 +47,4 @@ TEST(StaticShapeInferenceTest, AssignTest) {
     // Test v6 Assign
     assignTest<op::v6::Assign>();
 }
+

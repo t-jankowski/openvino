@@ -5,6 +5,8 @@
 #include "bucketize_shape_inference.hpp"
 #include "common_test_utils/test_assertions.hpp"
 #include "utils.hpp"
+#include "openvino/op/bucketize.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -62,3 +64,4 @@ TEST_F(BucketizeV3StaticShapeInferenceTest, bucket_incorrect_rank) {
                     NodeValidationFailure,
                     HasSubstr("Buckets input must be a 1D tensor"));
 }
+

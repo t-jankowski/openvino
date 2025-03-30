@@ -6,8 +6,11 @@
 #include <gtest/gtest.h>
 
 #include "common_test_utils/test_assertions.hpp"
-#include "openvino/op/ops.hpp"
 #include "utils.hpp"
+#include "openvino/op/ctc_greedy_decoder.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/ctc_greedy_decoder.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -62,3 +65,5 @@ TEST_F(CTCGreedyDecoderV0StaticShapeInferenceTest, incompatible_t_dim) {
                     NodeValidationFailure,
                     HasSubstr("The second dimensions of input tensors must match"))
 }
+
+

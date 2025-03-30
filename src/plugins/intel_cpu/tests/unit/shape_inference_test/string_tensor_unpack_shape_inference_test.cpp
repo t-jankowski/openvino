@@ -7,6 +7,9 @@
 #include "common_test_utils/test_assertions.hpp"
 #include "utils.hpp"
 #include "string_tensor_unpack_shape_inference.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/string_tensor_unpack.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -136,3 +139,4 @@ INSTANTIATE_TEST_SUITE_P(
             ov::Shape{2, 2, 2}),
         std::make_tuple(std::vector<std::string>{"Intel", "OpenVINO", "AI", "Edge"}, ov::Shape{1, 4}),
         std::make_tuple(std::vector<std::string>{"Intel"}, ov::Shape{1, 1})));
+

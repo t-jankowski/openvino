@@ -8,6 +8,8 @@
 #include "openvino/op/logical_not.hpp"
 #include "openvino/op/parameter.hpp"
 #include "utils.hpp"
+#include "openvino/op/logical_not.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -36,3 +38,4 @@ TEST_F(LogicalNotStaticShapeInferenceTest, dynamic_rank) {
 
     ASSERT_EQ(this->output_shapes.front(), StaticShape({3, 1, 5, 2}));
 }
+

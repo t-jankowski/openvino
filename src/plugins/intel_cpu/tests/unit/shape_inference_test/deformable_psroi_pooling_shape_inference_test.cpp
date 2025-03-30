@@ -9,6 +9,8 @@
 #include "utils.hpp"
 #include "openvino/op/deformable_psroi_pooling.hpp"
 #include "openvino/op/parameter.hpp"
+#include "openvino/op/deformable_psroi_pooling.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -87,3 +89,4 @@ TEST_F(DeformablePSROIPoolingV1StaticShapeInferenceTest, offsets_input) {
     output_shapes = shape_inference(op.get(), input_shapes);
     EXPECT_EQ(output_shapes[0], expected_output);
 }
+

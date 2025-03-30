@@ -5,7 +5,12 @@
 #include "common_test_utils/test_assertions.hpp"
 #include <gtest/gtest.h>
 #include "custom_shape_infer.hpp"
-#include "openvino/op/ops.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/unsqueeze.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/unsqueeze.hpp"
 namespace ov {
 namespace intel_cpu {
 namespace unit_test {
@@ -133,3 +138,5 @@ INSTANTIATE_TEST_SUITE_P(
 } // namespace unit_test
 } // namespace intel_cpu
 } // namespace ov
+
+

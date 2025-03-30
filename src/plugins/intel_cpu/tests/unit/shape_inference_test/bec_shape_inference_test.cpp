@@ -7,6 +7,13 @@
 #include "common_test_utils/test_assertions.hpp"
 #include "openvino/op/parameter.hpp"
 #include "utils.hpp"
+#include "openvino/op/equal.hpp"
+#include "openvino/op/greater.hpp"
+#include "openvino/op/greater_eq.hpp"
+#include "openvino/op/less.hpp"
+#include "openvino/op/less_eq.hpp"
+#include "openvino/op/not_equal.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -104,3 +111,4 @@ REGISTER_TYPED_TEST_SUITE_P(BECStaticShapeInferenceTest,
 using BinaryOpTypes =
     Types<op::v1::Equal, op::v1::NotEqual, op::v1::Greater, op::v1::GreaterEqual, op::v1::Less, op::v1::LessEqual>;
 INSTANTIATE_TYPED_TEST_SUITE_P(type_prop, BECStaticShapeInferenceTest, BinaryOpTypes);
+

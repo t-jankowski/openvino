@@ -7,6 +7,9 @@
 #include "common_test_utils/test_assertions.hpp"
 #include "one_hot_shape_inference.hpp"
 #include "utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/one_hot.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -87,3 +90,4 @@ TEST(StaticShapeInferenceTest, OneHotTestConstantMapNegativeDepth) {
                     ov::NodeValidationFailure,
                     HasSubstr("can't be negative"));
 }
+

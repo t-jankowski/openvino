@@ -5,6 +5,8 @@
 #include <gtest/gtest.h>
 
 #include "utils.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/select.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -54,3 +56,4 @@ TEST(StaticShapeInferenceTest, SelectTestBCastModeNone) {
     const auto static_output_shapes = shape_inference(select.get(), static_input_shapes);
     ASSERT_EQ(static_output_shapes[0], StaticShape({6, 4}));
 }
+

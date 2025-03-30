@@ -5,6 +5,9 @@
 #include <gtest/gtest.h>
 
 #include "utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/tile.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -94,3 +97,4 @@ TEST(StaticShapeInferenceTest, TileNewApiInputsStaticRank) {
     EXPECT_EQ(outputs->front(), StaticShape({3, 4, 8, 20}));
     EXPECT_EQ(*outputs->front(), VectorDims({3, 4, 8, 20}));
 }
+

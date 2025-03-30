@@ -8,6 +8,8 @@
 #include "utils.hpp"
 #include "openvino/op/convolution.hpp"
 #include "openvino/op/parameter.hpp"
+#include "openvino/op/convolution.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -134,3 +136,4 @@ TEST_F(ConvolutionV1StaticShapeInferenceTest, data_rank_not_compatible_with_filt
                     NodeValidationFailure,
                     HasSubstr("Data batch and filters rank do not match"));
 }
+

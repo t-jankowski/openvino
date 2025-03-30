@@ -6,6 +6,8 @@
 
 #include "detection_output_shape_inference.hpp"
 #include "utils.hpp"
+#include "openvino/op/detection_output.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -212,3 +214,4 @@ TEST(StaticShapeInferenceTest, detection_output_v8_default_ctor) {
     output_shapes = shape_inference(op.get(), input_shapes);
     EXPECT_EQ(output_shapes[0], (StaticShape{1, 1, 800, 7}));
 }
+

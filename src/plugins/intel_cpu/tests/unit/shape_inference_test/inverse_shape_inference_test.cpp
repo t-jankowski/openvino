@@ -6,6 +6,8 @@
 
 #include "inverse_shape_inference.hpp"
 #include "utils.hpp"
+#include "openvino/op/inverse.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -69,3 +71,4 @@ TEST_F(Inversev14StaticShapeInferenceTest, inverse_10_5_3_2_2_complex_multi_dim_
     auto output_shapes = shape_inference(inverse.get(), input_shapes);
     ASSERT_EQ(output_shapes[0], StaticShape({10, 5, 3, 2, 2}));
 }
+

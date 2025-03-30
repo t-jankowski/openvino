@@ -10,6 +10,9 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/parameter.hpp"
 #include "openvino/op/topk.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/topk.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -159,3 +162,4 @@ TEST_P(TopKV3Test, k_as_param_in_const_map) {
 }
 }  // namespace v3
 }  // namespace topk_test
+

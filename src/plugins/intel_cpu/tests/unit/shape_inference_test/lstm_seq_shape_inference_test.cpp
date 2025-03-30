@@ -5,6 +5,8 @@
 #include <gtest/gtest.h>
 
 #include "utils.hpp"
+#include "openvino/op/lstm_sequence.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -142,3 +144,4 @@ TEST_F(LSTMSequenceV5StaticShapeInferenceTest, BIDIRECTIONAL) {
     EXPECT_EQ(output_shapes[1], StaticShape({batch_size, num_directions, hidden_size}));
     EXPECT_EQ(output_shapes[2], StaticShape({batch_size, num_directions, hidden_size}));
 }
+

@@ -8,6 +8,8 @@
 #include "common_test_utils/test_assertions.hpp"
 #include "extract_image_patches_shape_inference.hpp"
 #include "utils.hpp"
+#include "openvino/op/extractimagepatches.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -61,3 +63,4 @@ TEST_F(StaticShapeExtractImagePatchesV3Test, data_shape_not_compatible_rank_4) {
                     NodeValidationFailure,
                     HasSubstr("input tensor must be 4D tensor"));
 }
+

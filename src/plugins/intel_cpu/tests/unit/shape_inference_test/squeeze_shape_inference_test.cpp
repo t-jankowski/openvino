@@ -11,6 +11,9 @@
 #include "openvino/op/parameter.hpp"
 #include "openvino/op/squeeze.hpp"
 #include "utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/squeeze.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -239,3 +242,4 @@ TEST_P(SqueezeV15StaticShapeInferenceTest, shape_inference_with_const_map) {
 }
 
 }   // namespace v15
+

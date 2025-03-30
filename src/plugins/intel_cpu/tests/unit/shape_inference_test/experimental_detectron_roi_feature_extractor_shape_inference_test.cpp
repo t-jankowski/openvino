@@ -6,6 +6,8 @@
 
 #include "common_test_utils/test_assertions.hpp"
 #include "utils.hpp"
+#include "openvino/op/experimental_detectron_roi_feature.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -84,3 +86,4 @@ TEST_F(ExperimentalDetectronROIFeatureExtractorV6StaticShapeInferenceTest, layer
                     NodeValidationFailure,
                     HasSubstr("The number of channels must be the same for all layers of the pyramid"));
 }
+

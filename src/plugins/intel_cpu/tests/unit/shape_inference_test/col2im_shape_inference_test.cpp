@@ -6,6 +6,9 @@
 
 #include "common_test_utils/test_assertions.hpp"
 #include "utils.hpp"
+#include "openvino/op/col2im.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -121,3 +124,4 @@ INSTANTIATE_TEST_SUITE_P(Col2ImStaticShapeInferenceTests,
                                                            ov::Shape{3, 3},               // pads_begin
                                                            ov::Shape{3, 3},               // pads_end
                                                            ov::Shape{12, 3, 32, 32})));   // expected output shape
+

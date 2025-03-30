@@ -9,6 +9,9 @@
 #include "openvino/op/unsqueeze.hpp"
 #include "unsqueeze_shape_inference.hpp"
 #include "utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/unsqueeze.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -131,3 +134,4 @@ TEST_P(UnsqueezeStaticShapeInferenceTest, shape_inference_with_const_map) {
 
     ASSERT_EQ(output_shapes.front(), exp_shape);
 }
+

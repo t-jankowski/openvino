@@ -9,6 +9,9 @@
 #include "openvino/op/variadic_split.hpp"
 #include "utils.hpp"
 #include "variadic_split_shape_inference.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/variadic_split.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -116,3 +119,4 @@ TEST_P(VariadicSplitStaticShapeInferenceTest, shape_inference_all_const_in_map) 
     EXPECT_EQ(output_shapes.size(), split_lengths.size());
     EXPECT_EQ(output_shapes, exp_shapes);
 }
+

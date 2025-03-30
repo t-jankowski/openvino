@@ -5,8 +5,11 @@
 
 #include "common_test_utils/test_assertions.hpp"
 #include "gather_elements_shape_inference.hpp"
-#include "openvino/op/ops.hpp"
 #include "utils.hpp"
+#include "openvino/op/gather_elements.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/gather_elements.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -63,3 +66,5 @@ TEST_F(GatherElementsStaticShapeInferenceTest, GatherElements_default_constructo
     output_shapes = shape_inference(op.get(), input_shapes);
     EXPECT_EQ(output_shapes[0], (StaticShape{300, 3, 10, 33333}));
 }
+
+

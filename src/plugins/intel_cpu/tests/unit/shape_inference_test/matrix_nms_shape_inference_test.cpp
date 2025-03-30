@@ -6,6 +6,8 @@
 
 #include "openvino/op/matrix_nms.hpp"
 #include "utils.hpp"
+#include "openvino/op/matrix_nms.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -51,3 +53,4 @@ TEST_F(StaticShapeInferenceMatrixNmsV8Test, all_inputs_are_dynamic) {
 
     EXPECT_EQ(output_shapes, StaticShapeVector({{30, 6}, {30, 1}, {5}}));
 }
+

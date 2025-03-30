@@ -9,6 +9,9 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/parameter.hpp"
 #include "openvino/op/random_uniform.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/random_uniform.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -167,3 +170,4 @@ TEST_F(RandomUniformV8StaticShapeInferenceTest, all_inputs_dynamic_no_const_data
                     NodeValidationFailure,
                     HasSubstr("Static shape inference lacks constant data on port"));
 }
+

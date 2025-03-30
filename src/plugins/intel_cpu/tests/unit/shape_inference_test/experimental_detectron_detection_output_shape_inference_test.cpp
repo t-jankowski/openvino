@@ -6,6 +6,8 @@
 
 #include "common_test_utils/test_assertions.hpp"
 #include "utils.hpp"
+#include "openvino/op/experimental_detectron_detection_output.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -100,3 +102,4 @@ TEST_F(ExperimentalDetectronDetectionOutputV6StaticShapeInferenceTest, rois_1st_
         NodeValidationFailure,
         HasSubstr("The first dimension of inputs 'input_rois', 'input_deltas', 'input_scores' must be the compatible"));
 }
+

@@ -8,6 +8,8 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/parameter.hpp"
 #include "ov_ops/fully_connected.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace intel_cpu {
@@ -81,3 +83,4 @@ TEST(CpuShapeInfer, FC_broadcastActivations2) {
 }  // namespace unit_test
 }  // namespace intel_cpu
 }  // namespace ov
+

@@ -6,8 +6,9 @@
 
 #include "common_test_utils/test_assertions.hpp"
 #include "custom_shape_infer.hpp"
-#include "openvino/op/ops.hpp"
 #include "transformations/cpu_opset/common/op/sdpa.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace intel_cpu {
@@ -125,3 +126,5 @@ INSTANTIATE_TEST_SUITE_P(CpuShapeInfer,
 }  // namespace unit_test
 }  // namespace intel_cpu
 }  // namespace ov
+
+

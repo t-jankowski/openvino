@@ -6,6 +6,8 @@
 
 #include "common_test_utils/test_assertions.hpp"
 #include "utils.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/proposal.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -109,3 +111,4 @@ REGISTER_TYPED_TEST_SUITE_P(ProposalTest,
 
 using ProposalVersions = Types<op::v0::Proposal, op::v4::Proposal>;
 INSTANTIATE_TYPED_TEST_SUITE_P(shape_inference, ProposalTest, ProposalVersions);
+

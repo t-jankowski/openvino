@@ -8,6 +8,8 @@
 #include "utils.hpp"
 #include "openvino/op/parameter.hpp"
 #include "openvino/op/scaled_dot_product_attention.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/scaled_dot_product_attention.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -101,3 +103,4 @@ TEST_F(ScaledDotProductAttentionV13StaticShapeInferenceTest, attention_S_broadca
     EXPECT_EQ(output_shapes.size(), 1);
     EXPECT_EQ(output_shapes.front(), StaticShape({2, 8, 16, 48}));
 }
+

@@ -7,6 +7,9 @@
 #include "common_test_utils/test_assertions.hpp"
 #include "openvino/op/reshape.hpp"
 #include "utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reshape.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -103,3 +106,4 @@ TEST_F(ReshapeV1StaticShapeInferenceTest, shape_pattern_as_constant) {
                     NodeValidationFailure,
                     HasSubstr("is incompatible with input shape"));
 }
+

@@ -6,10 +6,13 @@
 
 #include <gtest/gtest.h>
 
-#include "openvino/op/ops.hpp"
 #include "openvino/util/common_util.hpp"
 #include "utils.hpp"
 #include "shape_inference/shape_inference.hpp"
+#include "openvino/op/gather_nd.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/gather_nd.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -153,3 +156,5 @@ INSTANTIATE_TEST_SUITE_P(
         GatherNDTestParams{StaticShapeVector{{6, 4, 1, 12, 13}, {6, 4, 1, 2}}, StaticShape{6, 4, 1}, 3},
         GatherNDTestParams{StaticShapeVector{{6, 4, 1, 12, 13}, {6, 4, 1, 5, 2}}, StaticShape{6, 4, 1, 5}, 3}),
     print_params);
+
+

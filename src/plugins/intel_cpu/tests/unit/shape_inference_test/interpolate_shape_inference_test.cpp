@@ -7,6 +7,9 @@
 #include <chrono>
 
 #include "utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/interpolate.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -289,3 +292,4 @@ TEST_F(InterpolateV11StaticShapeInferenceTest, all_inputs_static_rank_use_sizes)
     EXPECT_EQ(output_shapes.size(), 1);
     EXPECT_EQ(output_shapes.front(), StaticShape({50, 10, 128, 60, 128, 64}));
 }
+

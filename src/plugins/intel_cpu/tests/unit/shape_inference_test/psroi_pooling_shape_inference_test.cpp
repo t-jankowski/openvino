@@ -8,6 +8,8 @@
 #include "utils.hpp"
 #include "openvino/op/psroi_pooling.hpp"
 #include "openvino/op/parameter.hpp"
+#include "openvino/op/psroi_pooling.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -96,3 +98,4 @@ TEST_F(PSROIPoolingV0StaticShapeInferenceTest, invalid_rois_batch_size) {
                     HasSubstr("The second dimension of ROIs input should contain batch id and box coordinates. This "
                               "dimension is expected to be equal to 5"));
 }
+

@@ -6,6 +6,8 @@
 #include "utils.hpp"
 #include "openvino/op/parameter.hpp"
 #include "openvino/op/reverse_sequence.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reverse_sequence.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -75,3 +77,4 @@ TEST_F(ReverseSequenceV0StaticShapeInferenceTest, default_ctor) {
 
     EXPECT_EQ(output_shapes[0], StaticShape({11, 2, 3}));
 }
+

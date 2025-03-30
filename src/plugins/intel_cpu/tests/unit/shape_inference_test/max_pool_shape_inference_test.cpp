@@ -8,6 +8,8 @@
 #include "utils.hpp"
 #include "openvino/op/max_pool.hpp"
 #include "openvino/op/parameter.hpp"
+#include "openvino/op/max_pool.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -206,3 +208,4 @@ REGISTER_TYPED_TEST_SUITE_P(MaxPoolCommonStaticShapeInferenceTest,
 
 using MaxPoolOpTypes = Types<ov::op::v8::MaxPool, ov::op::v14::MaxPool>;
 INSTANTIATE_TYPED_TEST_SUITE_P(StaticShapeInferenceTest, MaxPoolCommonStaticShapeInferenceTest, MaxPoolOpTypes);
+

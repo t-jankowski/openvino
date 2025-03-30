@@ -8,6 +8,9 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/non_max_suppression.hpp"
 #include "openvino/op/parameter.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/non_max_suppression.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -73,3 +76,4 @@ REGISTER_TYPED_TEST_SUITE_P(NMSNonDynamicOutputTest,
 using NMSNonDynamicOutputTypes =
     testing::Types<op::v1::NonMaxSuppression, op::v3::NonMaxSuppression, op::v4::NonMaxSuppression>;
 INSTANTIATE_TYPED_TEST_SUITE_P(StaticShapeInference, NMSNonDynamicOutputTest, NMSNonDynamicOutputTypes);
+

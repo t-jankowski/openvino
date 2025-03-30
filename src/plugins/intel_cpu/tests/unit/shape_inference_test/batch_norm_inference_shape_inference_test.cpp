@@ -7,6 +7,7 @@
 #include "batch_norm_shape_inference.hpp"
 #include "openvino/op/batch_norm.hpp"
 #include "utils.hpp"
+#include "openvino/op/batch_norm.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -32,3 +33,4 @@ TEST_F(BatchNormInferenceV5StaticShapeInferenceTest, default_ctor_direct_infer_c
     ASSERT_EQ(output_shapes.size(), 1);
     EXPECT_EQ(output_shapes[0], (StaticShape{3, 5, 7}));
 }
+

@@ -7,6 +7,8 @@
 #include "common_test_utils/test_assertions.hpp"
 #include "experimental_detectron_generate_proposals_shape_inference.hpp"
 #include "utils.hpp"
+#include "openvino/op/experimental_detectron_generate_proposals.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -85,3 +87,4 @@ TEST_F(ExperimentalDetectronGenerateProposalsSingleImageV6StaticShapeInferenceTe
                     NodeValidationFailure,
                     HasSubstr("The 'input_deltas' input is expected to be a 3D"));
 }
+

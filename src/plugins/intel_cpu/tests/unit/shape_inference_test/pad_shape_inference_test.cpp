@@ -9,6 +9,9 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/pad.hpp"
 #include "openvino/op/parameter.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/pad.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -153,3 +156,4 @@ REGISTER_TYPED_TEST_SUITE_P(PadStaticShapeInference,
 
 using PadTypes = Types<op::v1::Pad, op::v12::Pad>;
 INSTANTIATE_TYPED_TEST_SUITE_P(shape_inference, PadStaticShapeInference, PadTypes);
+

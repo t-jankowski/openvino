@@ -8,6 +8,8 @@
 #include "common_test_utils/test_assertions.hpp"
 #include "reorg_yolo_shape_inference.hpp"
 #include "utils.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reorg_yolo.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -65,3 +67,4 @@ TEST_F(StaticShapeReorgYoloTest, h_dim_not_div_by_stride) {
                     NodeValidationFailure,
                     HasSubstr("H and W should be divisible by stride"));
 }
+

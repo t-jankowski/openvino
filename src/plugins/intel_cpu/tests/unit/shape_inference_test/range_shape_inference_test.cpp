@@ -6,6 +6,8 @@
 
 #include "range_shape_inference.hpp"
 #include "utils.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/range.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -65,3 +67,4 @@ TEST(StaticShapeInferenceTest, Rangev4_f32) {
     output_shapes = shape_inference(range.get(), StaticShapeVector{{}, {}, {}}, const_data);
     EXPECT_THAT(output_shapes, ElementsAre(StaticShape{8}));
 }
+

@@ -8,6 +8,8 @@
 #include "openvino/pass/graph_rewrite.hpp"
 #include "utils.hpp"
 #include "shape_inference/static_shape.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -124,3 +126,4 @@ TEST(ConcatStaticShapeInferenceTest, consecutively_three_inputs) {
     output_shapes = shape_inference(op.get(), StaticShapeVector{{1, 2, 3, 4, 3}, {1, 2, 3, 4, 1}, {1, 2, 3, 4, 1}});
     ASSERT_EQ(output_shapes.front(), StaticShape({1, 2, 3, 4, 5}));
 }
+

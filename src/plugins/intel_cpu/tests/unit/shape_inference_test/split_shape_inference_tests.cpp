@@ -9,6 +9,9 @@
 #include "openvino/op/split.hpp"
 #include "split_shape_inference.hpp"
 #include "utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/split.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -76,3 +79,4 @@ TEST_P(SplitStaticShapeInferenceTest, shape_inference_with_const_map) {
 
     ASSERT_EQ(output_shapes.front(), exp_shape);
 }
+

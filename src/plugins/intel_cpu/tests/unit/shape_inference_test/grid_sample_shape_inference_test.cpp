@@ -8,6 +8,8 @@
 #include "grid_sample_shape_inference.hpp"
 #include "openvino/op/grid_sample.hpp"
 #include "openvino/op/parameter.hpp"
+#include "openvino/op/grid_sample.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -38,3 +40,4 @@ TEST_F(GridSampleStaticShapeInferenceTest, GridSample_default_constructor) {
     output_shapes = shape_inference(op.get(), input_shapes);
     EXPECT_EQ(output_shapes[0], exp_shape);
 }
+

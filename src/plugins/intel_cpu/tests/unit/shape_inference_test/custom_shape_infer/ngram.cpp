@@ -7,6 +7,7 @@
 #include "openvino/op/parameter.hpp"
 #include "transformations/cpu_opset/common/op/ngram.hpp"
 #include "custom_shape_infer.hpp"
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace intel_cpu {
@@ -28,4 +29,5 @@ TEST(CpuShapeInfer, Ngram) {
 } // namespace unit_test
 } // namespace intel_cpu
 } // namespace ov
+
 

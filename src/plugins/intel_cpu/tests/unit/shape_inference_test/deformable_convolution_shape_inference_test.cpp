@@ -8,6 +8,8 @@
 #include "utils.hpp"
 #include "openvino/op/deformable_convolution.hpp"
 #include "openvino/op/parameter.hpp"
+#include "openvino/op/deformable_convolution.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -146,3 +148,4 @@ TEST_F(DeformableConvolutionV8StaticShapeInferenceTest, mask_channel_dimension_n
         HasSubstr(
             "The channels dimension of mask input is not compatible with filters and 'deformable group' attribute"));
 }
+

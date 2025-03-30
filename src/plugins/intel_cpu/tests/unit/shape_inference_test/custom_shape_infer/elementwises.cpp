@@ -5,7 +5,10 @@
 #include <gtest/gtest.h>
 
 #include "custom_shape_infer.hpp"
-#include "openvino/op/ops.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
 namespace ov {
 namespace intel_cpu {
 namespace unit_test {
@@ -27,4 +30,6 @@ TEST(CpuShapeInfer, UnaryEltwiseTest) {
 } // namespace unit_test
 } // namespace intel_cpu
 } // namespace ov
+
+
 

@@ -6,6 +6,8 @@
 
 #include "common_test_utils/test_assertions.hpp"
 #include "utils.hpp"
+#include "openvino/op/experimental_detectron_prior_grid_generator.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -84,3 +86,4 @@ TEST_F(ExperimentalDetectronPriorGridGeneratorV6StaticShapeInferenceTest, priors
                     NodeValidationFailure,
                     HasSubstr("The last dimension of the 'priors' input must be equal to 4"));
 }
+

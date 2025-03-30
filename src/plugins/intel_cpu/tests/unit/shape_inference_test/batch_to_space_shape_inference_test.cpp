@@ -8,6 +8,9 @@
 #include "openvino/op/batch_to_space.hpp"
 #include "openvino/op/constant.hpp"
 #include "openvino/op/parameter.hpp"
+#include "openvino/op/batch_to_space.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -93,3 +96,4 @@ TEST_F(BatchToSpaceV1StaticShapeInferenceTest, missing_tensor_data) {
 
     EXPECT_THROW(shape_inference(op.get(), input_shapes, constant_data), NodeValidationFailure);
 }
+

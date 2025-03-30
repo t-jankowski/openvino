@@ -5,6 +5,9 @@
 #include <gtest/gtest.h>
 
 #include "utils.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/relu.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -37,3 +40,4 @@ TEST(StaticShapeInferenceTest, FakeQuantizeTest) {
     const auto static_output_shapes = shape_inference(node.get(), static_input_shapes);
     ASSERT_EQ(static_output_shapes[0], StaticShape({3, 6, 3, 5}));
 }
+

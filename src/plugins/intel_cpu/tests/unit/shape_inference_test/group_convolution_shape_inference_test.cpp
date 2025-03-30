@@ -9,6 +9,8 @@
 #include "utils.hpp"
 #include "openvino/op/group_conv.hpp"
 #include "openvino/op/parameter.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -150,3 +152,4 @@ TEST_F(GroupConvolutionV1StaticShapeInferenceTest, dilations_not_defined_for_spa
                     NodeValidationFailure,
                     HasSubstr("Dilations should be defined for all and only spatial dimensions"));
 }
+

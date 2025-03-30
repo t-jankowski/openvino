@@ -8,6 +8,8 @@
 #include "utils.hpp"
 #include "openvino/op/avg_pool.hpp"
 #include "openvino/op/parameter.hpp"
+#include "openvino/op/avg_pool.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -204,3 +206,4 @@ TEST_F(AvgPoolV14StaticShapeInferenceTest, auto_padding_ceil_torch) {
     EXPECT_EQ(this->output_shapes.size(), 1);
     EXPECT_EQ(this->output_shapes.front(), StaticShape({1, 3, 9, 9}));
 }
+

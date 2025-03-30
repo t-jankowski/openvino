@@ -5,6 +5,8 @@
 #include <gtest/gtest.h>
 
 #include "utils.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/rnn_sequence.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -125,3 +127,4 @@ TEST_F(RNNSequenceV5StaticShapeInferenceTest, BIDIRECTIONAL) {
     EXPECT_EQ(output_shapes[0], StaticShape({batch_size, num_directions, seq_len, hidden_size}));
     EXPECT_EQ(output_shapes[1], StaticShape({batch_size, num_directions, hidden_size}));
 }
+

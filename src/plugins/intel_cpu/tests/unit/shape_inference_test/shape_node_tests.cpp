@@ -5,6 +5,8 @@
 #include <gtest/gtest.h>
 
 #include "utils.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/shape_of.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -30,3 +32,4 @@ TEST(StaticShapeInferenceTest, ShapeOf0DTest) {
 
     ASSERT_EQ(static_output_shapes[0], StaticShape({}));
 }
+

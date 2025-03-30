@@ -6,6 +6,9 @@
 
 #include "common_test_utils/test_assertions.hpp"
 #include "utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/segment_max.hpp"
 
 using namespace ov::intel_cpu;
 using ov::op::v0::Constant, ov::op::v0::Parameter;
@@ -114,3 +117,4 @@ INSTANTIATE_TEST_SUITE_P(SegmentMaxStaticShapeInferenceTests,
                                                                 std::vector<int32_t>{2, 6},                         // segment_ids values
                                                                 7,                                                  // num_segments value
                                                                 ov::Shape{7, 6, 24, 1}}));                          // expected output shape
+

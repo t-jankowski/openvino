@@ -9,6 +9,9 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/parameter.hpp"
 #include "openvino/op/prior_box_clustered.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/prior_box_clustered.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -122,3 +125,4 @@ TEST_F(PriorBoxClusteredV0StaticShapeInferenceTest, invalid_input_ranks) {
                     NodeValidationFailure,
                     HasSubstr("output size input rank 2 must match image shape input rank 1"));
 }
+

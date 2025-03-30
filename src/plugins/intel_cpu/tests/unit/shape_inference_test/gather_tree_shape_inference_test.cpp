@@ -5,8 +5,11 @@
 
 #include <gtest/gtest.h>
 
-#include "openvino/op/ops.hpp"
 #include "utils.hpp"
+#include "openvino/op/gather_tree.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/gather_tree.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -34,3 +37,5 @@ TEST_F(GatherTreeStaticShapeInferenceTest, gather_tree_default_ctor) {
     output_shapes = shape_inference(op.get(), input_shapes);
     EXPECT_EQ(output_shapes[0], (StaticShape{2, 4, 3}));
 }
+
+

@@ -7,6 +7,8 @@
 #include "utils.hpp"
 #include "openvino/op/parameter.hpp"
 #include "openvino/op/space_to_depth.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/space_to_depth.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -41,3 +43,4 @@ TEST_F(SpaceToDepthV0StaticShapeInferenceTest, depth_first_block_2) {
     EXPECT_EQ(output_shapes.size(), 1);
     EXPECT_EQ(output_shapes[0], (StaticShape{1, 12 * 8, 4 / 2, 1080 / 2, 1616 / 2}));
 }
+

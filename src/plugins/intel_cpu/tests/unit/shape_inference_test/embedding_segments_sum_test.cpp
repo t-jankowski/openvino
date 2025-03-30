@@ -8,6 +8,9 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/embedding_segments_sum.hpp"
 #include "openvino/op/parameter.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/embedding_segments_sum.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -83,3 +86,4 @@ TEST_F(EmbeddingSegmentsSumV3StaticShapeInferenceTest, basic) {
     output_shapes = shape_inference(op.get(), StaticShapeVector{{5, 2}, {4}, {4}, {}, {}, {4}}, const_map);
     EXPECT_THAT(output_shapes, ElementsAre(StaticShape{8, 2}));
 }
+

@@ -7,6 +7,8 @@
 #include "common_test_utils/test_assertions.hpp"
 #include "experimental_detectron_topkrois_shape_inference.hpp"
 #include "utils.hpp"
+#include "openvino/op/experimental_detectron_topkrois.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -90,3 +92,4 @@ TEST_F(ExperimentalDetectronTopKROIsV6StaticShapeInferenceTest, input_rois_secon
                     NodeValidationFailure,
                     HasSubstr("The second dimension of 'input_rois' should be 4."));
 }
+

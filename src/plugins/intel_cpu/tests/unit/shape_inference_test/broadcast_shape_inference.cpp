@@ -5,6 +5,9 @@
 #include <gtest/gtest.h>
 
 #include "utils.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -191,3 +194,4 @@ TEST(StaticShapeInferenceTest, BroadcastV1ExplicitTest) {
 
     EXPECT_THROW(shape_inference(broadcast_v1.get(), static_input_shapes), NodeValidationFailure);
 }
+

@@ -11,6 +11,9 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/eye.hpp"
 #include "openvino/op/parameter.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/eye.hpp"
+#include "openvino/op/parameter.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;
@@ -173,3 +176,4 @@ TEST_F(EyeV9StaticShapeInferenceTest, assert_on_batch_shape_not_match_shape_in_c
                     HasSubstr("Check 'static_cast<int64_t>(batch_shape[0].get_length()) == "
                               "static_cast<int64_t>(batch_as_shape->rank().get_length())'"));
 }
+
