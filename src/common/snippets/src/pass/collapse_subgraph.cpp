@@ -12,7 +12,6 @@
 #include "openvino/core/rt_info.hpp"
 #include "openvino/core/validation_util.hpp"
 #include "openvino/op/util/attr_types.hpp"
-#include "openvino/opsets/opset1.hpp"
 #include "snippets/itt.hpp"
 #include "snippets/op/subgraph.hpp"
 #include "snippets/pass/collapse_subgraph.hpp"
@@ -24,6 +23,56 @@
 #include "snippets/utils/utils.hpp"
 #include "snippets/utils/tokenization_utils.hpp"
 #include "transformations/utils/utils.hpp"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/ceiling.hpp"
+#include "openvino/op/clamp.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/divide.hpp"
+#include "openvino/op/elu.hpp"
+#include "openvino/op/equal.hpp"
+#include "openvino/op/erf.hpp"
+#include "openvino/op/exp.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/floor.hpp"
+#include "openvino/op/floor_mod.hpp"
+#include "openvino/op/gelu.hpp"
+#include "openvino/op/greater.hpp"
+#include "openvino/op/greater_eq.hpp"
+#include "openvino/op/hswish.hpp"
+#include "openvino/op/less.hpp"
+#include "openvino/op/less_eq.hpp"
+#include "openvino/op/logical_and.hpp"
+#include "openvino/op/logical_not.hpp"
+#include "openvino/op/logical_or.hpp"
+#include "openvino/op/logical_xor.hpp"
+#include "openvino/op/loop.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/maximum.hpp"
+#include "openvino/op/minimum.hpp"
+#include "openvino/op/mish.hpp"
+#include "openvino/op/mod.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/negative.hpp"
+#include "openvino/op/not_equal.hpp"
+#include "openvino/op/prelu.hpp"
+#include "openvino/op/power.hpp"
+#include "openvino/op/reduce_max.hpp"
+#include "openvino/op/reduce_sum.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/round.hpp"
+#include "openvino/op/select.hpp"
+#include "openvino/op/sigmoid.hpp"
+#include "openvino/op/softmax.hpp"
+#include "openvino/op/sqrt.hpp"
+#include "openvino/op/squared_difference.hpp"
+#include "openvino/op/subtract.hpp"
+#include "openvino/op/swish.hpp"
+#include "openvino/op/tanh.hpp"
+#include "openvino/op/transpose.hpp"
+#include "openvino/op/xor.hpp"
 
 namespace ov {
 namespace snippets {
@@ -34,7 +83,7 @@ namespace {
 auto is_supported_op(const std::shared_ptr<const Node> &n) -> bool {
     OV_ITT_SCOPED_TASK(ov::pass::itt::domains::SnippetsTransform, "Snippets::is_supported_op")
     auto is_supported_matmul = [](const std::shared_ptr<const Node>& n) -> bool {
-        const auto& matmul = ov::as_type_ptr<const opset1::MatMul>(n);
+        const auto& matmul = ov::as_type_ptr<const ov::op::v0::MatMul>(n);
         const auto& out_rank = n->get_output_partial_shape(0).rank();
         if (!matmul || out_rank.is_dynamic() || out_rank.get_length() != 4)
             return false;
@@ -46,11 +95,11 @@ auto is_supported_op(const std::shared_ptr<const Node> &n) -> bool {
         return is_f32 || is_bf16 || is_int8;
     };
     auto is_supported_transpose = [](const std::shared_ptr<const Node>& n) -> bool {
-        const auto& transpose = as_type_ptr<const opset1::Transpose>(n);
+        const auto& transpose = as_type_ptr<const ov::op::v1::Transpose>(n);
         if (transpose) {
             const auto parent = transpose->get_input_node_shared_ptr(0);
             const auto child = transpose->get_output_target_inputs(0).begin()->get_node()->shared_from_this();
-            auto is_brgemm_case = ov::is_type_any_of<opset1::MatMul, opset1::MatMul>(child);
+            auto is_brgemm_case = ov::is_type_any_of<ov::op::v0::MatMul, ov::op::v0::MatMul>(child);
             auto decomposition_case = true;
             // Check for Transpose parent is MatMul inside Subgraph
             if (const auto subgraph = ov::as_type_ptr<const op::Subgraph>(parent)) {
@@ -59,11 +108,11 @@ auto is_supported_op(const std::shared_ptr<const Node> &n) -> bool {
                     decomposition_case = false;
                     const auto body = subgraph->body_ptr();
                     const auto subgraph_output = body->get_results()[transpose->input_value(0).get_index()]->get_input_node_shared_ptr(0);
-                    is_brgemm_case = is_brgemm_case || ov::is_type<opset1::MatMul>(subgraph_output);
+                    is_brgemm_case = is_brgemm_case || ov::is_type<ov::op::v0::MatMul>(subgraph_output);
                 }
             }
 
-            const auto& order = as_type_ptr<const opset1::Constant>(n->get_input_node_shared_ptr(1));
+            const auto& order = as_type_ptr<const ov::op::v0::Constant>(n->get_input_node_shared_ptr(1));
             if (order) {
                 const auto order_value = order->cast_vector<int>();
                 return (decomposition_case && TransposeDecomposition::is_supported_transpose_order(order_value)) ||
@@ -74,7 +123,7 @@ auto is_supported_op(const std::shared_ptr<const Node> &n) -> bool {
     };
 
     auto is_supported_fq_op = [](const std::shared_ptr<const Node>& n) -> bool {
-        return CommonFakeQuantizeDecomposition::is_supported_fq(ov::as_type_ptr<const opset1::FakeQuantize>(n));
+        return CommonFakeQuantizeDecomposition::is_supported_fq(ov::as_type_ptr<const ov::op::v0::FakeQuantize>(n));
     };
 
     auto is_supported_ternary_eltwise_op = [](const std::shared_ptr<const Node> &n) -> bool {
@@ -247,3 +296,4 @@ TokenizeSnippets::TokenizeSnippets(const SnippetsTokenization::Config& config) {
 } // namespace pass
 } // namespace snippets
 } // namespace ov
+

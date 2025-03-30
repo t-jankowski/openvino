@@ -12,16 +12,18 @@
 #include "openvino/core/rt_info.hpp"
 #include "openvino/pass/pattern/op/wrap_type.hpp"
 #include "openvino/pass/pattern/op/or.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/transpose.hpp"
 
 namespace ov {
 namespace snippets {
 namespace pass {
 
 bool FuseTransposeBrgemm::is_supported_transpose(const Output<Node>& transpose_out) {
-    const auto transpose = ov::as_type_ptr<const ov::opset1::Transpose>(transpose_out.get_node_shared_ptr());
+    const auto transpose = ov::as_type_ptr<const ov::op::v1::Transpose>(transpose_out.get_node_shared_ptr());
     if (!transpose)
         return false;
-    const auto order = ov::as_type_ptr<const ov::opset1::Constant>(transpose->get_input_node_shared_ptr(1));
+    const auto order = ov::as_type_ptr<const ov::op::v0::Constant>(transpose->get_input_node_shared_ptr(1));
     if (!order)
         return false;
     return is_supported_transpose_order(order->cast_vector<int32_t>());
@@ -110,3 +112,4 @@ FuseTransposeBrgemm::FuseTransposeBrgemm() {
 }  // namespace pass
 }  // namespace snippets
 }  // namespace ov
+

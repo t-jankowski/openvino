@@ -8,11 +8,13 @@
 #include "snippets/snippets_isa.hpp"
 #include "snippets/utils/utils.hpp"
 
-#include "openvino/opsets/opset1.hpp"
 #include "openvino/op/util/op_types.hpp"
 #include "openvino/core/rt_info.hpp"
 
 #include <numeric>
+#include "openvino/op/mod.hpp"
+#include "openvino/op/prelu.hpp"
+#include "openvino/op/squared_difference.hpp"
 
 namespace {
 
@@ -111,3 +113,4 @@ ov::snippets::pass::InsertMoveBroadcast::InsertMoveBroadcast() {
 
     register_matcher(std::make_shared<ov::pass::pattern::Matcher>(any, matcher_name), callback);
 }
+

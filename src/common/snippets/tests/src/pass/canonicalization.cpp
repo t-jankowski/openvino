@@ -8,12 +8,13 @@
 #include "snippets/pass/canonicalization.hpp"
 #include "snippets/op/rank_normalization.hpp"
 #include <subgraph_simple.hpp>
+#include "openvino/op/parameter.hpp"
 
 namespace ov {
 namespace test {
 namespace snippets {
 namespace {
-void normalizeParameter(const std::shared_ptr<ov::opset1::Parameter>& par, size_t num_prepend, size_t num_append) {
+void normalizeParameter(const std::shared_ptr<ov::op::v0::Parameter>& par, size_t num_prepend, size_t num_append) {
     auto target_inputs = par->get_output_target_inputs(0);
     auto rank_norm = std::make_shared<ov::snippets::op::RankNormalization>(par,
                                                                            num_prepend,
@@ -87,3 +88,4 @@ TEST_F(CanonicalizationTests, smoke_Snippets_Canonicalization_2) {
 }  // namespace snippets
 }  // namespace test
 }  // namespace ov
+

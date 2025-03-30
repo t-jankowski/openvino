@@ -14,7 +14,7 @@
 #include "openvino/core/meta_data.hpp"
 #include "openvino/core/model.hpp"
 #include "openvino/op/util/framework_node.hpp"
-#include "openvino/opsets/opset1.hpp"
+#include "openvino/op/util/op_types.hpp"
 #include "openvino/runtime/aligned_buffer.hpp"
 #include "transformations/rt_info/primitives_priority_attribute.hpp"
 

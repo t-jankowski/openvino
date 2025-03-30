@@ -4,7 +4,6 @@
 
 #include <gtest/gtest.h>
 
-#include "openvino/opsets/opset10.hpp"
 #include "snippets/snippets_isa.hpp"
 #include "snippets/lowered/linear_ir.hpp"
 #include "snippets/lowered/pass/cleanup_loop_offsets.hpp"
@@ -19,6 +18,9 @@
 #include "snippets/lowered/pass/validate_expanded_loops.hpp"
 #include "snippets/lowered/pass/normalize_loop_ids.hpp"
 #include "snippets/shape_inference/shape_inference.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 using Snippets_TailProcessingTransformation = ::testing::Test;
 // [Inserted Loop number, [ptr_increments, final_offsets]
@@ -34,12 +36,12 @@ static void init_linear_ir(const std::vector<ov::Shape>& in_shapes, LinearIR& li
     linear_ir = LinearIR(lir_config, std::make_shared<ov::snippets::IShapeInferSnippetsFactory>());
 
     const ov::element::Type input_precision = ov::element::f32;
-    const auto param0 = linear_ir.push_node<ov::opset10::Parameter>(input_precision, in_shapes[0]);
-    const auto param1 = linear_ir.push_node<ov::opset10::Parameter>(input_precision, in_shapes[1]);
-    const auto param2 = linear_ir.push_node<ov::opset10::Parameter>(input_precision, in_shapes[2]);
+    const auto param0 = linear_ir.push_node<ov::op::v0::Parameter>(input_precision, in_shapes[0]);
+    const auto param1 = linear_ir.push_node<ov::op::v0::Parameter>(input_precision, in_shapes[1]);
+    const auto param2 = linear_ir.push_node<ov::op::v0::Parameter>(input_precision, in_shapes[2]);
     const auto matmul = linear_ir.push_node<ov::snippets::op::Brgemm>(param0.second, param1.second);
-    const auto add = linear_ir.push_node<ov::opset10::Add>(matmul.second, param2.second);
-    const auto result = linear_ir.push_node<ov::opset10::Result>(add.second);
+    const auto add = linear_ir.push_node<ov::op::v1::Add>(matmul.second, param2.second);
+    const auto result = linear_ir.push_node<ov::op::v0::Result>(add.second);
 
     const auto loop_manager = linear_ir.get_loop_manager();
     linear_ir.get_loop_manager()->mark_loop(matmul.first, add.first, in_shapes[0].front(), block_size,
@@ -183,3 +185,4 @@ TEST(Snippets_TailProcessingTransformation, BlockedTail_CleanUpPtrShifts) {
 
     validate(linear_ir, reference);
 }
+

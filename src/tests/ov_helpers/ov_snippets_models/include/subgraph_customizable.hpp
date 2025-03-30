@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include "snippets_helpers.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/util/op_types.hpp"
 #include "snippets/utils/utils.hpp"
-#include "openvino/op/add.hpp"
-#include "openvino/op/add.hpp"
+#include "snippets_helpers.hpp"
 
 /* This file contains definitions of rather complex functions (models) that support (and require)
  * specification of some the internal operations. This flexibility is required to extend coverage of
@@ -148,5 +148,3 @@ private:
 }  // namespace snippets
 }  // namespace test
 }  // namespace ov
-
-

@@ -67,6 +67,16 @@
 #include <algorithm>
 #include <memory>
 #include <array>
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/group_normalization.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/softmax.hpp"
+#include "openvino/op/transpose.hpp"
 
 using namespace std;
 using namespace ov::op::util;
@@ -227,13 +237,13 @@ auto Subgraph::wrap_node_as_subgraph(const std::shared_ptr<ov::Node>& node) -> s
     ov::OutputVector subgraph_inputs;
 
     for (const auto& input : node->input_values()) {
-        if (ov::is_type<ov::opset1::Constant>(input.get_node_shared_ptr()) &&
+        if (ov::is_type<ov::op::v0::Constant>(input.get_node_shared_ptr()) &&
             (ov::shape_size(input.get_shape()) == 1 ||
              ov::is_type<ov::op::v0::FakeQuantize>(node) ||
              constant_input_should_be_inside_body(node))) {
             body_inputs.push_back(input);
         } else {
-            auto parameter = std::make_shared<ov::opset1::Parameter>(input.get_element_type(), input.get_partial_shape());
+            auto parameter = std::make_shared<ov::op::v0::Parameter>(input.get_element_type(), input.get_partial_shape());
             body_parameters.push_back(parameter);
             body_parameters.back()->set_friendly_name(input.get_node()->get_friendly_name());
             body_inputs.push_back(parameter->output(0));
@@ -254,7 +264,7 @@ auto Subgraph::wrap_node_as_subgraph(const std::shared_ptr<ov::Node>& node) -> s
 
     ov::ResultVector body_results;
     for (const auto& output : node->outputs()) {
-        body_results.push_back(std::make_shared<ov::opset1::Result>(body_node->output(output.get_index())));
+        body_results.push_back(std::make_shared<ov::op::v0::Result>(body_node->output(output.get_index())));
     }
 
     auto body = create_body(node->get_friendly_name(), body_results, body_parameters);
@@ -376,7 +386,7 @@ Subgraph::convert_body_to_linear_ir(size_t min_parallel_work_amount, size_t min_
 std::shared_ptr<Subgraph> Subgraph::clone() const {
     ov::OutputVector subgraph_node_inputs;
     for (const auto &input : input_values()) {
-        auto new_input = std::make_shared<ov::opset1::Parameter>(input.get_element_type(), input.get_partial_shape());
+        auto new_input = std::make_shared<ov::op::v0::Parameter>(input.get_element_type(), input.get_partial_shape());
         subgraph_node_inputs.push_back(new_input);
     }
     std::shared_ptr<ov::Model> new_body = body_ptr()->clone();
@@ -596,3 +606,4 @@ void Subgraph::print() const {
 } // namespace op
 } // namespace snippets
 } // namespace ov
+

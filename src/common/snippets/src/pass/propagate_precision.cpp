@@ -12,6 +12,7 @@
 
 #include <assert.h>
 #include <memory>
+#include "openvino/op/result.hpp"
 
 
 ov::snippets::pass::PropagatePrecision::PropagatePrecision(
@@ -22,7 +23,7 @@ bool ov::snippets::pass::PropagatePrecision::run_on_model(const std::shared_ptr<
     RUN_ON_MODEL_SCOPE(PropagatePrecision);
     OV_ITT_SCOPED_TASK(ov::pass::itt::domains::SnippetsTransform, "Snippets::op::PropagatePrecision")
 
-    std::unordered_map<std::shared_ptr<ov::opset1::Result>, element::Type> result_types;
+    std::unordered_map<std::shared_ptr<ov::op::v0::Result>, element::Type> result_types;
     auto results = f->get_results();
     for (auto& result : results) {
         result_types.emplace(result, result->get_input_element_type(0));
@@ -303,3 +304,4 @@ std::vector<ov::element::Type> ov::snippets::pass::PropagatePrecision::get_preci
 
     return {};
 }
+

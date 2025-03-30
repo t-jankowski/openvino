@@ -12,6 +12,7 @@
 #include "openvino/core/rt_info.hpp"
 #include "openvino/pass/pattern/op/wrap_type.hpp"
 #include "transformations/utils/utils.hpp"
+#include "openvino/op/matmul.hpp"
 
 namespace ov {
 namespace snippets {
@@ -21,12 +22,12 @@ using namespace lowered;
 
 MatMulToBrgemm::MatMulToBrgemm() {
     MATCHER_SCOPE(MatMulToBrgemm);
-    auto matmul_pattern = ov::pass::pattern::wrap_type<ov::opset1::MatMul>({ov::pass::pattern::any_input(), ov::pass::pattern::any_input()});
+    auto matmul_pattern = ov::pass::pattern::wrap_type<ov::op::v0::MatMul>({ov::pass::pattern::any_input(), ov::pass::pattern::any_input()});
 
     auto callback = [matmul_pattern](ov::pass::pattern::Matcher& m) {
         OV_ITT_SCOPED_TASK(ov::pass::itt::domains::SnippetsTransform, "ov::intel_cpu::pass::MatMulToBrgemm")
         const auto& pm = m.get_pattern_value_map();
-        const auto matmul = as_type_ptr<ov::opset1::MatMul>(pm.at(matmul_pattern).get_node_shared_ptr());
+        const auto matmul = as_type_ptr<ov::op::v0::MatMul>(pm.at(matmul_pattern).get_node_shared_ptr());
         // Brgemm doesn't support transposed inputs currently, so we don't convert such matmuls
         if (matmul->get_transpose_a())
             return false;
@@ -65,3 +66,4 @@ MatMulToBrgemm::MatMulToBrgemm() {
 }  // namespace pass
 }  // namespace snippets
 }  // namespace ov
+

@@ -13,6 +13,16 @@
 #include "snippets/pass/mha_tokenization.hpp"
 #include "snippets/utils/utils.hpp"
 #include "transformations/utils/utils.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/select.hpp"
+#include "openvino/op/softmax.hpp"
+#include "openvino/op/transpose.hpp"
 
 namespace {
 bool is_supported_tensor(const ov::descriptor::Tensor& t) {
@@ -29,9 +39,9 @@ bool is_supported_intermediate_op(const std::shared_ptr<ov::Node>& node) {
     return is_intermediate_op(node) && ov::snippets::pass::TokenizeSnippets::AppropriateForSubgraph(node);
 }
 
-bool is_valid_transpose(const std::shared_ptr<ov::opset1::Transpose>& node, const std::set<size_t>& supported_ranks, std::vector<int32_t> expected_order) {
+bool is_valid_transpose(const std::shared_ptr<ov::op::v1::Transpose>& node, const std::set<size_t>& supported_ranks, std::vector<int32_t> expected_order) {
     auto is_valid_transpose_order = [expected_order, supported_ranks](const std::shared_ptr<ov::Node>& node) -> bool {
-        const auto transpose_pattern = ov::as_type_ptr<ov::opset1::Constant>(node);
+        const auto transpose_pattern = ov::as_type_ptr<ov::op::v0::Constant>(node);
         if (!transpose_pattern)
             return false;
         const auto existing_order = transpose_pattern->cast_vector<int32_t>();
@@ -64,7 +74,7 @@ void tokenize_broadcast(const std::shared_ptr<ov::Node>& interm_op, ov::NodeVect
     };
 
     for (auto input : interm_op->inputs()) {
-        auto broadcast = ov::as_type_ptr<ov::opset1::Broadcast>(input.get_source_output().get_node_shared_ptr());
+        auto broadcast = ov::as_type_ptr<ov::op::v1::Broadcast>(input.get_source_output().get_node_shared_ptr());
         // TODO: Can we reuse AppropriateForSubgraph here? Seems like it's huge check for Broadcast
         if (broadcast && broadcast->get_broadcast_spec().m_type == ov::op::AutoBroadcastType::NUMPY &&
             broadcast->get_output_target_inputs(0).size() == 1) {
@@ -97,8 +107,8 @@ void tokenize_broadcast(const std::shared_ptr<ov::Node>& interm_op, ov::NodeVect
     }
 }
 
-bool tokenize_reshape_around_softmax(std::shared_ptr<ov::Node>& interm_op, std::shared_ptr<ov::opset1::Reshape>& reshape, ov::NodeVector& ordered_ops) {
-    reshape = ov::as_type_ptr<ov::opset1::Reshape>(interm_op);
+bool tokenize_reshape_around_softmax(std::shared_ptr<ov::Node>& interm_op, std::shared_ptr<ov::op::v1::Reshape>& reshape, ov::NodeVector& ordered_ops) {
+    reshape = ov::as_type_ptr<ov::op::v1::Reshape>(interm_op);
     if (reshape) {
         // TODO: Add support of Reshape with ShapeOf subgraph on second input
         if (!ov::is_type<ov::op::v0::Constant>(reshape->input_value(1).get_node_shared_ptr()))
@@ -203,7 +213,7 @@ std::vector<int32_t> ov::snippets::pass::TokenizeMHASnippets::get_decomposed_tra
     return get_rank_equivalent_order({1, 2, 0}, rank);
 }
 
-bool ov::snippets::pass::TokenizeMHASnippets::is_matmul0_supported(const std::shared_ptr<ov::opset1::MatMul>& matmul) {
+bool ov::snippets::pass::TokenizeMHASnippets::is_matmul0_supported(const std::shared_ptr<ov::op::v0::MatMul>& matmul) {
     if (!matmul || matmul->get_output_target_inputs(0).size() != 1 || matmul->get_transpose_a() ||
         !is_supported_tensor(matmul->get_input_tensor(0)) || !is_supported_tensor(matmul->get_input_tensor(1)))
         return false;
@@ -215,7 +225,7 @@ bool ov::snippets::pass::TokenizeMHASnippets::is_matmul0_supported(const std::sh
 ov::snippets::pass::TokenizeMHASnippets::TokenizeMHASnippets(const SnippetsTokenization::Config& config) {
     MATCHER_SCOPE(TokenizeMHASnippets);
 
-    auto m_matmul0 = std::make_shared<ov::opset1::MatMul>(ov::pass::pattern::any_input(), ov::pass::pattern::any_input());
+    auto m_matmul0 = std::make_shared<ov::op::v0::MatMul>(ov::pass::pattern::any_input(), ov::pass::pattern::any_input());
 
     register_matcher(std::make_shared<ov::pass::pattern::Matcher>(m_matmul0, matcher_name),
         [OV_CAPTURE_CPY_AND_THIS](ov::pass::pattern::Matcher &m) {
@@ -260,7 +270,7 @@ ov::snippets::pass::TokenizeMHASnippets::TokenizeMHASnippets(const SnippetsToken
          *                  \      /
          *                   MatMul1
          */
-        const auto matmul0 = ov::as_type_ptr<ov::opset1::MatMul>(pattern_to_output.at(m_matmul0).get_node_shared_ptr());
+        const auto matmul0 = ov::as_type_ptr<ov::op::v0::MatMul>(pattern_to_output.at(m_matmul0).get_node_shared_ptr());
         if (!is_matmul0_supported(matmul0))
             return false;
 
@@ -273,7 +283,7 @@ ov::snippets::pass::TokenizeMHASnippets::TokenizeMHASnippets(const SnippetsToken
         if (!update_intermediate_supported_ops(interm_op, ordered_ops, hidden_virtual_ports_count, potential_body_params_count))
             return false;
 
-        std::shared_ptr<ov::opset1::Reshape> reshape0 = nullptr;
+        std::shared_ptr<ov::op::v1::Reshape> reshape0 = nullptr;
         if (!tokenize_reshape_around_softmax(interm_op, reshape0, ordered_ops))
             return false;
 
@@ -293,7 +303,7 @@ ov::snippets::pass::TokenizeMHASnippets::TokenizeMHASnippets(const SnippetsToken
         ordered_ops.push_back(interm_op);
 
         interm_op = interm_op->get_output_target_inputs(0).begin()->get_node()->shared_from_this();
-        std::shared_ptr<ov::opset1::Reshape> reshape1 = nullptr;
+        std::shared_ptr<ov::op::v1::Reshape> reshape1 = nullptr;
         if (!tokenize_reshape_around_softmax(interm_op, reshape1, ordered_ops))
             return false;
 
@@ -305,7 +315,7 @@ ov::snippets::pass::TokenizeMHASnippets::TokenizeMHASnippets(const SnippetsToken
         if (!update_intermediate_supported_ops(interm_op, ordered_ops, hidden_virtual_ports_count, potential_body_params_count))
             return false;
 
-        const auto matmul1 = ov::as_type_ptr<ov::opset1::MatMul>(interm_op);
+        const auto matmul1 = ov::as_type_ptr<ov::op::v0::MatMul>(interm_op);
         if (!matmul1 || matmul1->get_transpose_a() || matmul1->get_transpose_b())
             return false;
 
@@ -343,7 +353,7 @@ ov::snippets::pass::TokenizeMHASnippets::TokenizeMHASnippets(const SnippetsToken
          *                  Transpose3
          */
 
-        auto tokenize_transpose = [&](const std::shared_ptr<ov::opset1::Transpose>& transpose,
+        auto tokenize_transpose = [&](const std::shared_ptr<ov::op::v1::Transpose>& transpose,
                                       bool is_input_transposed, std::vector<int32_t> order,
                                       const ov::NodeVector::const_iterator& pos) {
             // If Transpose has valid order for the Transpose fusing (ExplicitTransposeMatMulInputs pass call), tokenize him.
@@ -368,9 +378,9 @@ ov::snippets::pass::TokenizeMHASnippets::TokenizeMHASnippets(const SnippetsToken
         //          (in other words, if the Buffer should be inserted between Brgemm and this op sequence),
         //          we don't tokenize such operations into Subgraph. The details are described in the ticket 160177.
         //          Please, return the tokenization of these ops when parallel loops are implemented.
-        const auto transpose0 = ov::as_type_ptr<ov::opset1::Transpose>(matmul0->get_input_node_shared_ptr(0));
-        const auto transpose1 = ov::as_type_ptr<ov::opset1::Transpose>(matmul0->get_input_node_shared_ptr(1));
-        const auto transpose2 = ov::as_type_ptr<ov::opset1::Transpose>(matmul1->get_input_node_shared_ptr(1));
+        const auto transpose0 = ov::as_type_ptr<ov::op::v1::Transpose>(matmul0->get_input_node_shared_ptr(0));
+        const auto transpose1 = ov::as_type_ptr<ov::op::v1::Transpose>(matmul0->get_input_node_shared_ptr(1));
+        const auto transpose2 = ov::as_type_ptr<ov::op::v1::Transpose>(matmul1->get_input_node_shared_ptr(1));
         tokenize_transpose(transpose0, matmul0->get_transpose_a(), get_fusion_transpose_order(pattern_rank), ordered_ops.begin());
         tokenize_transpose(transpose1, matmul0->get_transpose_b(), get_fusion_transpose_order(pattern_rank), ordered_ops.begin());
         tokenize_transpose(transpose2, matmul1->get_transpose_b(), get_fusion_transpose_order(pattern_rank), ordered_ops.end());
@@ -412,7 +422,7 @@ ov::snippets::pass::TokenizeMHASnippets::TokenizeMHASnippets(const SnippetsToken
         //  <Supported ops>
         //    Transpose3
         if (can_be_ops_after_matmul1_tokenized && !are_ops_after_matmul1) {
-            auto transpose3 = config.get_mha_token_enable_transpose_on_output() ? ov::as_type_ptr<ov::opset1::Transpose>(child) : nullptr;
+            auto transpose3 = config.get_mha_token_enable_transpose_on_output() ? ov::as_type_ptr<ov::op::v1::Transpose>(child) : nullptr;
             if (is_valid_transpose(transpose3, config.get_mha_supported_transpose_ranks(), get_fusion_transpose_order(pattern_rank)) &&
                 transpose3->get_input_element_type(0) == matmul1_out_type) {  // To avoid Convert between MatMul1 and Transpose3
                 ordered_ops.push_back(transpose3);
@@ -494,7 +504,7 @@ ov::snippets::pass::TokenizeMHASnippets::TokenizeMHASnippets(const SnippetsToken
                         }
                     }
                 } else if (std::find(ordered_ops.begin(), ordered_ops.end(), parent) == ordered_ops.end()) {
-                    auto parameter = std::make_shared<ov::opset1::Parameter>(input.get_element_type(), input.get_partial_shape());
+                    auto parameter = std::make_shared<ov::op::v0::Parameter>(input.get_element_type(), input.get_partial_shape());
                     body_parameters.push_back(parameter);
                     body_parameters.back()->set_friendly_name(input.get_node()->get_friendly_name());
                     body_inputs.push_back(parameter->output(0));
@@ -516,7 +526,7 @@ ov::snippets::pass::TokenizeMHASnippets::TokenizeMHASnippets(const SnippetsToken
             subgraph_result_inputs.push_back(output.get_target_inputs());
         }
         for (const auto& output : last_node->outputs()) {
-            body_results.push_back(std::make_shared<ov::opset1::Result>(last_node->output(output.get_index())));
+            body_results.push_back(std::make_shared<ov::op::v0::Result>(last_node->output(output.get_index())));
         }
 
         if (body_results.size() != subgraph_result_inputs.size()) {
@@ -553,3 +563,4 @@ ov::snippets::pass::TokenizeMHASnippets::TokenizeMHASnippets(const SnippetsToken
         /* ================================ */
     });
 }
+

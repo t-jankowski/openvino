@@ -9,6 +9,9 @@
 #include "snippets/lowered/port_descriptor.hpp"
 #include "openvino/pass/pattern/op/wrap_type.hpp"
 #include "transformations/utils/utils.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/transpose.hpp"
 
 namespace ov {
 namespace snippets {
@@ -16,10 +19,10 @@ namespace pass {
 using namespace lowered;
 
 bool TransposeDecomposition::is_supported_transpose(const Output<Node>& transpose_out) {
-    const auto transpose = ov::as_type_ptr<const ov::opset1::Transpose>(transpose_out.get_node_shared_ptr());
+    const auto transpose = ov::as_type_ptr<const ov::op::v1::Transpose>(transpose_out.get_node_shared_ptr());
     if (!transpose)
         return false;
-    const auto order = ov::as_type_ptr<const ov::opset1::Constant>(transpose->get_input_node_shared_ptr(1));
+    const auto order = ov::as_type_ptr<const ov::op::v0::Constant>(transpose->get_input_node_shared_ptr(1));
     if (!order)
         return false;
     return is_supported_transpose_order(order->cast_vector<int32_t>());
@@ -40,13 +43,13 @@ TransposeDecomposition::TransposeDecomposition() {
     //       to the appropriate parameter
     auto match_data = ov::pass::pattern::wrap_type<ov::op::v0::Parameter>();
     auto match_order = ov::pass::pattern::wrap_type<ov::op::v0::Constant>();
-    auto match_transpose = ov::pass::pattern::wrap_type<ov::opset1::Transpose>({match_data, match_order});
+    auto match_transpose = ov::pass::pattern::wrap_type<ov::op::v1::Transpose>({match_data, match_order});
 
     ov::matcher_pass_callback callback = [OV_CAPTURE_CPY_AND_THIS](ov::pass::pattern::Matcher& m) {
         OV_ITT_SCOPED_TASK(ov::pass::itt::domains::SnippetsTransform, "Snippets::op::TransposeDecomposition")
         auto& pattern_to_output = m.get_pattern_value_map();
         const auto& data_input = pattern_to_output.at(match_data);
-        const auto transpose = ov::as_type_ptr<ov::opset1::Transpose>(pattern_to_output.at(match_transpose).get_node_shared_ptr());
+        const auto transpose = ov::as_type_ptr<ov::op::v1::Transpose>(pattern_to_output.at(match_transpose).get_node_shared_ptr());
 
         const auto order = ov::as_type_ptr<ov::op::v0::Constant>(pattern_to_output.at(match_order).get_node_shared_ptr());
         if (transformation_callback(transpose))
@@ -84,3 +87,4 @@ TransposeDecomposition::TransposeDecomposition() {
 }  // namespace pass
 }  // namespace snippets
 }  // namespace ov
+

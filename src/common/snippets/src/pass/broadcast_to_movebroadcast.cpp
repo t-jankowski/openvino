@@ -8,8 +8,8 @@
 #include "snippets/op/broadcastmove.hpp"
 #include "openvino/pass/pattern/op/wrap_type.hpp"
 
-#include "openvino/opsets/opset1.hpp"
 #include "openvino/core/rt_info.hpp"
+#include "openvino/op/broadcast.hpp"
 
 
 ov::snippets::pass::BroadcastToMoveBroadcast::BroadcastToMoveBroadcast() {
@@ -49,3 +49,4 @@ ov::snippets::pass::BroadcastToMoveBroadcast::BroadcastToMoveBroadcast() {
     auto m = std::make_shared<ov::pass::pattern::Matcher>(m_broadcast, matcher_name);
     register_matcher(m, callback);
 }
+

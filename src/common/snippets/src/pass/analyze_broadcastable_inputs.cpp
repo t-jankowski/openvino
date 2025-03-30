@@ -7,6 +7,10 @@
 #include "snippets/lowered/pass/insert_broadcastmove.hpp"
 #include "snippets/utils/utils.hpp"
 #include "snippets/itt.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/transpose.hpp"
 
 namespace ov {
 namespace snippets {
@@ -56,7 +60,7 @@ bool pass::AnalyzeBroadcastableInputs::run_on_model(const std::shared_ptr<ov::Mo
                     OPENVINO_ASSERT(consumers.size() == 1, "Incorrect count of outputs of Parameter!");
                     const auto transpose = consumers.begin()->get_node();
                     std::vector<size_t> order;
-                    const auto& constant = ov::as_type_ptr<const opset1::Constant>(transpose->get_input_node_shared_ptr(1));
+                    const auto& constant = ov::as_type_ptr<const ov::op::v0::Constant>(transpose->get_input_node_shared_ptr(1));
                     OPENVINO_ASSERT(constant, "Unsupported order node of Transpose");
                     order = constant->cast_vector<size_t>();
                     if (order.empty()) {

@@ -4,7 +4,6 @@
 
 #pragma once
 #include <openvino/core/node.hpp>
-#include <openvino/opsets/opset1.hpp>
 
 #include "snippets/lowered/linear_ir.hpp"
 #include "snippets/lowered/loop_info.hpp"
@@ -324,3 +323,4 @@ using LoopManagerPtr = std::shared_ptr<LoopManager>;
 } // namespace lowered
 } // namespace snippets
 } // namespace ov
+

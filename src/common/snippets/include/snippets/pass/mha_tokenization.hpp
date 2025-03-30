@@ -6,6 +6,7 @@
 
 #include "openvino/pass/matcher_pass.hpp"
 #include "snippets/pass/tokenization.hpp"
+#include "openvino/op/matmul.hpp"
 
 namespace ov {
 namespace snippets {
@@ -45,9 +46,10 @@ public:
 
     static std::vector<int32_t> get_fusion_transpose_order(size_t rank);
     static std::vector<int32_t> get_decomposed_transpose_order(size_t rank);
-    static bool is_matmul0_supported(const std::shared_ptr<ov::opset1::MatMul>& matmul);
+    static bool is_matmul0_supported(const std::shared_ptr<ov::op::v0::MatMul>& matmul);
 };
 
 }  // namespace pass
 }  // namespace snippets
 }  // namespace ov
+

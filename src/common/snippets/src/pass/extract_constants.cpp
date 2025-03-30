@@ -4,8 +4,9 @@
 
 #include "snippets/pass/extract_constants.hpp"
 
-#include "openvino/opsets/opset1.hpp"
 #include "snippets/itt.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/parameter.hpp"
 
 
 bool ov::snippets::pass::ExtractConstants::run_on_subgraph(const std::shared_ptr<op::Subgraph>& subgraph) {
@@ -40,3 +41,4 @@ bool ov::snippets::pass::ExtractConstants::run_on_subgraph(const std::shared_ptr
 
     return false;
 }
+

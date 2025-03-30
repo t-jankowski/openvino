@@ -7,6 +7,10 @@
 
 #include "snippets/utils/tokenization_utils.hpp"
 #include "snippets/remarks.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
 
 namespace ov {
 namespace snippets {
@@ -18,7 +22,7 @@ using namespace ov::snippets::pass;
 namespace {
 auto has_result_child(const std::shared_ptr<const Node> &node) -> bool {
     for (const auto& child : node->get_users()) {
-        if (ov::is_type<ov::opset1::Result>(child)) {
+        if (ov::is_type<ov::op::v0::Result>(child)) {
             return true;
         }
     }
@@ -28,7 +32,7 @@ auto has_result_child(const std::shared_ptr<const Node> &node) -> bool {
 auto get_num_result_children(const std::shared_ptr<const Node> &node) -> size_t {
     size_t result = 0;
     for (const auto& child : node->get_users()) {
-        if (ov::is_type<ov::opset1::Result>(child)) {
+        if (ov::is_type<ov::op::v0::Result>(child)) {
             result++;
         }
     }
@@ -240,7 +244,7 @@ bool tokenize_node(const std::shared_ptr<ov::Node>& node, const SnippetsTokeniza
             //     After ConstantFolding we will move remaining non-scalar Constants from body using ConvertConstantsToParameters pass
             // [*] We support Transpose with second Constant input (represents order). This Constant will not be scheduled
             //     and will only be used to decompose Transpose into a proper Load, Store and Loop combination.
-            if (ov::is_type<ov::opset1::Constant>(input_node) &&
+            if (ov::is_type<ov::op::v0::Constant>(input_node) &&
                 (ov::shape_size(input_value.get_shape()) == 1 ||
                     ov::is_type<ov::op::v0::FakeQuantize>(node) ||
                     op::Subgraph::constant_input_should_be_inside_body(node))) {

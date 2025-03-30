@@ -10,6 +10,11 @@
 #include <openvino/op/parameter.hpp>
 #include <openvino/op/result.hpp>
 #include <snippets/snippets_isa.hpp>
+#include "openvino/op/logical_not.hpp"
+#include "openvino/op/prelu.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/result.hpp"
+#include "openvino/op/select.hpp"
 
 namespace ov {
 namespace snippets {
@@ -59,7 +64,7 @@ const IShapeInferSnippetsFactory::TRegistry IShapeInferSnippetsFactory::registry
         SHAPE_INFER_PREDEFINED(op::KernelStatic, EmptyShapeInfer),
         SHAPE_INFER_PREDEFINED(op::KernelDynamic, EmptyShapeInfer),
         SHAPE_INFER_PREDEFINED(op::Nop, EmptyShapeInfer),
-        SHAPE_INFER_OP_SPECIFIC_EXTERNAL(opset1::Select, SelectShapeInfer),
+        SHAPE_INFER_OP_SPECIFIC_EXTERNAL(ov::op::v1::Select, SelectShapeInfer),
         SHAPE_INFER_OP_SPECIFIC_EXTERNAL(op::Brgemm, BrgemmShapeInfer),
         SHAPE_INFER_OP_SPECIFIC_EXTERNAL(op::ReduceMax, ReduceShapeInfer),
         SHAPE_INFER_OP_SPECIFIC_EXTERNAL(op::ReduceSum, ReduceShapeInfer),
@@ -97,3 +102,4 @@ std::shared_ptr<IShapeInferSnippets> make_shape_inference(const std::shared_ptr<
 
 } // namespace snippets
 } // namespace ov
+

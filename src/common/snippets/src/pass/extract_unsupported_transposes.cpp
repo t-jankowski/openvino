@@ -4,9 +4,11 @@
 
 #include "snippets/pass/extract_unsupported_transposes.hpp"
 
-#include "openvino/opsets/opset1.hpp"
 #include "snippets/pass/mha_tokenization.hpp"
 #include "snippets/itt.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/transpose.hpp"
 
 
 bool ov::snippets::pass::ExtractUnsupportedTransposes::run_on_subgraph(const std::shared_ptr<op::Subgraph>& subgraph) {
@@ -25,16 +27,16 @@ bool ov::snippets::pass::ExtractUnsupportedTransposes::run_on_subgraph(const std
         if (consumers.size() != 1)
             continue;
 
-        const auto transpose = ov::as_type_ptr<opset1::Transpose>(consumers.begin()->get_node()->shared_from_this());
+        const auto transpose = ov::as_type_ptr<ov::op::v1::Transpose>(consumers.begin()->get_node()->shared_from_this());
         if (!transpose)
             continue;
 
-        const auto& order = ov::as_type_ptr<opset1::Constant>(transpose->get_input_node_shared_ptr(1));
+        const auto& order = ov::as_type_ptr<ov::op::v0::Constant>(transpose->get_input_node_shared_ptr(1));
         OPENVINO_ASSERT(order, "ExtractUnsupportedTransposes expects Transposes with constant order");
 
         const auto order_value = order->cast_vector<int>();
         const auto transpose_child = *(transpose->get_output_target_inputs(0).begin());
-        const auto is_brgemm_case = ov::is_type<opset1::MatMul>(transpose_child.get_node()->shared_from_this());
+        const auto is_brgemm_case = ov::is_type<ov::op::v0::MatMul>(transpose_child.get_node()->shared_from_this());
         // If Transpose is supported (can be decomposed or fused into Brgemm), skip
         // [116568]: It should be covered by TransposeDecomposition::is_supported or FuseTransposeBrgemm::is_supported
         if ((is_brgemm_case && TokenizeMHASnippets::get_fusion_transpose_order(order_value.size()) == order_value) ||
@@ -55,3 +57,4 @@ bool ov::snippets::pass::ExtractUnsupportedTransposes::run_on_subgraph(const std
 
     return updated;
 }
+

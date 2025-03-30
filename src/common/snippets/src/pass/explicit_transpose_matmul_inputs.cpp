@@ -9,6 +9,10 @@
 #include "openvino/pass/pattern/op/wrap_type.hpp"
 #include "snippets/itt.hpp"
 #include "snippets/op/subgraph.hpp"
+#include "openvino/op/constant.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/parameter.hpp"
+#include "openvino/op/transpose.hpp"
 
 bool ov::snippets::pass::ExplicitTransposeMatMulInputs::are_weights_scalar(const std::shared_ptr<ov::Node>& node) {
     const auto inputs = node->inputs();
@@ -50,7 +54,7 @@ void ov::snippets::pass::ExplicitTransposeMatMulInputs::extract(const ov::Input<
     }
 
     // Create new Transpose before Parameter
-    OPENVINO_ASSERT(ov::is_type<opset1::Parameter>(parent),
+    OPENVINO_ASSERT(ov::is_type<ov::op::v0::Parameter>(parent),
                     "ExplicitTransposeMatMulInputs expects Parameter in cases when there isn't existing Transpose on input");
     const auto& consumers = parent->get_output_target_inputs(0);
     OPENVINO_ASSERT(consumers.size() == 1,
@@ -63,8 +67,8 @@ void ov::snippets::pass::ExplicitTransposeMatMulInputs::extract(const ov::Input<
     std::iota(transpose_order.begin(), transpose_order.end(), 0);
     std::swap(transpose_order[rank - 1], transpose_order[rank - 2]);
 
-    const auto constant_order = std::make_shared<opset1::Constant>(ov::element::i32, ov::Shape{rank}, transpose_order);
-    const auto new_transpose = std::make_shared<opset1::Transpose>(parent, constant_order); // parent is Parameter
+    const auto constant_order = std::make_shared<ov::op::v0::Constant>(ov::element::i32, ov::Shape{rank}, transpose_order);
+    const auto new_transpose = std::make_shared<ov::op::v1::Transpose>(parent, constant_order); // parent is Parameter
     const auto consumer_input = *(consumers.begin());
     consumer_input.replace_source_output(new_transpose);
 }
@@ -99,3 +103,4 @@ ov::snippets::pass::ExplicitTransposeMatMulInputs::ExplicitTransposeMatMulInputs
             return rewritten;
         });
 }
+

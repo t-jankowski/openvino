@@ -9,21 +9,22 @@
 
 #include "openvino/core/rt_info.hpp"
 #include "openvino/pass/pattern/op/wrap_type.hpp"
+#include "openvino/op/convert.hpp"
 
 ov::snippets::pass::TransformConvertToConvertTruncation::TransformConvertToConvertTruncation() {
     MATCHER_SCOPE(TransformConvertToConvertTruncation);
     auto convert = std::make_shared<ov::pass::pattern::op::Label>(
         ov::pass::pattern::any_input(),
         [](const std::shared_ptr<const Node>& n) {
-            return ov::is_type<ov::opset1::Convert>(n) &&
+            return ov::is_type<ov::op::v0::Convert>(n) &&
                    !ov::is_type_any_of<op::ConvertTruncation, op::ConvertSaturation>(n);
         });
 
     register_matcher(std::make_shared<ov::pass::pattern::Matcher>(
-        ov::pass::pattern::wrap_type<ov::opset1::Convert>(), matcher_name), [](ov::pass::pattern::Matcher &m) {
+        ov::pass::pattern::wrap_type<ov::op::v0::Convert>(), matcher_name), [](ov::pass::pattern::Matcher &m) {
             OV_ITT_SCOPED_TASK(ov::pass::itt::domains::SnippetsTransform, "Snippets::op::TransformConvertToConvertTruncation")
             const auto root = m.get_match_root();
-            const auto convert = ov::as_type_ptr<ov::opset1::Convert>(root);
+            const auto convert = ov::as_type_ptr<ov::op::v0::Convert>(root);
             auto convert_truncation = std::make_shared<op::ConvertTruncation>(convert->get_input_source_output(0),
                                                                               convert->get_destination_type());
             convert_truncation->set_friendly_name(convert->get_friendly_name());
@@ -33,3 +34,4 @@ ov::snippets::pass::TransformConvertToConvertTruncation::TransformConvertToConve
             return true;
         });
 }
+

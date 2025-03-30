@@ -5,7 +5,6 @@
 #pragma once
 
 #include <openvino/core/node.hpp>
-#include <openvino/opsets/opset1.hpp>
 
 #include "snippets/emitter.hpp"
 #include "snippets/lowered/port_connector.hpp"
@@ -138,3 +137,4 @@ protected:
 } // namespace lowered
 } // namespace snippets
 } // namespace ov
+
