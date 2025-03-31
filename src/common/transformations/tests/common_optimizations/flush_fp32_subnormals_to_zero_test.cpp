@@ -8,13 +8,15 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/core/model.hpp"
-#include "openvino/opsets/opset10.hpp"
+#include "openvino/op/convolution.hpp"
 #include "openvino/pass/manager.hpp"
 #include "transformations/init_node_info.hpp"
 
 using namespace testing;
 using namespace ov;
-using namespace ov::opset10;
+using ov::op::v0::Constant;
+using ov::op::v0::Parameter;
+using ov::op::v1::Convolution;
 using namespace std;
 
 namespace {

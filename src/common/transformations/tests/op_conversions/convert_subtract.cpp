@@ -8,10 +8,7 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/op/add.hpp"
-#include "openvino/op/constant.hpp"
-#include "openvino/op/convert.hpp"
 #include "openvino/op/multiply.hpp"
-#include "openvino/op/parameter.hpp"
 #include "openvino/op/subtract.hpp"
 #include "transformations/low_precision/mark_dequantization_subgraph.hpp"
 #include "transformations/utils/utils.hpp"

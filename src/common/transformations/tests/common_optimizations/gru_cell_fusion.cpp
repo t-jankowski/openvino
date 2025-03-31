@@ -9,11 +9,35 @@
 #include <queue>
 
 #include "common_test_utils/ov_test_utils.hpp"
-#include "openvino/opsets/opset9.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/gru_cell.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/sigmoid.hpp"
+#include "openvino/op/split.hpp"
+#include "openvino/op/squeeze.hpp"
+#include "openvino/op/subtract.hpp"
+#include "openvino/op/tanh.hpp"
+#include "openvino/op/variadic_split.hpp"
 
 using namespace std;
 using namespace ov;
-using namespace ov::opset9;
+using ov::op::v0::Concat;
+using ov::op::v0::Constant;
+using ov::op::v0::MatMul;
+using ov::op::v0::Parameter;
+using ov::op::v0::Relu;
+using ov::op::v0::Sigmoid;
+using ov::op::v0::Squeeze;
+using ov::op::v0::Tanh;
+using ov::op::v1::Add;
+using ov::op::v1::Multiply;
+using ov::op::v1::Split;
+using ov::op::v1::Subtract;
+using ov::op::v1::VariadicSplit;
+using ov::op::v3::GRUCell;
 using namespace ov::element;
 using namespace testing;
 

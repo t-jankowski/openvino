@@ -11,14 +11,28 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/core/model.hpp"
-#include "openvino/opsets/opset8.hpp"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/if.hpp"
+#include "openvino/op/maximum.hpp"
+#include "openvino/op/multiply.hpp"
 #include "openvino/pass/manager.hpp"
 #include "transformations/init_node_info.hpp"
 #include "transformations/utils/utils.hpp"
 
 using namespace testing;
 using namespace ov;
-using namespace ov::opset8;
+using ov::op::v0::Abs;
+using ov::op::v0::Concat;
+using ov::op::v0::Constant;
+using ov::op::v0::Parameter;
+using ov::op::v0::Result;
+using ov::op::v1::Add;
+using ov::op::v1::Maximum;
+using ov::op::v1::Multiply;
+using ov::op::v5::Loop;
+using ov::op::v8::If;
 
 TEST_F(TransformationTestsF, FoldLoopEmptyInputs) {
     auto trip_count = std::make_shared<Constant>(element::i64, Shape{}, 10);

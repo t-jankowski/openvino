@@ -9,13 +9,34 @@
 #include "common_test_utils/ov_test_utils.hpp"
 #include "gtest/gtest.h"
 #include "openvino/frontend/manager.hpp"
-#include "openvino/opsets/opset10.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/gather.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/sinh.hpp"
+#include "openvino/op/split.hpp"
+#include "openvino/op/tanh.hpp"
+#include "openvino/op/transpose.hpp"
 #include "openvino/pass/manager.hpp"
 #include "transformations/init_node_info.hpp"
 #include "transformations/rt_info/transpose_sinking_attr.hpp"
 
 using namespace testing;
-using namespace ov::opset10;
+using ov::op::v0::Concat;
+using ov::op::v0::Constant;
+using ov::op::v0::Parameter;
+using ov::op::v0::Relu;
+using ov::op::v0::Result;
+using ov::op::v0::Sinh;
+using ov::op::v0::Tanh;
+using ov::op::v1::Add;
+using ov::op::v1::Reshape;
+using ov::op::v1::Split;
+using ov::op::v1::Transpose;
+using ov::op::v3::ShapeOf;
+using ov::op::v8::Gather;
 using namespace ov::pass::transpose_sinking;
 using NodePtr = std::shared_ptr<ov::Node>;
 

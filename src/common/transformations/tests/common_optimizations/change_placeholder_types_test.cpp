@@ -5,13 +5,18 @@
 #include "transformations/common_optimizations/change_placeholder_types.hpp"
 
 #include "gtest/gtest.h"
-#include "openvino/opsets/opset8.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/shape_of.hpp"
 #include "openvino/pass/manager.hpp"
 #include "transformations/rt_info/old_api_map_element_type_attribute.hpp"
 
 using namespace std;
 using namespace ov;
-using namespace ov::opset8;
+using ov::op::v0::Convert;
+using ov::op::v0::Parameter;
+using ov::op::v1::Add;
+using ov::op::v3::ShapeOf;
 using namespace ov::pass;
 
 using ParamNames = std::vector<std::string>;

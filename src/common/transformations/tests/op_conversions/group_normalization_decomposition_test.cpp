@@ -11,12 +11,32 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/core/model.hpp"
-#include "openvino/opsets/opset12.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/divide.hpp"
+#include "openvino/op/group_normalization.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/mvn.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/split.hpp"
+#include "openvino/op/unsqueeze.hpp"
 #include "openvino/pass/manager.hpp"
 #include "openvino/pass/visualize_tree.hpp"
 
 using namespace ov;
-using namespace opset12;
+using ov::op::v0::Concat;
+using ov::op::v0::Constant;
+using ov::op::v0::Parameter;
+using ov::op::v0::Unsqueeze;
+using ov::op::v1::Add;
+using ov::op::v1::Divide;
+using ov::op::v1::Multiply;
+using ov::op::v1::Reshape;
+using ov::op::v1::Split;
+using ov::op::v12::GroupNormalization;
+using ov::op::v3::ShapeOf;
+using ov::op::v6::MVN;
 using namespace element;
 
 namespace {

@@ -11,9 +11,7 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/core/model.hpp"
-#include "openvino/op/constant.hpp"
 #include "openvino/op/gather.hpp"
-#include "openvino/op/parameter.hpp"
 #include "openvino/pass/manager.hpp"
 #include "transformations/init_node_info.hpp"
 using namespace ov;

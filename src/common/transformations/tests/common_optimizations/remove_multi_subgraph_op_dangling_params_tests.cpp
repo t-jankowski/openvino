@@ -9,7 +9,15 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/core/model.hpp"
-#include "openvino/opsets/opset8.hpp"
+#include "openvino/op/abs.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/divide.hpp"
+#include "openvino/op/if.hpp"
+#include "openvino/op/maximum.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/subtract.hpp"
+#include "openvino/op/tensor_iterator.hpp"
 #include "openvino/pass/manager.hpp"
 #include "transformations/common_optimizations/remove_concat_zero_dim_input.hpp"
 #include "transformations/common_optimizations/remove_multi_subgraph_op_dangling_params.hpp"
@@ -18,7 +26,19 @@
 
 using namespace testing;
 using namespace ov;
-using namespace ov::opset8;
+using ov::op::v0::Abs;
+using ov::op::v0::Concat;
+using ov::op::v0::Constant;
+using ov::op::v0::Parameter;
+using ov::op::v0::Result;
+using ov::op::v0::TensorIterator;
+using ov::op::v1::Add;
+using ov::op::v1::Divide;
+using ov::op::v1::Maximum;
+using ov::op::v1::Multiply;
+using ov::op::v1::Subtract;
+using ov::op::v5::Loop;
+using ov::op::v8::If;
 
 TEST_F(TransformationTestsF, RemoveLoopDanglingParameters) {
     auto trip_count = std::make_shared<Constant>(element::i64, Shape{}, 10);

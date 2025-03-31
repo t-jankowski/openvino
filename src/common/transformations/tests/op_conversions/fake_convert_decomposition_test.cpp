@@ -10,12 +10,10 @@
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/op/add.hpp"
 #include "openvino/op/clamp.hpp"
-#include "openvino/op/constant.hpp"
 #include "openvino/op/convert.hpp"
 #include "openvino/op/divide.hpp"
 #include "openvino/op/fake_convert.hpp"
 #include "openvino/op/multiply.hpp"
-#include "openvino/op/parameter.hpp"
 #include "openvino/op/subtract.hpp"
 
 using namespace ov;

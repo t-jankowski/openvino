@@ -9,13 +9,38 @@
 #include "common_test_utils/ov_test_utils.hpp"
 #include "gtest/gtest.h"
 #include "openvino/frontend/manager.hpp"
-#include "openvino/opsets/opset10.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/divide.hpp"
+#include "openvino/op/maximum.hpp"
+#include "openvino/op/minimum.hpp"
+#include "openvino/op/mod.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/power.hpp"
+#include "openvino/op/prelu.hpp"
+#include "openvino/op/squared_difference.hpp"
+#include "openvino/op/subtract.hpp"
+#include "openvino/op/tanh.hpp"
+#include "openvino/op/unsqueeze.hpp"
 #include "openvino/pass/manager.hpp"
 #include "ts_test_case.hpp"
 #include "ts_test_utils.hpp"
 
 using namespace ov;
-using namespace ov::opset10;
+using ov::op::v0::Constant;
+using ov::op::v0::Parameter;
+using ov::op::v0::PRelu;
+using ov::op::v0::SquaredDifference;
+using ov::op::v0::Tanh;
+using ov::op::v0::Unsqueeze;
+using ov::op::v1::Add;
+using ov::op::v1::Divide;
+using ov::op::v1::Maximum;
+using ov::op::v1::Minimum;
+using ov::op::v1::Mod;
+using ov::op::v1::Multiply;
+using ov::op::v1::Power;
+using ov::op::v1::Subtract;
+using ov::op::v1::Transpose;
 using namespace ov::pass::transpose_sinking;
 using namespace transpose_sinking::testing;
 using namespace transpose_sinking::testing::utils;

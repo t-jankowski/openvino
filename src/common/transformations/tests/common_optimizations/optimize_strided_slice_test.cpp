@@ -19,8 +19,6 @@
 #include "openvino/core/partial_shape.hpp"
 #include "openvino/op/broadcast.hpp"
 #include "openvino/op/concat.hpp"
-#include "openvino/op/constant.hpp"
-#include "openvino/op/parameter.hpp"
 #include "openvino/op/range.hpp"
 #include "openvino/op/relu.hpp"
 #include "openvino/op/scatter_update.hpp"

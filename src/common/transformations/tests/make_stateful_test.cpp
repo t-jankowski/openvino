@@ -12,13 +12,19 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/core/model.hpp"
-#include "openvino/opsets/opset8.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/squeeze.hpp"
 #include "openvino/pass/manager.hpp"
 #include "transformations/init_node_info.hpp"
 
 using namespace testing;
 using namespace ov;
-using namespace opset8;
+using ov::op::v0::Parameter;
+using ov::op::v0::Result;
+using ov::op::v0::Squeeze;
+using ov::op::v1::Add;
+using ov::op::v6::Assign;
+using ov::op::v6::ReadValue;
 using namespace std;
 
 std::shared_ptr<ov::Model> get_test_model(bool insert_squeeze, bool use_friendly_names) {

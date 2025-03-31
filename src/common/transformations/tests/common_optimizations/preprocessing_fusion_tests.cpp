@@ -11,18 +11,21 @@
 #include "openvino/core/model.hpp"
 #include "openvino/core/preprocess/pre_post_process.hpp"
 #include "openvino/core/validation_util.hpp"
-#include "openvino/op/constant.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/concat.hpp"
 #include "openvino/op/convert.hpp"
 #include "openvino/op/convolution.hpp"
 #include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/gather.hpp"
 #include "openvino/op/group_conv.hpp"
 #include "openvino/op/multiply.hpp"
 #include "openvino/op/pad.hpp"
-#include "openvino/op/parameter.hpp"
+#include "openvino/op/power.hpp"
+#include "openvino/op/prelu.hpp"
 #include "openvino/op/relu.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/split.hpp"
 #include "openvino/op/transpose.hpp"
-#include "openvino/opsets/opset12.hpp"
-#include "openvino/opsets/opset8.hpp"
 #include "openvino/pass/constant_folding.hpp"
 #include "openvino/pass/serialize.hpp"
 #include "transformations/common_optimizations/moc_transformations.hpp"
@@ -32,7 +35,22 @@
 
 using namespace testing;
 using namespace ov;
-using namespace opset8;
+using ov::op::v0::Concat;
+using ov::op::v0::Constant;
+using ov::op::v0::Convert;
+using ov::op::v0::FakeQuantize;
+using ov::op::v0::Parameter;
+using ov::op::v0::PRelu;
+using ov::op::v0::Relu;
+using ov::op::v1::Add;
+using ov::op::v1::Convolution;
+using ov::op::v1::GroupConvolution;
+using ov::op::v1::Multiply;
+using ov::op::v1::Power;
+using ov::op::v1::Split;
+using ov::op::v1::Transpose;
+using ov::op::v3::ShapeOf;
+using ov::op::v8::Gather;
 
 namespace {
 std::shared_ptr<Convolution> create_conv(Output<Node> input, Output<Node> weights) {

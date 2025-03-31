@@ -8,14 +8,30 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/core/model.hpp"
-#include "openvino/opsets/opset10.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/exp.hpp"
+#include "openvino/op/matmul.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/random_uniform.hpp"
+#include "openvino/op/reduce_sum.hpp"
+#include "openvino/op/unsqueeze.hpp"
 #include "openvino/pass/manager.hpp"
 #include "transformations/fp16_compression/mark_subgraphs_to_keep_in_mixed_precision.hpp"
 
 using namespace testing;
 using namespace ov;
 using namespace std;
-using namespace ov::opset10;
+using ov::op::v0::Constant;
+using ov::op::v0::Convert;
+using ov::op::v0::Exp;
+using ov::op::v0::MatMul;
+using ov::op::v0::Parameter;
+using ov::op::v0::Unsqueeze;
+using ov::op::v1::Add;
+using ov::op::v1::Multiply;
+using ov::op::v1::ReduceSum;
+using ov::op::v8::RandomUniform;
 
 TEST_F(TransformationTestsF, align_mixed_fp16_fp32_1) {
     {

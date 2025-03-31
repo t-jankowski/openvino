@@ -12,12 +12,50 @@
 #include "common_test_utils/ov_test_utils.hpp"
 #include "gtest/gtest.h"
 #include "openvino/core/model.hpp"
-#include "openvino/opsets/opset10.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/equal.hpp"
+#include "openvino/op/gather.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/non_zero.hpp"
+#include "openvino/op/not_equal.hpp"
+#include "openvino/op/range.hpp"
+#include "openvino/op/reduce_max.hpp"
+#include "openvino/op/reduce_min.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/select.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/slice.hpp"
+#include "openvino/op/squeeze.hpp"
+#include "openvino/op/subtract.hpp"
+#include "openvino/op/topk.hpp"
+#include "openvino/op/unique.hpp"
+#include "openvino/op/unsqueeze.hpp"
 #include "openvino/pass/manager.hpp"
 
 using namespace std;
 using namespace ov;
-using namespace opset10;
+using ov::op::v0::Concat;
+using ov::op::v0::Constant;
+using ov::op::v0::Parameter;
+using ov::op::v0::Squeeze;
+using ov::op::v0::Unsqueeze;
+using ov::op::v1::Add;
+using ov::op::v1::Equal;
+using ov::op::v1::Multiply;
+using ov::op::v1::NotEqual;
+using ov::op::v1::ReduceMax;
+using ov::op::v1::ReduceMin;
+using ov::op::v1::Reshape;
+using ov::op::v1::Select;
+using ov::op::v1::Subtract;
+using ov::op::v10::Unique;
+using ov::op::v3::NonZero;
+using ov::op::v3::ShapeOf;
+using ov::op::v3::TopK;
+using ov::op::v4::Range;
+using ov::op::v8::Gather;
+using ov::op::v8::Slice;
 using namespace element;
 
 namespace {

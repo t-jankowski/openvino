@@ -9,7 +9,6 @@
 #include <memory>
 
 #include "common_test_utils/ov_test_utils.hpp"
-#include "openvino/op/parameter.hpp"
 #include "openvino/op/topk.hpp"
 #include "openvino/pass/manager.hpp"
 #include "transformations/utils/utils.hpp"

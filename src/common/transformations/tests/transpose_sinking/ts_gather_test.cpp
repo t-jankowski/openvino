@@ -6,7 +6,9 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "gtest/gtest.h"
-#include "openvino/opsets/opset10.hpp"
+#include "openvino/op/gather.hpp"
+#include "openvino/op/squeeze.hpp"
+#include "openvino/op/unsqueeze.hpp"
 #include "openvino/pass/manager.hpp"
 #include "ts_test_case.hpp"
 #include "ts_test_utils.hpp"
@@ -14,7 +16,11 @@
 using namespace std;
 using namespace ov;
 using namespace ov::element;
-using namespace ov::opset10;
+using ov::op::v0::Constant;
+using ov::op::v0::Squeeze;
+using ov::op::v0::Unsqueeze;
+using ov::op::v1::Transpose;
+using ov::op::v8::Gather;
 using namespace ov::pass::transpose_sinking;
 using namespace transpose_sinking::testing::utils;
 

@@ -11,7 +11,6 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/op/non_zero.hpp"
-#include "openvino/op/parameter.hpp"
 #include "openvino/op/relu.hpp"
 using namespace ov;
 using namespace testing;

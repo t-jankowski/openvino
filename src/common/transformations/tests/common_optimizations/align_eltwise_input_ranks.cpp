@@ -8,12 +8,10 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/op/add.hpp"
-#include "openvino/op/constant.hpp"
 #include "openvino/op/convert.hpp"
 #include "openvino/op/fake_quantize.hpp"
 #include "openvino/op/less.hpp"
 #include "openvino/op/logical_or.hpp"
-#include "openvino/op/parameter.hpp"
 #include "openvino/op/squared_difference.hpp"
 
 using namespace testing;

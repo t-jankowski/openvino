@@ -11,16 +11,15 @@
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/core/model.hpp"
 #include "openvino/op/add.hpp"
-#include "openvino/op/constant.hpp"
 #include "openvino/op/convert.hpp"
 #include "openvino/op/matmul.hpp"
-#include "openvino/op/parameter.hpp"
-#include "openvino/opsets/opset12.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/squeeze.hpp"
+#include "openvino/op/unsqueeze.hpp"
 #include "openvino/pass/manager.hpp"
 
 using namespace testing;
 using namespace ov;
-using namespace ov::opset12;
 
 TEST(TransformationTests, TestModelTensorsConsistencyUseShapesTrue) {
     auto input = std::make_shared<op::v0::Parameter>(element::f32, Shape{1});

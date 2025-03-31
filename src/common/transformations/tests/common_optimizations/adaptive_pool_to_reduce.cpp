@@ -9,11 +9,8 @@
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/op/adaptive_avg_pool.hpp"
 #include "openvino/op/adaptive_max_pool.hpp"
-#include "openvino/op/constant.hpp"
-#include "openvino/op/parameter.hpp"
 #include "openvino/op/reduce_max.hpp"
 #include "openvino/op/reduce_mean.hpp"
-#include "openvino/op/result.hpp"
 
 using namespace testing;
 using namespace ov;

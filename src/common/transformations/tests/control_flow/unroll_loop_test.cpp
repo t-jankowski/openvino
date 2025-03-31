@@ -11,8 +11,13 @@
 #include "common_test_utils/ov_test_utils.hpp"
 #include "common_test_utils/test_common.hpp"
 #include "openvino/core/model.hpp"
-#include "openvino/op/constant.hpp"
-#include "openvino/opsets/opset6.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/gru_cell.hpp"
+#include "openvino/op/lstm_cell.hpp"
+#include "openvino/op/rnn_cell.hpp"
+#include "openvino/op/split.hpp"
+#include "openvino/op/squeeze.hpp"
+#include "openvino/op/unsqueeze.hpp"
 #include "openvino/pass/manager.hpp"
 #include "transformations/control_flow/unroll_tensor_iterator.hpp"
 #include "transformations/init_node_info.hpp"
@@ -20,7 +25,17 @@
 
 using namespace testing;
 using namespace ov;
-using namespace opset6;
+using ov::op::v0::Concat;
+using ov::op::v0::Constant;
+using ov::op::v0::Parameter;
+using ov::op::v0::Result;
+using ov::op::v0::RNNCell;
+using ov::op::v0::Squeeze;
+using ov::op::v0::Unsqueeze;
+using ov::op::v1::Split;
+using ov::op::v3::GRUCell;
+using ov::op::v4::LSTMCell;
+using ov::op::v5::Loop;
 
 TEST(TransformationTests, UnrollLoopGRUCell) {
     std::shared_ptr<Model> f(nullptr), f_ref(nullptr);

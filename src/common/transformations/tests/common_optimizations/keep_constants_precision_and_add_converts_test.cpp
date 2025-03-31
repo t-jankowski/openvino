@@ -7,14 +7,17 @@
 #include <memory>
 
 #include "common_test_utils/ov_test_utils.hpp"
-#include "openvino/opsets/opset1.hpp"
+#include "openvino/op/matmul.hpp"
 #include "transformations/convert_precision.hpp"
 #include "transformations/fp16_compression/mark_decompression_convert_constant_folding.hpp"
 #include "transformations/utils/utils.hpp"
 
 using namespace testing;
 using namespace ov;
-using namespace ov::opset1;
+using ov::op::v0::Constant;
+using ov::op::v0::Convert;
+using ov::op::v0::MatMul;
+using ov::op::v0::Parameter;
 using const_node_ptr = const std::shared_ptr<const Node>;
 
 TEST_F(TransformationTestsF, KeepConstantsPrecisionAndAddConvertsTestBase) {

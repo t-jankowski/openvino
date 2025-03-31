@@ -9,16 +9,34 @@
 #include <queue>
 
 #include "common_test_utils/ov_test_utils.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/gru_cell.hpp"
+#include "openvino/op/gru_sequence.hpp"
 #include "openvino/op/lstm_cell.hpp"
-#include "openvino/opsets/opset3.hpp"
-#include "openvino/opsets/opset9.hpp"
+#include "openvino/op/lstm_sequence.hpp"
+#include "openvino/op/rnn_cell.hpp"
+#include "openvino/op/rnn_sequence.hpp"
+#include "openvino/op/split.hpp"
+#include "openvino/op/squeeze.hpp"
+#include "openvino/op/unsqueeze.hpp"
 #include "ov_ops/augru_cell.hpp"
 #include "ov_ops/augru_sequence.hpp"
 
 using namespace ov;
 using namespace std;
 using namespace testing;
-using namespace ov::opset9;
+using ov::op::v0::Concat;
+using ov::op::v0::Constant;
+using ov::op::v0::Parameter;
+using ov::op::v0::RNNCell;
+using ov::op::v0::Squeeze;
+using ov::op::v0::Unsqueeze;
+using ov::op::v1::Split;
+using ov::op::v3::GRUCell;
+using ov::op::v4::LSTMCell;
+using ov::op::v5::GRUSequence;
+using ov::op::v5::LSTMSequence;
+using ov::op::v5::RNNSequence;
 using namespace ov::element;
 
 namespace {

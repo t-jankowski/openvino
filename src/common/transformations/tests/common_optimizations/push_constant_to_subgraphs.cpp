@@ -6,13 +6,10 @@
 #include "openvino/core/model.hpp"
 #include "openvino/op/add.hpp"
 #include "openvino/op/concat.hpp"
-#include "openvino/op/constant.hpp"
 #include "openvino/op/convert.hpp"
 #include "openvino/op/divide.hpp"
 #include "openvino/op/if.hpp"
-#include "openvino/op/loop.hpp"
 #include "openvino/op/multiply.hpp"
-#include "openvino/op/parameter.hpp"
 #include "openvino/op/subtract.hpp"
 #include "transformations/common_optimizations/push_constant_to_subgraph.hpp"
 

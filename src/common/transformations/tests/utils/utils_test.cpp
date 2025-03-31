@@ -10,8 +10,6 @@
 #include <queue>
 #include <string>
 
-#include "openvino/op/constant.hpp"
-
 using namespace ov;
 
 namespace ov {

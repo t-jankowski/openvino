@@ -5,10 +5,8 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/op/concat.hpp"
-#include "openvino/op/constant.hpp"
 #include "openvino/op/cos.hpp"
 #include "openvino/op/matmul.hpp"
-#include "openvino/op/parameter.hpp"
 #include "openvino/op/sin.hpp"
 #include "openvino/op/transpose.hpp"
 #include "openvino/pass/manager.hpp"

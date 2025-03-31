@@ -5,16 +5,24 @@
 #include <gtest/gtest.h>
 
 #include "common_test_utils/ov_test_utils.hpp"
-#include "openvino/op/constant.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/convert.hpp"
+#include "openvino/op/divide.hpp"
 #include "openvino/op/exp.hpp"
 #include "openvino/op/fake_quantize.hpp"
+#include "openvino/op/greater.hpp"
 #include "openvino/op/matmul.hpp"
-#include "openvino/op/parameter.hpp"
+#include "openvino/op/maximum.hpp"
+#include "openvino/op/multiply.hpp"
+#include "openvino/op/power.hpp"
 #include "openvino/op/range.hpp"
+#include "openvino/op/reduce_mean.hpp"
 #include "openvino/op/reduce_sum.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/sqrt.hpp"
+#include "openvino/op/tile.hpp"
 #include "openvino/op/unsqueeze.hpp"
-#include "openvino/opsets/opset10.hpp"
-#include "openvino/opsets/opset2.hpp"
 #include "openvino/pass/manager.hpp"
 #include "transformations/fp16_compression/mark_subgraphs_to_keep_in_mixed_precision.hpp"
 #include "transformations/rt_info/disable_fp16_compression.hpp"
@@ -22,7 +30,24 @@
 using namespace testing;
 using namespace ov;
 using namespace std;
-using namespace ov::opset10;
+using ov::op::v0::Constant;
+using ov::op::v0::Convert;
+using ov::op::v0::Exp;
+using ov::op::v0::MatMul;
+using ov::op::v0::Parameter;
+using ov::op::v0::Sqrt;
+using ov::op::v0::Tile;
+using ov::op::v0::Unsqueeze;
+using ov::op::v1::Add;
+using ov::op::v1::Divide;
+using ov::op::v1::Greater;
+using ov::op::v1::Maximum;
+using ov::op::v1::Multiply;
+using ov::op::v1::Power;
+using ov::op::v1::ReduceMean;
+using ov::op::v1::ReduceSum;
+using ov::op::v1::Reshape;
+using ov::op::v3::Broadcast;
 
 TEST(TransformationTests, keep_precission_sensitive_fp32_1) {
     shared_ptr<Model> model, model_ref;

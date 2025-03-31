@@ -7,11 +7,17 @@
 #include <gtest/gtest.h>
 
 #include "common_test_utils/ov_test_utils.hpp"
-#include "openvino/opsets/opset10.hpp"
+#include "openvino/op/concat.hpp"
+#include "openvino/op/relu.hpp"
+#include "openvino/op/tensor_iterator.hpp"
 
 using namespace testing;
 using namespace std;
-using namespace ov::opset10;
+using ov::op::v0::Concat;
+using ov::op::v0::Parameter;
+using ov::op::v0::Relu;
+using ov::op::v0::Result;
+using ov::op::v0::TensorIterator;
 
 TEST(TransformationTests, EliminateDuplicateTIInputs) {
     shared_ptr<ov::Model> model;

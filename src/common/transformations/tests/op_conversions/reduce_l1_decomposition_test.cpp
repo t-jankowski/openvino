@@ -12,7 +12,6 @@
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/core/model.hpp"
 #include "openvino/op/abs.hpp"
-#include "openvino/op/parameter.hpp"
 #include "openvino/op/reduce_l1.hpp"
 #include "openvino/op/reduce_sum.hpp"
 #include "openvino/pass/manager.hpp"

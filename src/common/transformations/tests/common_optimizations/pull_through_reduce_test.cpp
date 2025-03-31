@@ -11,14 +11,26 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/core/model.hpp"
-#include "openvino/opsets/opset9.hpp"
+#include "openvino/op/add.hpp"
+#include "openvino/op/reduce_logical_or.hpp"
+#include "openvino/op/reduce_mean.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/split.hpp"
+#include "openvino/op/unsqueeze.hpp"
 #include "openvino/pass/manager.hpp"
 #include "transformations/init_node_info.hpp"
 #include "transformations/utils/utils.hpp"
 
 using namespace testing;
 using namespace ov;
-using namespace opset9;
+using ov::op::v0::Constant;
+using ov::op::v0::Parameter;
+using ov::op::v0::Unsqueeze;
+using ov::op::v1::Add;
+using ov::op::v1::ReduceLogicalOr;
+using ov::op::v1::ReduceMean;
+using ov::op::v1::Reshape;
+using ov::op::v1::Split;
 
 namespace {
 template <typename ReduceType>

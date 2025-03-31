@@ -10,7 +10,19 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/core/model.hpp"
-#include "openvino/opsets/opset7.hpp"
+#include "openvino/op/broadcast.hpp"
+#include "openvino/op/gather.hpp"
+#include "openvino/op/gru_cell.hpp"
+#include "openvino/op/gru_sequence.hpp"
+#include "openvino/op/lstm_cell.hpp"
+#include "openvino/op/lstm_sequence.hpp"
+#include "openvino/op/reshape.hpp"
+#include "openvino/op/rnn_cell.hpp"
+#include "openvino/op/rnn_sequence.hpp"
+#include "openvino/op/shape_of.hpp"
+#include "openvino/op/squeeze.hpp"
+#include "openvino/op/tensor_iterator.hpp"
+#include "openvino/op/unsqueeze.hpp"
 #include "openvino/pass/low_latency.hpp"
 #include "openvino/pass/manager.hpp"
 #include "transformations/control_flow/unroll_tensor_iterator.hpp"
@@ -18,7 +30,25 @@
 
 using namespace testing;
 using namespace ov;
-using namespace opset7;
+using ov::op::v0::Constant;
+using ov::op::v0::Parameter;
+using ov::op::v0::Result;
+using ov::op::v0::RNNCell;
+using ov::op::v0::Squeeze;
+using ov::op::v0::TensorIterator;
+using ov::op::v0::Unsqueeze;
+using ov::op::v1::Reshape;
+using ov::op::v3::Broadcast;
+using ov::op::v3::GRUCell;
+using ov::op::v3::ShapeOf;
+using ov::op::v4::LSTMCell;
+using ov::op::v5::GRUSequence;
+using ov::op::v5::Loop;
+using ov::op::v5::LSTMSequence;
+using ov::op::v5::RNNSequence;
+using ov::op::v6::Assign;
+using ov::op::v6::ReadValue;
+using ov::op::v7::Gather;
 using namespace std;
 
 Output<Node> create_init_subgraph(const Output<Node>& in_node) {

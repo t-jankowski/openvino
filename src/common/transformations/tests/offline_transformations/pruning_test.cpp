@@ -16,7 +16,6 @@
 #include "openvino/op/add.hpp"
 #include "openvino/op/clamp.hpp"
 #include "openvino/op/concat.hpp"
-#include "openvino/op/constant.hpp"
 #include "openvino/op/convert.hpp"
 #include "openvino/op/convolution.hpp"
 #include "openvino/op/divide.hpp"
@@ -27,7 +26,6 @@
 #include "openvino/op/max_pool.hpp"
 #include "openvino/op/multiply.hpp"
 #include "openvino/op/pad.hpp"
-#include "openvino/op/parameter.hpp"
 #include "openvino/op/reduce_mean.hpp"
 #include "openvino/op/relu.hpp"
 #include "openvino/op/reshape.hpp"
@@ -39,8 +37,6 @@
 #include "openvino/op/util/attr_types.hpp"
 #include "openvino/op/util/pad_base.hpp"
 #include "openvino/op/variadic_split.hpp"
-#include "openvino/opsets/opset10.hpp"
-#include "openvino/opsets/opset12.hpp"
 #include "openvino/pass/manager.hpp"
 #include "openvino/pass/serialize.hpp"
 #include "openvino/pass/visualize_tree.hpp"
@@ -54,7 +50,15 @@
 
 using namespace testing;
 using namespace ov;
-using namespace ov::opset12;
+using ov::op::v0::Clamp;
+using ov::op::v0::Constant;
+using ov::op::v0::MatMul;
+using ov::op::v0::Parameter;
+using ov::op::v0::Relu;
+using ov::op::v1::Convolution;
+using ov::op::v1::Multiply;
+using ov::op::v1::Reshape;
+using ov::op::v8::MaxPool;
 
 void compare_masks(const Mask& mask, const Mask& ref_mask) {
     ASSERT_EQ(mask.size(), ref_mask.size());

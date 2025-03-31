@@ -9,8 +9,6 @@
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/op/concat.hpp"
 #include "openvino/op/multiply.hpp"
-#include "openvino/op/parameter.hpp"
-#include "openvino/op/result.hpp"
 
 using namespace testing;
 using namespace ov;

@@ -6,10 +6,18 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/core/model.hpp"
-#include "openvino/opsets/opset9.hpp"
+#include "openvino/op/lstm_cell.hpp"
+#include "openvino/op/squeeze.hpp"
+#include "openvino/op/tensor_iterator.hpp"
+#include "openvino/op/unsqueeze.hpp"
 
 using namespace std;
-using namespace ov::opset9;
+using ov::op::v0::Parameter;
+using ov::op::v0::Result;
+using ov::op::v0::Squeeze;
+using ov::op::v0::TensorIterator;
+using ov::op::v0::Unsqueeze;
+using ov::op::v4::LSTMCell;
 
 struct LSTMStatesAttributes {
     ov::element::Type_t data_et;

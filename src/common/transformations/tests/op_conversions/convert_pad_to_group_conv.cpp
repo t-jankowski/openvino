@@ -12,15 +12,17 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/core/model.hpp"
+#include "openvino/op/group_conv.hpp"
 #include "openvino/op/pad.hpp"
-#include "openvino/opsets/opset12.hpp"
 #include "openvino/pass/manager.hpp"
 #include "transformations/init_node_info.hpp"
 #include "transformations/utils/utils.hpp"
 
 using namespace testing;
 using namespace ov;
-using namespace ov::opset12;
+using ov::op::v0::Constant;
+using ov::op::v0::Parameter;
+using ov::op::v1::GroupConvolution;
 
 using NodePtr = std::shared_ptr<ov::Node>;
 
