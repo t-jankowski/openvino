@@ -8,6 +8,7 @@
 #include "evaluates_map.hpp"
 #include "openvino/reference/fft.hpp"
 #include "openvino/runtime/tensor.hpp"
+#include "openvino/op/rdft.hpp"
 
 namespace rfft_v9 {
 struct InfoForRFFT9 {

@@ -5,6 +5,8 @@
 #include "openvino/reference/experimental_detectron_prior_grid_generator.hpp"
 
 #include "evaluate_node.hpp"
+#include "openvino/op/experimental_detectron_prior_grid_generator.hpp"
+#include "openvino/op/experimental_detectron_prior_grid_generator.hpp"
 
 namespace experimental_prior_grid {
 struct InfoForEDPriorGrid {

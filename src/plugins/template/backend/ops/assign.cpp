@@ -3,6 +3,8 @@
 //
 
 #include "evaluate_node.hpp"
+#include "openvino/op/assign.hpp"
+#include "openvino/op/assign.hpp"
 
 bool evaluate(const std::shared_ptr<ov::op::v3::Assign>& op,
               ov::TensorVector& outputs,

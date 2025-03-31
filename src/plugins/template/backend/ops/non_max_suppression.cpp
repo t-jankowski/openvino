@@ -7,6 +7,7 @@
 #include "evaluate_node.hpp"
 #include "evaluates_map.hpp"
 #include "openvino/runtime/tensor.hpp"
+#include "openvino/op/non_max_suppression.hpp"
 
 namespace nms_v9 {
 using V9BoxEncoding = ov::op::v9::NonMaxSuppression::BoxEncodingType;

@@ -6,6 +6,8 @@
 
 #include "evaluate_node.hpp"
 #include "ov_ops/augru_cell.hpp"
+#include "openvino/op/gru_cell.hpp"
+#include "openvino/op/gru_cell.hpp"
 
 template <ov::element::Type_t ET>
 bool evaluate(const std::shared_ptr<ov::op::v3::GRUCell>& op,

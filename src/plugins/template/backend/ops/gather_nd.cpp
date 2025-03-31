@@ -5,6 +5,8 @@
 #include "openvino/reference/gather_nd.hpp"
 
 #include "evaluate_node.hpp"
+#include "openvino/op/gather_nd.hpp"
+#include "openvino/op/gather_nd.hpp"
 
 template <ov::element::Type_t ET>
 bool evaluate(const std::shared_ptr<ov::op::v5::GatherND>& op,

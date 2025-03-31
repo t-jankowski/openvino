@@ -5,6 +5,8 @@
 #include "openvino/reference/group_convolution.hpp"
 
 #include "evaluate_node.hpp"
+#include "openvino/op/group_conv.hpp"
+#include "openvino/op/group_conv.hpp"
 
 template <ov::element::Type_t T>
 bool evaluate(const std::shared_ptr<ov::op::v1::GroupConvolution>& op,

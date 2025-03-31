@@ -5,6 +5,8 @@
 #include "openvino/reference/hard_sigmoid.hpp"
 
 #include "evaluate_node.hpp"
+#include "openvino/op/hard_sigmoid.hpp"
+#include "openvino/op/hard_sigmoid.hpp"
 
 template <ov::element::Type_t ET>
 bool evaluate(const std::shared_ptr<ov::op::v0::HardSigmoid>& op,

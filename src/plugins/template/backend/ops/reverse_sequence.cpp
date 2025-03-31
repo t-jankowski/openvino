@@ -5,6 +5,7 @@
 #include "openvino/reference/reverse_sequence.hpp"
 
 #include "evaluate_node.hpp"
+#include "openvino/op/reverse_sequence.hpp"
 
 namespace reverse_sequence_v0 {
 template <ov::element::Type_t t1, ov::element::Type_t t2>

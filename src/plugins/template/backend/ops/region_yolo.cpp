@@ -5,6 +5,7 @@
 #include "openvino/reference/region_yolo.hpp"
 
 #include "evaluate_node.hpp"
+#include "openvino/op/region_yolo.hpp"
 
 template <ov::element::Type_t ET>
 bool evaluate(const std::shared_ptr<ov::op::v0::RegionYolo>& op,

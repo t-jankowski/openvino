@@ -7,6 +7,8 @@
 #include "evaluate_node.hpp"
 #include "evaluates_map.hpp"
 #include "openvino/reference/fft.hpp"
+#include "openvino/op/irdft.hpp"
+#include "openvino/op/irdft.hpp"
 
 namespace irfft_v9 {
 struct InfoForIRFFT9 {

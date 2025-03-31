@@ -5,6 +5,8 @@
 #include "openvino/reference/deformable_convolution.hpp"
 
 #include "evaluate_node.hpp"
+#include "openvino/op/deformable_convolution.hpp"
+#include "openvino/op/deformable_convolution.hpp"
 
 template <ov::element::Type_t T>
 bool evaluate(const std::shared_ptr<ov::op::v8::DeformableConvolution>& op,

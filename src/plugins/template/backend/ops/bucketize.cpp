@@ -5,6 +5,8 @@
 #include "openvino/reference/bucketize.hpp"
 
 #include "evaluate_node.hpp"
+#include "openvino/op/bucketize.hpp"
+#include "openvino/op/bucketize.hpp"
 
 namespace bucketize_v3 {
 template <ov::element::Type_t t1, ov::element::Type_t t2, ov::element::Type_t t3>

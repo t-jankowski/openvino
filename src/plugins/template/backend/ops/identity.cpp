@@ -6,6 +6,8 @@
 
 #include "evaluate_node.hpp"
 #include "openvino/core/type/element_iterator.hpp"
+#include "openvino/op/identity.hpp"
+#include "openvino/op/identity.hpp"
 
 template <>
 bool evaluate_node<ov::op::v16::Identity>(std::shared_ptr<ov::Node> node,

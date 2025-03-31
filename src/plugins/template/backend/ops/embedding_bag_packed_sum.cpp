@@ -4,6 +4,8 @@
 
 #include "evaluate_node.hpp"
 #include "openvino/reference/embedding_bag_packed.hpp"
+#include "openvino/op/embeddingbag_packedsum.hpp"
+#include "openvino/op/embeddingbag_packedsum.hpp"
 
 namespace embedding_bag_packed_sum_v3 {
 template <ov::element::Type_t t1, ov::element::Type_t t2>

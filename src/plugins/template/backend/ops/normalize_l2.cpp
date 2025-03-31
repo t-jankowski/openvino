@@ -5,6 +5,7 @@
 #include "openvino/reference/normalize_l2.hpp"
 
 #include "evaluate_node.hpp"
+#include "openvino/op/normalize_l2.hpp"
 
 template <ov::element::Type_t ET>
 bool evaluate(const std::shared_ptr<ov::op::v0::NormalizeL2>& op,

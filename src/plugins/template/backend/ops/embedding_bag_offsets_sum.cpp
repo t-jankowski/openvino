@@ -4,6 +4,8 @@
 
 #include "evaluate_node.hpp"
 #include "openvino/reference/embedding_bag_offsets.hpp"
+#include "openvino/op/embeddingbag_offsets_sum.hpp"
+#include "openvino/op/embeddingbag_offsets_sum.hpp"
 
 namespace embedding_bag_offsets_sum_v3 {
 template <ov::element::Type_t t1, ov::element::Type_t t2>

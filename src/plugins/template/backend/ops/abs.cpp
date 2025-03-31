@@ -5,6 +5,7 @@
 #include "openvino/reference/abs.hpp"
 
 #include "evaluate_node.hpp"
+#include "openvino/op/abs.hpp"
 
 template <ov::element::Type_t ET>
 bool evaluate(const std::shared_ptr<ov::op::v0::Abs>& op, ov::TensorVector& outputs, const ov::TensorVector& inputs) {

@@ -6,6 +6,7 @@
 #include "evaluates_map.hpp"
 #include "openvino/op/roi_align.hpp"
 #include "openvino/reference/roi_align.hpp"
+#include "openvino/op/roi_align_rotated.hpp"
 
 template <ov::element::Type_t ET>
 bool evaluate(const std::shared_ptr<ov::op::v15::ROIAlignRotated>& op,
