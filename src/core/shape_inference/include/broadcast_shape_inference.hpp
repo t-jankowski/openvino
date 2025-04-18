@@ -6,7 +6,6 @@
 #include "openvino/core/axis_vector.hpp"
 #include "openvino/op/broadcast.hpp"
 #include "openvino/op/concat.hpp"
-#include "openvino/op/constant.hpp"
 #include "openvino/op/util/broadcast_base.hpp"
 #include "utils.hpp"
 

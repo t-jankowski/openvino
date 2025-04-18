@@ -11,8 +11,7 @@
 
 #include "dnnl_types.h"
 #include "openvino/core/parallel.hpp"
-#include "openvino/op/prior_box.hpp"
-#include "openvino/opsets/opset1_decl.hpp"
+#include "openvino/opsets/opset1.hpp"
 #include "shape_inference/custom/priorbox.hpp"
 
 namespace ov::intel_cpu::node {

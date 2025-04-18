@@ -19,8 +19,7 @@
 #include "memory_desc/cpu_blocked_memory_desc.h"
 #include "memory_desc/cpu_memory_desc_utils.h"
 #include "memory_desc/dnnl_blocked_memory_desc.h"
-#include "openvino/op/matmul.hpp"
-#include "openvino/opsets/opset1_decl.hpp"
+#include "openvino/opsets/opset1.hpp"
 #include "shape_inference/custom/matmul.hpp"
 #include "utils/general_utils.h"
 using namespace dnnl;

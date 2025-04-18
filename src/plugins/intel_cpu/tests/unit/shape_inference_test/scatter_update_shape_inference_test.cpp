@@ -5,8 +5,6 @@
 #include <gtest/gtest.h>
 
 #include "utils.hpp"
-#include "openvino/op/constant.hpp"
-#include "openvino/op/scatter_update.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;

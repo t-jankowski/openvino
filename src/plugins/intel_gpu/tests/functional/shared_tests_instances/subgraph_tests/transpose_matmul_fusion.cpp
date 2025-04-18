@@ -3,11 +3,6 @@
 //
 
 #include "subgraph_tests/transpose_matmul_fusion.hpp"
-#include "openvino/op/matmul.hpp"
-#include "openvino/op/multiply.hpp"
-#include "openvino/op/reshape.hpp"
-#include "openvino/op/softmax.hpp"
-#include "openvino/op/transpose.hpp"
 
 using namespace ov::test;
 

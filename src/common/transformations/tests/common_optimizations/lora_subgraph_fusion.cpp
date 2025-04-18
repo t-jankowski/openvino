@@ -11,10 +11,7 @@
 #include "common_test_utils/node_builders/convolution.hpp"
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/core/model.hpp"
-#include "openvino/op/add.hpp"
-#include "openvino/op/matmul.hpp"
-#include "openvino/op/multiply.hpp"
-#include "openvino/op/transpose.hpp"
+#include "openvino/opsets/opset15.hpp"
 #include "ov_ops/lora_subgraph.hpp"
 #include "transformations/utils/utils.hpp"
 

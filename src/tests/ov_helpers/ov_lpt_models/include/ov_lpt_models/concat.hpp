@@ -6,12 +6,9 @@
 
 #include <algorithm>
 #include <memory>
-
-#include "common/dequantization_operations.hpp"
-#include "common/fake_quantize_on_data.hpp"
 #include "low_precision/layer_transformation.hpp"
-#include "openvino/opsets/opset1_decl.hpp"
-#include "openvino/op/constant.hpp"
+#include "common/fake_quantize_on_data.hpp"
+#include "common/dequantization_operations.hpp"
 
 namespace ov {
 namespace builder {

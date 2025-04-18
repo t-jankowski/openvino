@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <openvino/opsets/opset6.hpp>
 #include <string>
 #include <vector>
 

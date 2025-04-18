@@ -4,7 +4,8 @@
 
 #include <cmath>
 #include <memory>
-#include "openvino/opsets/opset1_decl.hpp"
+
+#include "openvino/opsets/opset1.hpp"
 #include "low_precision/network_helper.hpp"
 
 #include "low_precision/common/fake_quantize_dequantization.hpp"

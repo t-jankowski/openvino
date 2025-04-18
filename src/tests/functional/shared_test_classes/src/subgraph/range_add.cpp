@@ -5,7 +5,6 @@
 #include "shared_test_classes/subgraph/range_add.hpp"
 
 #include "common_test_utils/node_builders/eltwise.hpp"
-#include "openvino/op/range.hpp"
 
 namespace ov {
 namespace test {

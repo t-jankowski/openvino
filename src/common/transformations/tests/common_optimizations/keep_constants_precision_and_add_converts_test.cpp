@@ -7,8 +7,7 @@
 #include <memory>
 
 #include "common_test_utils/ov_test_utils.hpp"
-#include "openvino/op/matmul.hpp"
-#include "openvino/opsets/opset1_decl.hpp"
+#include "openvino/opsets/opset1.hpp"
 #include "transformations/convert_precision.hpp"
 #include "transformations/fp16_compression/mark_decompression_convert_constant_folding.hpp"
 #include "transformations/utils/utils.hpp"

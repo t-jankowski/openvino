@@ -4,7 +4,6 @@
 
 #include "shared_test_classes/single_op/reverse_sequence.hpp"
 #include "common_test_utils/ov_tensor_utils.hpp"
-#include "openvino/op/reverse_sequence.hpp"
 
 namespace ov {
 namespace test {

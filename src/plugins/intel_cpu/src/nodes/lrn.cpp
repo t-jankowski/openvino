@@ -13,9 +13,7 @@
 #include "common/primitive_hashing_utils.hpp"
 #include "dnnl_extension_utils.h"
 #include "memory_desc/dnnl_blocked_memory_desc.h"
-#include "openvino/op/constant.hpp"
-#include "openvino/op/lrn.hpp"
-#include "openvino/opsets/opset1_decl.hpp"
+#include "openvino/opsets/opset1.hpp"
 
 namespace ov::intel_cpu::node {
 namespace {

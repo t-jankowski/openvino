@@ -3,7 +3,6 @@
 //
 
 #include "shared_test_classes/single_op/scatter_elements_update.hpp"
-#include "openvino/op/scatter_elements_update.hpp"
 
 namespace ov {
 namespace test {

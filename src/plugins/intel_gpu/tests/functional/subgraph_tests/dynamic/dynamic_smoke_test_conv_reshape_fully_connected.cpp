@@ -15,10 +15,6 @@
 #include "openvino/op/result.hpp"
 #include "openvino/op/convolution.hpp"
 #include "openvino/op/fake_quantize.hpp"
-#include "openvino/op/convert.hpp"
-#include "openvino/op/matmul.hpp"
-#include "openvino/op/reshape.hpp"
-#include "openvino/op/transpose.hpp"
 
 
 namespace {
@@ -131,3 +127,4 @@ const auto testParams_smoke = ::testing::Combine(::testing::ValuesIn(dynInputSha
 INSTANTIATE_TEST_SUITE_P(smoke_dynamic_conv_reshape_fullyconnected, ConvReshapeFullyConnectedDynamicGPUTestDynamic,
                          testParams_smoke, ConvReshapeFullyConnectedDynamicGPUTestDynamic::getTestCaseName);
 }  // namespace
+

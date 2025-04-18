@@ -12,8 +12,7 @@
 #include "common/primitive_hashing_utils.hpp"
 #include "cpu/x64/jit_generator.hpp"
 #include "openvino/core/parallel.hpp"
-#include "openvino/op/extractimagepatches.hpp"
-#include "openvino/opsets/opset3_decl.hpp"
+#include "openvino/opsets/opset3.hpp"
 
 using namespace dnnl::impl::cpu;
 using namespace dnnl::impl::cpu::x64;

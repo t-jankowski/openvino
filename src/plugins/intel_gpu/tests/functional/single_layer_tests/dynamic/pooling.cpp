@@ -9,8 +9,6 @@
 #include "openvino/op/parameter.hpp"
 #include "openvino/op/constant.hpp"
 #include "openvino/op/result.hpp"
-#include "openvino/op/avg_pool.hpp"
-#include "openvino/op/max_pool.hpp"
 
 namespace {
 using ov::test::InputShape;

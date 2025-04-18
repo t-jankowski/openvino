@@ -3,8 +3,6 @@
 //
 
 #include "shared_test_classes/single_op/adaptive_pooling.hpp"
-#include "openvino/op/adaptive_avg_pool.hpp"
-#include "openvino/op/adaptive_max_pool.hpp"
 
 namespace ov {
 namespace test {

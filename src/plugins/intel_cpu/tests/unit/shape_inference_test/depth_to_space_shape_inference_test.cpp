@@ -3,10 +3,9 @@
 //
 
 #include <gtest/gtest.h>
-#include "openvino/opsets/opset10_decl.hpp"
+
+#include "openvino/opsets/opset10.hpp"
 #include "utils.hpp"
-#include "openvino/op/depth_to_space.hpp"
-#include "openvino/opsets/opset10_decl.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;

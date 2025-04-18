@@ -7,8 +7,7 @@
 #include <string>
 
 #include "openvino/core/parallel.hpp"
-#include "openvino/op/grn.hpp"
-#include "openvino/opsets/opset1_decl.hpp"
+#include "openvino/opsets/opset1.hpp"
 
 namespace ov::intel_cpu::node {
 

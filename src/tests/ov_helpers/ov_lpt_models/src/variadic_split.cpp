@@ -10,7 +10,6 @@
 #include "ov_lpt_models/common/builders.hpp"
 #include "ov_lpt_models/common/dequantization_operations.hpp"
 #include "common_test_utils/node_builders/fake_quantize.hpp"
-#include "openvino/op/variadic_split.hpp"
 
 namespace ov {
 namespace builder {

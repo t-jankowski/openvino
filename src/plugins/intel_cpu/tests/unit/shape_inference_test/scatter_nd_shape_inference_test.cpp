@@ -3,8 +3,9 @@
 //
 
 #include <gtest/gtest.h>
+
+#include "openvino/opsets/opset10.hpp"
 #include "utils.hpp"
-#include "openvino/op/scatter_nd_update.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;

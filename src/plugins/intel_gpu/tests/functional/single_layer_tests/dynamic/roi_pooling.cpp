@@ -11,7 +11,6 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/result.hpp"
 #include "openvino/op/tile.hpp"
-#include "openvino/op/roi_pooling.hpp"
 
 namespace {
 enum ProposalGenerationMode { RANDOM, ULTIMATE_RIGHT_BORDER };

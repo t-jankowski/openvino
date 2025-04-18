@@ -3,11 +3,9 @@
 //
 
 #include <gtest/gtest.h>
-#include "openvino/opsets/opset8_decl.hpp"
+#include "openvino/opsets/opset8.hpp"
 #include "common_test_utils/ov_plugin_cache.hpp"
 #include "behavior/ov_infer_request/inference.hpp"
-#include "openvino/op/add.hpp"
-#include "openvino/op/constant.hpp"
 
 namespace ov {
 namespace test {

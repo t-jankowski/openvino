@@ -6,7 +6,6 @@
 
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
-#include "openvino/op/bucketize.hpp"
 
 using namespace CPUTestUtils;
 

@@ -6,10 +6,7 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/core/model.hpp"
-#include "openvino/op/add.hpp"
-#include "openvino/op/multiply.hpp"
-#include "openvino/op/tensor_iterator.hpp"
-#include "openvino/opsets/opset5_decl.hpp"
+#include "openvino/opsets/opset5.hpp"
 
 using namespace ov;
 

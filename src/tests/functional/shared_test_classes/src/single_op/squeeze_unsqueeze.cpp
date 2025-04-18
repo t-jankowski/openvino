@@ -3,8 +3,6 @@
 //
 
 #include "shared_test_classes/single_op/squeeze_unsqueeze.hpp"
-#include "openvino/op/squeeze.hpp"
-#include "openvino/op/unsqueeze.hpp"
 
 namespace ov {
 namespace test {

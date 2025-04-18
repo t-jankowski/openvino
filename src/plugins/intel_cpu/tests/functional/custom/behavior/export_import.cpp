@@ -8,10 +8,8 @@
 #include "common_test_utils/node_builders/eltwise.hpp"
 #include "common_test_utils/node_builders/constant.hpp"
 #include "functional_test_utils/skip_tests_config.hpp"
-#include "openvino/opsets/opset9_decl.hpp"
-#include "openvino/op/matmul.hpp"
-#include "openvino/op/softmax.hpp"
-#include "openvino/opsets/opset9_decl.hpp"
+
+#include <openvino/opsets/opset9.hpp>
 
 namespace {
 

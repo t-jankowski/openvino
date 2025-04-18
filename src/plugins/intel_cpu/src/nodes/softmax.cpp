@@ -13,8 +13,7 @@
 #include "dnnl_extension_utils.h"
 #include "dnnl_types.h"
 #include "memory_desc/dnnl_blocked_memory_desc.h"
-#include "openvino/op/softmax.hpp"
-#include "openvino/opsets/opset1_decl.hpp"
+#include "openvino/opsets/opset1.hpp"
 
 using namespace dnnl;
 

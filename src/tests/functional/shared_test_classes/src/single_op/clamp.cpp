@@ -3,7 +3,6 @@
 //
 
 #include "shared_test_classes/single_op/clamp.hpp"
-#include "openvino/op/clamp.hpp"
 
 namespace ov {
 namespace test {

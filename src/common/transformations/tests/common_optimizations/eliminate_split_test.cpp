@@ -7,10 +7,8 @@
 #include <queue>
 
 #include "common_test_utils/ov_test_utils.hpp"
-#include "openvino/op/multiply.hpp"
 #include "openvino/op/parameter.hpp"
-#include "openvino/op/split.hpp"
-#include "openvino/opsets/opset8_decl.hpp"
+#include "openvino/opsets/opset8.hpp"
 #include "transformations/common_optimizations/nop_elimination.hpp"
 
 using namespace ov;

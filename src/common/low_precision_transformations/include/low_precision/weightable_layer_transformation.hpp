@@ -6,8 +6,7 @@
 
 #include <memory>
 #include "layer_transformation.hpp"
-#include "openvino/opsets/opset1_decl.hpp"
-#include "openvino/op/fake_quantize.hpp"
+#include "openvino/opsets/opset1.hpp"
 
 namespace ov {
 namespace pass {

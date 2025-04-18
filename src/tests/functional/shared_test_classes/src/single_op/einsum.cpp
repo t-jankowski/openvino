@@ -3,7 +3,6 @@
 //
 
 #include "shared_test_classes/single_op/einsum.hpp"
-#include "openvino/op/einsum.hpp"
 
 namespace ov {
 namespace test {

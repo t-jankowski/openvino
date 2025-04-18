@@ -3,7 +3,6 @@
 //
 
 #include "shared_test_classes/single_op/range.hpp"
-#include "openvino/op/range.hpp"
 
 
 namespace ov {

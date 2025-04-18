@@ -7,11 +7,6 @@
 #include "common_test_utils/node_builders/constant.hpp"
 #include "common_test_utils/ov_tensor_utils.hpp"
 #include "utils/cpu_test_utils.hpp"
-#include "openvino/op/add.hpp"
-#include "openvino/op/convert.hpp"
-#include "openvino/op/matmul.hpp"
-#include "openvino/op/fake_convert.hpp"
-#include "openvino/op/multiply.hpp"
 
 using namespace ov::test;
 using namespace CPUTestUtils;
@@ -476,3 +471,4 @@ INSTANTIATE_TEST_SUITE_P(smoke_StatefulInitGraph,
                          InitGraphStatefulModelFakeConvert::getTestCaseName);
 
 }  // namespace
+

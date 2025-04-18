@@ -3,7 +3,6 @@
 //
 
 #include "shared_test_classes/single_op/shuffle_channels.hpp"
-#include "openvino/op/shuffle_channels.hpp"
 
 namespace ov {
 namespace test {

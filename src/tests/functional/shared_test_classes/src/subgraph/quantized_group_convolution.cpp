@@ -6,7 +6,6 @@
 #include "common_test_utils/node_builders/group_convolution.hpp"
 #include "common_test_utils/node_builders/constant.hpp"
 #include "common_test_utils/node_builders/fake_quantize.hpp"
-#include "openvino/op/group_conv.hpp"
 
 namespace ov {
 namespace test {

@@ -5,7 +5,6 @@
 #include <gtest/gtest.h>
 
 #include "utils.hpp"
-#include "openvino/op/rnn_sequence.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;

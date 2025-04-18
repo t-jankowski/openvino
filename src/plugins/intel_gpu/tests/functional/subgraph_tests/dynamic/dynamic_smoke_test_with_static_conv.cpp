@@ -15,7 +15,6 @@
 #include "openvino/op/result.hpp"
 #include "openvino/op/convolution.hpp"
 #include "openvino/op/fake_quantize.hpp"
-#include "openvino/op/concat.hpp"
 
 
 namespace {

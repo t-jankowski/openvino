@@ -5,6 +5,7 @@
 
 #include <gtest/gtest.h>
 
+#include "openvino/op/ops.hpp"
 #include "utils.hpp"
 
 using namespace ov;

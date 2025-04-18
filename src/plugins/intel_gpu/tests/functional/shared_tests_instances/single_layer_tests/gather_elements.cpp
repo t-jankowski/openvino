@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "common_test_utils/test_constants.hpp"
+#include "openvino/opsets/opset6.hpp"
 #include "single_op_tests/gather_elements.hpp"
 
 namespace {

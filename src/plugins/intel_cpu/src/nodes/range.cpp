@@ -7,9 +7,7 @@
 #include <string>
 
 #include "openvino/core/parallel.hpp"
-#include "openvino/op/range.hpp"
-#include "openvino/opsets/opset1_decl.hpp"
-#include "openvino/opsets/opset4_decl.hpp"
+#include "openvino/opsets/opset1.hpp"
 #include "shape_inference/shape_inference_internal_dyn.hpp"
 #include "utils/general_utils.h"
 

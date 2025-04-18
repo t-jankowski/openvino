@@ -10,6 +10,7 @@
 #include <memory>
 #include <openvino/op/constant.hpp>
 #include <openvino/op/gather.hpp>
+#include <openvino/opsets/opset1.hpp>
 #include <string>
 #include <vector>
 

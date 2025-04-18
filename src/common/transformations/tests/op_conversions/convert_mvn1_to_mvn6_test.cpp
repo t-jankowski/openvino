@@ -11,9 +11,8 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/core/model.hpp"
-#include "openvino/op/mvn.hpp"
-#include "openvino/opsets/opset2_decl.hpp"
-#include "openvino/opsets/opset6_decl.hpp"
+#include "openvino/opsets/opset2.hpp"
+#include "openvino/opsets/opset6.hpp"
 #include "openvino/pass/manager.hpp"
 #include "transformations/init_node_info.hpp"
 #include "transformations/utils/utils.hpp"

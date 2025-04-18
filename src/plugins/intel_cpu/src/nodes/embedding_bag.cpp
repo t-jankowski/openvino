@@ -11,6 +11,7 @@
 #include "common/cpu_memcpy.h"
 #include "dnnl_types.h"
 #include "openvino/core/parallel.hpp"
+#include "openvino/opsets/opset1.hpp"
 
 namespace ov::intel_cpu::node {
 

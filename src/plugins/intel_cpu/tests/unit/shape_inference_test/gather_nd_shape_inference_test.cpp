@@ -6,6 +6,7 @@
 
 #include <gtest/gtest.h>
 
+#include "openvino/op/ops.hpp"
 #include "openvino/util/common_util.hpp"
 #include "utils.hpp"
 #include "shape_inference/shape_inference.hpp"

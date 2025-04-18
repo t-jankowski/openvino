@@ -6,11 +6,7 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/core/model.hpp"
-#include "openvino/op/lstm_cell.hpp"
-#include "openvino/op/squeeze.hpp"
-#include "openvino/op/tensor_iterator.hpp"
-#include "openvino/op/unsqueeze.hpp"
-#include "openvino/opsets/opset9_decl.hpp"
+#include "openvino/opsets/opset9.hpp"
 
 using namespace std;
 using namespace ov::opset9;

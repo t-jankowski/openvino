@@ -33,9 +33,6 @@
 #include "utils/cpu_test_utils.hpp"
 #include "utils/filter_cpu_info.hpp"
 #include "internal_properties.hpp"
-#include "openvino/op/concat.hpp"
-#include "openvino/op/fake_quantize.hpp"
-#include "openvino/op/reshape.hpp"
 
 using namespace CPUTestUtils;
 

@@ -4,7 +4,8 @@
 
 #include "ov_lpt_models/elementwise_with_multi_parent_dequantization.hpp"
 #include "low_precision/network_helper.hpp"
-#include "openvino/opsets/opset1_decl.hpp"
+
+#include "openvino/opsets/opset1.hpp"
 
 using namespace ov::pass::low_precision;
 

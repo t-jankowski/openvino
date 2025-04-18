@@ -3,7 +3,6 @@
 //
 
 #include "shared_test_classes/single_op/concat.hpp"
-#include "openvino/op/concat.hpp"
 
 namespace ov {
 namespace test {

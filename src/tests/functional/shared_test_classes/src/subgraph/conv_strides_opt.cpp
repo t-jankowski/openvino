@@ -5,7 +5,6 @@
 #include "shared_test_classes/subgraph/conv_strides_opt.hpp"
 
 #include "common_test_utils/node_builders/constant.hpp"
-#include "openvino/op/convolution.hpp"
 
 namespace ov {
 namespace test {

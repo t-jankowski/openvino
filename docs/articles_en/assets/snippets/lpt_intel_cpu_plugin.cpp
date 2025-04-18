@@ -1,3 +1,5 @@
+#include <transformations/low_precision/mark_dequantization_subgraph.hpp>
+
 #include <low_precision/common/quantization_granularity_restriction.hpp>
 #include <low_precision/convert_subtract_constant.hpp>
 #include <low_precision/convolution.hpp>
@@ -7,10 +9,7 @@
 #include <low_precision/multiply_to_group_convolution.hpp>
 #include <low_precision/network_helper.hpp>
 #include <transformations/common_optimizations/convert_quantize_dequantize.hpp>
-#include <transformations/low_precision/mark_dequantization_subgraph.hpp>
 #include <transformations/op_conversions/convert_subtract.hpp>
-
-#include "openvino/opsets/opset1.hpp"
 #include "openvino/pass/manager.hpp"
 
 namespace ov {

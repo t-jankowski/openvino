@@ -10,8 +10,6 @@
 
 #include "low_precision/network_helper.hpp"
 #include "low_precision/split.hpp"
-#include "openvino/op/shape_of.hpp"
-#include "openvino/op/split.hpp"
 
 namespace ov {
 namespace pass {

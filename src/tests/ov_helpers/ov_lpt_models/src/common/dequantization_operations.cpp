@@ -3,6 +3,7 @@
 //
 
 #include "ov_lpt_models/common/dequantization_operations.hpp"
+#include "openvino/opsets/opset1.hpp"
 
 namespace ov {
 namespace builder {

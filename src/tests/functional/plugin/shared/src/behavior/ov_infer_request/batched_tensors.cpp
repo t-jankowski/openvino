@@ -3,13 +3,11 @@
 //
 
 #include <gtest/gtest.h>
-#include "openvino/opsets/opset8_decl.hpp"
+#include "openvino/opsets/opset8.hpp"
 #include "common_test_utils/ov_plugin_cache.hpp"
 #include "behavior/ov_infer_request/batched_tensors.hpp"
 #include "common_test_utils/file_utils.hpp"
 #include <chrono>
-#include "openvino/op/add.hpp"
-#include "openvino/op/constant.hpp"
 
 namespace ov {
 namespace test {

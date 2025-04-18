@@ -3,7 +3,6 @@
 //
 
 #include "shared_test_classes/base/ov_subgraph.hpp"
-#include "openvino/op/gather_nd.hpp"
 
 namespace ov {
 namespace test {

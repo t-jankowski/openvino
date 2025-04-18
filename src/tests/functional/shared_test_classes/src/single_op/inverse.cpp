@@ -8,7 +8,6 @@
 #include <random>
 
 #include "common_test_utils/ov_tensor_utils.hpp"
-#include "openvino/op/inverse.hpp"
 
 using namespace ov::test;
 

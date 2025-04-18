@@ -4,7 +4,8 @@
 
 #include "ov_lpt_models/subtract.hpp"
 #include "low_precision/network_helper.hpp"
-#include "openvino/opsets/opset1_decl.hpp"
+
+#include "openvino/opsets/opset1.hpp"
 #include "ov_lpt_models/common/builders.hpp"
 #include "common_test_utils/node_builders/fake_quantize.hpp"
 

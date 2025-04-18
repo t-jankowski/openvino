@@ -5,6 +5,7 @@
 
 #include "common_test_utils/test_assertions.hpp"
 #include "gather_elements_shape_inference.hpp"
+#include "openvino/op/ops.hpp"
 #include "utils.hpp"
 
 using namespace ov;

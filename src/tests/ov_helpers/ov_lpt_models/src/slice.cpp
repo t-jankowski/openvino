@@ -3,9 +3,7 @@
 //
 
 #include "ov_lpt_models/slice.hpp"
-#include "openvino/opsets/opset8_decl.hpp"
-#include "openvino/op/slice.hpp"
-#include "openvino/opsets/opset1_decl.hpp"
+#include "openvino/opsets/opset8.hpp"
 
 using namespace ov::pass::low_precision;
 

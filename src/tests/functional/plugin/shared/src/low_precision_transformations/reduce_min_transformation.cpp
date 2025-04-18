@@ -8,7 +8,6 @@
 #include <vector>
 
 #include "ov_lpt_models/reduce.hpp"
-#include "openvino/op/reduce_min.hpp"
 
 namespace LayerTestsDefinitions {
 

@@ -6,7 +6,6 @@
 
 #include "common_test_utils/test_assertions.hpp"
 #include "utils.hpp"
-#include "openvino/op/roi_align.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;

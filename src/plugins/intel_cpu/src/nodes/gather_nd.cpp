@@ -5,14 +5,13 @@
 #include "gather_nd.h"
 
 #include <cmath>
+#include <openvino/opsets/opset8.hpp>
 #include <string>
 #include <vector>
 
 #include "common/cpu_memcpy.h"
 #include "dnnl_types.h"
 #include "openvino/core/parallel.hpp"
-#include "openvino/op/gather_nd.hpp"
-#include "openvino/opsets/opset5_decl.hpp"
 #include "utils/general_utils.h"
 
 namespace ov::intel_cpu::node {

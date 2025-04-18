@@ -7,10 +7,7 @@
 #include <gtest/gtest.h>
 
 #include "common_test_utils/ov_test_utils.hpp"
-#include "openvino/op/add.hpp"
-#include "openvino/op/multiply.hpp"
-#include "openvino/op/subtract.hpp"
-#include "openvino/opsets/opset8_decl.hpp"
+#include "openvino/opsets/opset8.hpp"
 #include "transformations/low_precision/mark_dequantization_subgraph.hpp"
 #include "transformations/utils/utils.hpp"
 

@@ -6,14 +6,13 @@
 
 #include "itt.hpp"
 #include "openvino/core/validation_util.hpp"
-#include "openvino/opsets/opset1_decl.hpp"
+#include "openvino/opsets/opset1.hpp"
 #include "openvino/pass/pattern/op/wrap_type.hpp"
 #include "openvino/util/log.hpp"
 
 #include "low_precision/network_helper.hpp"
 #include "low_precision/shuffle_channels.hpp"
 #include "openvino/core/graph_util.hpp"
-#include "openvino/op/shuffle_channels.hpp"
 
 namespace ov {
 namespace pass {

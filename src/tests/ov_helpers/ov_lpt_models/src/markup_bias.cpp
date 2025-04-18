@@ -1,11 +1,10 @@
 // Copyright (C) 2018-2025 Intel Corporation
 // SPDX-License-Identifier: Apache-2.0
 //
-#include "openvino/opsets/opset1_decl.hpp"
+
+#include "openvino/opsets/opset1.hpp"
 #include "ov_lpt_models/markup_bias.hpp"
 #include "common_test_utils/node_builders/constant.hpp"
-#include "openvino/op/group_conv.hpp"
-#include "openvino/op/matmul.hpp"
 
 namespace ov {
 namespace builder {

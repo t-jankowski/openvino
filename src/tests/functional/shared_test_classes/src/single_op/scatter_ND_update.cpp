@@ -3,7 +3,6 @@
 //
 
 #include "shared_test_classes/single_op/scatter_ND_update.hpp"
-#include "openvino/op/scatter_nd_update.hpp"
 
 namespace ov {
 namespace test {
@@ -105,3 +104,4 @@ void ScatterNDUpdate15LayerTest::SetUp() {
 }
 }  // namespace test
 }  // namespace ov
+

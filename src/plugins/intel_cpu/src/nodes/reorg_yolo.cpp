@@ -4,11 +4,10 @@
 
 #include "reorg_yolo.h"
 
+#include <openvino/opsets/opset2.hpp>
 #include <string>
 
 #include "openvino/core/parallel.hpp"
-#include "openvino/op/reorg_yolo.hpp"
-#include "openvino/opsets/opset2_decl.hpp"
 
 namespace ov::intel_cpu::node {
 

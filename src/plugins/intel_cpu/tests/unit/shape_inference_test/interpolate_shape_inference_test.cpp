@@ -7,8 +7,6 @@
 #include <chrono>
 
 #include "utils.hpp"
-#include "openvino/op/constant.hpp"
-#include "openvino/op/interpolate.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;

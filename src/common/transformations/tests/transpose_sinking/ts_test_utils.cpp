@@ -6,9 +6,7 @@
 
 #include "gtest/gtest.h"
 #include "openvino/frontend/manager.hpp"
-#include "openvino/op/gather.hpp"
-#include "openvino/op/transpose.hpp"
-#include "openvino/opsets/opset10_decl.hpp"
+#include "openvino/opsets/opset10.hpp"
 #include "openvino/pass/manager.hpp"
 
 using namespace std;

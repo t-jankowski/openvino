@@ -4,9 +4,7 @@
 
 #include "precision_propagation_convertion.hpp"
 #include <assert.h>
-#include "openvino/opsets/opset1_decl.hpp"
-#include "openvino/op/add.hpp"
-#include "openvino/op/fake_quantize.hpp"
+#include "openvino/opsets/opset1.hpp"
 
 namespace ov {
 namespace test {

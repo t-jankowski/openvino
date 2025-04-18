@@ -4,11 +4,10 @@
 
 #include "ov_lpt_models/transpose_after_mat_mul.hpp"
 #include "low_precision/network_helper.hpp"
-#include "openvino/opsets/opset1_decl.hpp"
+
+#include "openvino/opsets/opset1.hpp"
 #include "ov_lpt_models/common/builders.hpp"
 #include "common_test_utils/node_builders/fake_quantize.hpp"
-#include "openvino/op/matmul.hpp"
-#include "openvino/op/transpose.hpp"
 
 using namespace ov::pass::low_precision;
 

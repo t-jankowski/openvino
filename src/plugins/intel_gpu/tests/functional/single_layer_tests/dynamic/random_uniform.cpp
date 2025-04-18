@@ -10,7 +10,6 @@
 #include "openvino/op/constant.hpp"
 #include "openvino/op/result.hpp"
 #include "openvino/op/random_uniform.hpp"
-#include "openvino/op/shape_of.hpp"
 
 namespace {
 using ov::test::InputShape;

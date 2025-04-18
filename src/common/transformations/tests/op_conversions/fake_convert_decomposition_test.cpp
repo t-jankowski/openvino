@@ -8,15 +8,8 @@
 
 #include "common_test_utils/common_utils.hpp"
 #include "common_test_utils/ov_test_utils.hpp"
-#include "openvino/op/add.hpp"
-#include "openvino/op/clamp.hpp"
-#include "openvino/op/convert.hpp"
-#include "openvino/op/divide.hpp"
-#include "openvino/op/fake_convert.hpp"
-#include "openvino/op/multiply.hpp"
-#include "openvino/op/subtract.hpp"
-#include "openvino/opsets/opset13_decl.hpp"
-#include "openvino/opsets/opset1_decl.hpp"
+#include "openvino/opsets/opset1.hpp"
+#include "openvino/opsets/opset13.hpp"
 
 using namespace ov;
 

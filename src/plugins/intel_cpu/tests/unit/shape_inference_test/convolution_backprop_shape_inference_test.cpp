@@ -6,6 +6,7 @@
 
 #include "common_test_utils/test_assertions.hpp"
 #include "convolution_backprop_shape_inference.hpp"
+#include "openvino/opsets/opset11.hpp"
 #include "utils.hpp"
 
 using namespace ov;

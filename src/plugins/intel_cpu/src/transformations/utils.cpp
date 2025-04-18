@@ -4,8 +4,7 @@
 
 #include "utils.hpp"
 
-#include "openvino/op/matmul.hpp"
-#include "openvino/op/multiply.hpp"
+#include "openvino/opsets/opset1.hpp"
 #include "ov_ops/fully_connected.hpp"
 #include "transformations/rt_info/dequantization_node.hpp"
 #include "transformations/utils/utils.hpp"

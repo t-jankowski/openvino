@@ -4,13 +4,13 @@
 
 #pragma once
 
-#include <low_precision/common/quantization_granularity_restriction.hpp>
 #include <memory>
-#include "openvino/opsets/opset1_decl.hpp"
-#include "ov_lpt_models/common/dequantization_operations.hpp"
-#include "ov_lpt_models/common/fake_quantize_on_data.hpp"
+
+#include <low_precision/common/quantization_granularity_restriction.hpp>
+
 #include "ov_lpt_models/common/fake_quantize_on_weights.hpp"
-#include "openvino/op/constant.hpp"
+#include "ov_lpt_models/common/fake_quantize_on_data.hpp"
+#include "ov_lpt_models/common/dequantization_operations.hpp"
 
 namespace ov {
 namespace builder {

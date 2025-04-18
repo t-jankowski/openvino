@@ -5,11 +5,8 @@
 #include <gtest/gtest.h>
 
 #include "common_test_utils/test_assertions.hpp"
+#include "openvino/op/ops.hpp"
 #include "custom_shape_infer.hpp"
-#include "openvino/op/i420_to_bgr.hpp"
-#include "openvino/op/i420_to_rgb.hpp"
-#include "openvino/op/nv12_to_bgr.hpp"
-#include "openvino/op/nv12_to_rgb.hpp"
 namespace ov {
 namespace intel_cpu {
 namespace unit_test {
@@ -110,3 +107,4 @@ INSTANTIATE_TYPED_TEST_SUITE_P(CpuShapeInfer_I420toRGB, CpuShapeInferenceTest_Co
 } // namespace unit_test
 } // namespace intel_cpu
 } // namespace ov
+

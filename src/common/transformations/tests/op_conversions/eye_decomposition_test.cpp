@@ -10,19 +10,9 @@
 #include "common_test_utils/ov_test_utils.hpp"
 #include "gtest/gtest.h"
 #include "openvino/core/model.hpp"
-#include "openvino/op/concat.hpp"
 #include "openvino/op/constant.hpp"
-#include "openvino/op/eye.hpp"
-#include "openvino/op/maximum.hpp"
-#include "openvino/op/minimum.hpp"
-#include "openvino/op/negative.hpp"
-#include "openvino/op/pad.hpp"
 #include "openvino/op/parameter.hpp"
-#include "openvino/op/reduce_min.hpp"
-#include "openvino/op/reshape.hpp"
-#include "openvino/op/subtract.hpp"
-#include "openvino/op/tile.hpp"
-#include "openvino/opsets/opset9_decl.hpp"
+#include "openvino/opsets/opset9.hpp"
 using namespace ov;
 using namespace testing;
 

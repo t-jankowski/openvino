@@ -6,10 +6,7 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/core/model.hpp"
-#include "openvino/op/add.hpp"
-#include "openvino/op/matmul.hpp"
-#include "openvino/op/reshape.hpp"
-#include "openvino/opsets/opset9_decl.hpp"
+#include "openvino/opsets/opset9.hpp"
 
 struct ReshapeSinkingAttributes {
     ov::element::Type_t data_et;

@@ -3,7 +3,6 @@
 //
 
 #include "shared_test_classes/single_op/roll.hpp"
-#include "openvino/op/roll.hpp"
 
 namespace ov {
 namespace test {

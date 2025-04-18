@@ -13,9 +13,7 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/core/model.hpp"
-#include "openvino/op/add.hpp"
-#include "openvino/op/convolution.hpp"
-#include "openvino/opsets/opset1_decl.hpp"
+#include "openvino/opsets/opset1.hpp"
 #include "transformations/rt_info/primitives_priority_attribute.hpp"
 
 using namespace ov;

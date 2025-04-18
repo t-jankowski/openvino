@@ -5,7 +5,9 @@
 #include "common_test_utils/ov_tensor_utils.hpp"
 #include "common_test_utils/test_enums.hpp"
 #include "shared_test_classes/base/ov_subgraph.hpp"
-#include "openvino/opsets/opset13_decl.hpp"
+
+
+#include "openvino/opsets/opset13.hpp"
 #include "transformations/op_conversions/scaled_dot_product_attention_decomposition.hpp"
 #include "openvino/pass/manager.hpp"
 
@@ -15,7 +17,6 @@
 #include "openvino/op/matmul.hpp"
 
 #include "intel_gpu/runtime/execution_config.hpp"
-#include "openvino/op/transpose.hpp"
 
 namespace {
 using ov::test::InputShape;

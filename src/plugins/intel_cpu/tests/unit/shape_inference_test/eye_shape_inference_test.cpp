@@ -7,11 +7,8 @@
 #include <array>
 
 #include "common_test_utils/test_assertions.hpp"
-#include "openvino/opsets/opset10_decl.hpp"
+#include "openvino/opsets/opset10.hpp"
 #include "utils.hpp"
-#include "openvino/op/constant.hpp"
-#include "openvino/op/eye.hpp"
-#include "openvino/opsets/opset10_decl.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;

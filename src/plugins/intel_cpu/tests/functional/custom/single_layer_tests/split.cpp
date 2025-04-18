@@ -4,8 +4,6 @@
 
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
-#include "openvino/op/relu.hpp"
-#include "openvino/op/split.hpp"
 
 using namespace ov::test;
 using namespace CPUTestUtils;

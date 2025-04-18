@@ -10,26 +10,7 @@
 #include <vector>
 
 #include "openvino/core/parallel.hpp"
-#include "openvino/op/abs.hpp"
-#include "openvino/op/acos.hpp"
-#include "openvino/op/acosh.hpp"
-#include "openvino/op/asin.hpp"
-#include "openvino/op/asinh.hpp"
-#include "openvino/op/atan.hpp"
-#include "openvino/op/atanh.hpp"
-#include "openvino/op/ceiling.hpp"
-#include "openvino/op/constant.hpp"
-#include "openvino/op/cos.hpp"
-#include "openvino/op/cosh.hpp"
-#include "openvino/op/floor.hpp"
-#include "openvino/op/hard_sigmoid.hpp"
-#include "openvino/op/negative.hpp"
-#include "openvino/op/selu.hpp"
-#include "openvino/op/sign.hpp"
-#include "openvino/op/sin.hpp"
-#include "openvino/op/sinh.hpp"
-#include "openvino/op/softplus.hpp"
-#include "openvino/op/tan.hpp"
+#include "openvino/opsets/opset1.hpp"
 
 namespace ov::intel_cpu::node {
 

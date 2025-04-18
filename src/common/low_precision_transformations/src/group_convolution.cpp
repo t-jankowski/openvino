@@ -11,7 +11,6 @@
 #include "openvino/pass/pattern/op/wrap_type.hpp"
 #include "low_precision/network_helper.hpp"
 #include "itt.hpp"
-#include "openvino/op/group_conv.hpp"
 
 namespace ov {
 namespace pass {

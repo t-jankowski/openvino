@@ -3,7 +3,6 @@
 //
 
 #include "shared_test_classes/single_op/space_to_depth.hpp"
-#include "openvino/op/space_to_depth.hpp"
 
 namespace ov {
 namespace test {

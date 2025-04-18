@@ -58,8 +58,7 @@
 #include "openvino/op/squeeze.hpp"
 #include "openvino/op/unsqueeze.hpp"
 #include "openvino/op/util/sub_graph_base.hpp"
-#include "openvino/opsets/opset1_decl.hpp"
-#include "openvino/opsets/opset10_decl.hpp"
+#include "openvino/opsets/opset10.hpp"
 #include "openvino/pass/constant_folding.hpp"
 #include "openvino/pass/manager.hpp"
 #include "openvino/pass/pattern/op/wrap_type.hpp"
@@ -92,6 +91,7 @@
 #include "transformations/common_optimizations/broadcast_elementwise_fusion.hpp"
 #include "transformations/common_optimizations/broadcast_transition.hpp"
 #include "transformations/common_optimizations/common_optimizations.hpp"
+#include "transformations/common_optimizations/constants_reduce.hpp"
 #include "transformations/common_optimizations/convert_pagedattn_inputs.hpp"
 #include "transformations/common_optimizations/convert_quantize_dequantize.hpp"
 #include "transformations/common_optimizations/fuse_rotary_positional_embeddings.hpp"
@@ -109,7 +109,6 @@
 #include "transformations/common_optimizations/transpose_sinking.hpp"
 #include "transformations/common_optimizations/weights_dequantize_to_fake_quantize.hpp"
 #include "transformations/common_optimizations/wrap_interpolate_into_transposes.hpp"
-#include "transformations/common_optimizations/constants_reduce.hpp"
 #include "transformations/control_flow/unroll_tensor_iterator.hpp"
 #include "transformations/convert_pooling_to_reduce.hpp"
 #include "transformations/convert_precision.hpp"
@@ -176,18 +175,9 @@
 #include "transformations/rt_info/fused_names_attribute.hpp"
 #include "transformations/rt_info/keep_const_precision.hpp"
 #include "transformations/smart_reshape/matmul_sr.hpp"
-#include "openvino/op/abs.hpp"
-#include "openvino/op/broadcast.hpp"
-#include "openvino/op/ceiling.hpp"
-#include "openvino/op/clamp.hpp"
-#include "openvino/op/matmul.hpp"
-#include "openvino/op/reverse_sequence.hpp"
-#include "openvino/op/roll.hpp"
-#include "openvino/op/shuffle_channels.hpp"
-#include "openvino/op/transpose.hpp"
 
 namespace {
-template<typename T>
+template <typename T>
 static bool disable_reduce_decomposition(const std::shared_ptr<const ov::Node> node) {
     if (auto op = std::dynamic_pointer_cast<const T>(node)) {
         if (op->input(0).get_partial_shape()[0].is_static()) {
@@ -199,19 +189,19 @@ static bool disable_reduce_decomposition(const std::shared_ptr<const ov::Node> n
 }
 
 static bool is_decompression_multiply(const std::shared_ptr<const ov::Node> node, bool supports_immad) {
-    std::vector<ov::DiscreteTypeInfo> target_consumers = { ov::opset1::MatMul::get_type_info_static(),
-                                                           ov::op::v8::Gather::get_type_info_static(),
-                                                           ov::op::v1::Convolution::get_type_info_static(),
-                                                           ov::opset1::Convolution::get_type_info_static(),
-                                                           ov::op::v1::ConvolutionBackpropData::get_type_info_static(),
-                                                           ov::opset1::ConvolutionBackpropData::get_type_info_static(),
-                                                           ov::opset1::GroupConvolution::get_type_info_static() };
+    std::vector<ov::DiscreteTypeInfo> target_consumers = {ov::opset1::MatMul::get_type_info_static(),
+                                                          ov::op::v8::Gather::get_type_info_static(),
+                                                          ov::op::v1::Convolution::get_type_info_static(),
+                                                          ov::opset1::Convolution::get_type_info_static(),
+                                                          ov::op::v1::ConvolutionBackpropData::get_type_info_static(),
+                                                          ov::opset1::ConvolutionBackpropData::get_type_info_static(),
+                                                          ov::opset1::GroupConvolution::get_type_info_static()};
 
-    std::vector<ov::DiscreteTypeInfo> convolutions = { ov::op::v1::Convolution::get_type_info_static(),
-                                                       ov::opset1::Convolution::get_type_info_static(),
-                                                       ov::op::v1::ConvolutionBackpropData::get_type_info_static(),
-                                                       ov::opset1::ConvolutionBackpropData::get_type_info_static(),
-                                                       ov::opset1::GroupConvolution::get_type_info_static() };
+    std::vector<ov::DiscreteTypeInfo> convolutions = {ov::op::v1::Convolution::get_type_info_static(),
+                                                      ov::opset1::Convolution::get_type_info_static(),
+                                                      ov::op::v1::ConvolutionBackpropData::get_type_info_static(),
+                                                      ov::opset1::ConvolutionBackpropData::get_type_info_static(),
+                                                      ov::opset1::GroupConvolution::get_type_info_static()};
 
     auto all_has_types = [](const std::set<ov::Input<ov::Node>>& consumers, const std::vector<ov::DiscreteTypeInfo>& types) {
         return std::all_of(consumers.begin(), consumers.end(), [&types](const ov::Input<ov::Node>& input) {
@@ -232,7 +222,7 @@ static bool is_decompression_multiply(const std::shared_ptr<const ov::Node> node
     }
 
     auto are_multiply_from_decompression = [&](const ov::Input<ov::Node> consumer) {
-        if (!cldnn::one_of(consumer.get_node()->get_type_info(), { ov::op::v1::Multiply::get_type_info_static() }))
+        if (!cldnn::one_of(consumer.get_node()->get_type_info(), {ov::op::v1::Multiply::get_type_info_static()}))
             return false;
         const auto child_consumers = consumer.get_node()->get_output_target_inputs(0);
 
@@ -249,7 +239,7 @@ static bool is_decompression_multiply(const std::shared_ptr<const ov::Node> node
     };
 
     auto are_converts_from_decompression = [&](const std::set<ov::Input<ov::Node>>& consumers) {
-        if (!all_has_types(consumers, { ov::opset1::Convert::get_type_info_static() }))
+        if (!all_has_types(consumers, {ov::opset1::Convert::get_type_info_static()}))
             return false;
         for (const auto& consumer : consumers) {
             const auto child_consumers = consumer.get_node()->get_output_target_inputs(0);
@@ -270,7 +260,7 @@ static bool is_decompression_multiply(const std::shared_ptr<const ov::Node> node
         return true;
     };
 
-    if (all_has_types(consumers, { ov::opset1::Reshape::get_type_info_static() })) {
+    if (all_has_types(consumers, {ov::opset1::Reshape::get_type_info_static()})) {
         for (const auto& consumer : consumers) {
             const auto child_consumers = consumer.get_node()->get_output_target_inputs(0);
             for (const auto& child_consumer : child_consumers) {
@@ -363,35 +353,33 @@ void TransformationsPipeline::apply(std::shared_ptr<ov::Model> func) {
         auto is_model_quantized = ov::pass::low_precision::LowPrecision::isFunctionQuantized(func);
         enableInt8 = config.get_enable_lp_transformations() && is_model_quantized;
 
-        manager.register_pass<ov::pass::MarkDequantization>(
-            std::vector<ov::element::Type>{ ov::element::i8, ov::element::u8, ov::element::i4, ov::element::u4 },
-            !device_info.supports_immad);
+        manager.register_pass<ov::pass::MarkDequantization>(std::vector<ov::element::Type>{ov::element::i8, ov::element::u8, ov::element::i4, ov::element::u4},
+                                                            !device_info.supports_immad);
 
         manager.register_pass<ov::pass::InitNodeInfo>();
         manager.register_pass<EinsumDecomposition>();
 
-        precisions_map fp_convert_precision_map = {
-                {ov::element::f64, ov::element::f32}
-        };
+        precisions_map fp_convert_precision_map = {{ov::element::f64, ov::element::f32}};
 
         // call conversion of float types with keep_precision_sensitive_in_fp32 = true
         auto fp_precision_supported = [&](ov::element::Type e) -> bool {
             switch (e) {
-                case ov::element::f16: return device_info.supports_fp16;
-                case ov::element::f32: return true; // assume that all GPUs support f32 data type
-                case ov::element::f64: return device_info.supports_fp64;
-                case ov::element::bf16: return false;
-                default: return false;
+            case ov::element::f16:
+                return device_info.supports_fp16;
+            case ov::element::f32:
+                return true;  // assume that all GPUs support f32 data type
+            case ov::element::f64:
+                return device_info.supports_fp64;
+            case ov::element::bf16:
+                return false;
+            default:
+                return false;
             }
             return false;
         };
 
         const auto fallback_precision = ov::element::f32;
-        std::vector<ov::element::Type> fp_element_types = {
-                ov::element::f32,
-                ov::element::f16,
-                ov::element::bf16
-        };
+        std::vector<ov::element::Type> fp_element_types = {ov::element::f32, ov::element::f16, ov::element::bf16};
 
         // Add conversion from FP data types to infer precision if it's specified
         infer_precision = config.get_inference_precision();
@@ -431,21 +419,19 @@ void TransformationsPipeline::apply(std::shared_ptr<ov::Model> func) {
         manager.register_pass<ov::pass::BroadcastTransition>();
 
         manager.register_pass<ov::pass::KeepConstantsPrecisionAndAddConverts>();
-        pass_config->set_callback<ov::pass::KeepConstantsPrecisionAndAddConverts>(
-            [](const_node_ptr& node) -> bool {
-                auto next_node = node->get_output_target_inputs(0).begin()->get_node();
-                if (is_type<ov::op::v0::Convert>(next_node)) {
-                    next_node = next_node->get_output_target_inputs(0).begin()->get_node();
-                }
-                return !is_type<ov::op::v0::MatMul>(next_node);
-            });
+        pass_config->set_callback<ov::pass::KeepConstantsPrecisionAndAddConverts>([](const_node_ptr& node) -> bool {
+            auto next_node = node->get_output_target_inputs(0).begin()->get_node();
+            if (is_type<ov::op::v0::Convert>(next_node)) {
+                next_node = next_node->get_output_target_inputs(0).begin()->get_node();
+            }
+            return !is_type<ov::op::v0::MatMul>(next_node);
+        });
 
         // Disable subtract folding only for the dGPUs to meet the requirements of oneDNN:
         // it expects to have the same data type for weights and zero points (apply it only for u8 data type, since other compression
         // types are not supported by oneDNN)
         manager.register_pass<ov::pass::KeepConstPrecision>(supported_woq_types, !device_info.supports_immad);
-        pass_config->set_callback<ov::pass::MarkDequantization,
-                ov::pass::KeepConstPrecision>([&](const std::shared_ptr<const ov::Node> node) {
+        pass_config->set_callback<ov::pass::MarkDequantization, ov::pass::KeepConstPrecision>([&](const std::shared_ptr<const ov::Node> node) {
             return !is_decompression_multiply(node, device_info.supports_immad);
         });
 
@@ -479,19 +465,16 @@ void TransformationsPipeline::apply(std::shared_ptr<ov::Model> func) {
         kv_cache_config.valueCacheBlockSize = 16;
         kv_cache_config.keyCacheDimOrder = {0, 1, 3, 2};
         kv_cache_config.valueCacheDimOrder = {0, 1, 2, 3};
-        manager.register_pass<ov::pass::ConvertPagedAttnInputs>(kv_cache_config,
-            [&infer_precision](const ov::element::Type& precision,
-               const bool bychannel,
-               const size_t group_num,
-               int64_t& head_size,
-               int64_t& block_size) {
+        manager.register_pass<ov::pass::ConvertPagedAttnInputs>(
+            kv_cache_config,
+            [&infer_precision](const ov::element::Type& precision, const bool bychannel, const size_t group_num, int64_t& head_size, int64_t& block_size) {
                 OPENVINO_ASSERT(!bychannel, "[GPU] Unsupported KV-cache quantization mode");
                 if (precision == ov::element::i8 || precision == ov::element::u8) {
                     head_size += infer_precision.size() * 2 * group_num;
                 }
             });
 
-        pass_config->set_callback<ov::pass::ScaledDotProductAttentionDecomposition>([&](const std::shared_ptr<const ov::Node> node){
+        pass_config->set_callback<ov::pass::ScaledDotProductAttentionDecomposition>([&](const std::shared_ptr<const ov::Node> node) {
             if (!config.get_enable_sdpa_optimization())
                 return false;
 
@@ -567,48 +550,47 @@ void TransformationsPipeline::apply(std::shared_ptr<ov::Model> func) {
         }
 
         // Disable Bidirectional LSTM decomposition if node is supported by XeTLA
-        pass_config->set_callback<ov::pass::BidirectionalLSTMSequenceDecomposition>(
-                [&](const_node_ptr &node) -> bool {
-                    const auto &lstm_seq = ov::as_type_ptr<const ov::op::v5::LSTMSequence>(node);
+        pass_config->set_callback<ov::pass::BidirectionalLSTMSequenceDecomposition>([&](const_node_ptr& node) -> bool {
+            const auto& lstm_seq = ov::as_type_ptr<const ov::op::v5::LSTMSequence>(node);
 
-                    auto &engine = m_context->get_engine();
-                    if (!cldnn::check_cm_jit_support(engine, config) || engine.get_device_info().arch != cldnn::gpu_arch::xe2 || !config.get_use_cm()) {
-                        return false;
-                    }
+            auto& engine = m_context->get_engine();
+            if (!cldnn::check_cm_jit_support(engine, config) || engine.get_device_info().arch != cldnn::gpu_arch::xe2 || !config.get_use_cm()) {
+                return false;
+            }
 
-                    if (lstm_seq->get_clip() > 0.f) {
-                        return false;
-                    }
+            if (lstm_seq->get_clip() > 0.f) {
+                return false;
+            }
 
-                    const auto &activations = lstm_seq->get_activations();
-                    if (activations.size() != 3 ||
-                        activations[0].compare("sigmoid") != 0 || activations[1].compare("tanh") != 0 || activations[2].compare("tanh") != 0) {
-                        return false;
-                    }
+            const auto& activations = lstm_seq->get_activations();
+            if (activations.size() != 3 || activations[0].compare("sigmoid") != 0 || activations[1].compare("tanh") != 0 ||
+                activations[2].compare("tanh") != 0) {
+                return false;
+            }
 
-                    if (lstm_seq->get_output_element_type(0) != ov::element::f16) {
-                        return false;
-                    }
+            if (lstm_seq->get_output_element_type(0) != ov::element::f16) {
+                return false;
+            }
 
-                    if (lstm_seq->is_dynamic()) {
-                        return false;
-                    }
-                    const auto &input = lstm_seq->get_input_shape(0);
-                    const auto &output = lstm_seq->get_output_shape(0);
-                    if (input.size() != 3 || output.size() != 4) {
-                        return false;
-                    }
-                    auto batch_size = input[0];
-                    auto input_size = input[2];
-                    auto num_dir = output[1];
-                    auto hidden_size = output[3];
+            if (lstm_seq->is_dynamic()) {
+                return false;
+            }
+            const auto& input = lstm_seq->get_input_shape(0);
+            const auto& output = lstm_seq->get_output_shape(0);
+            if (input.size() != 3 || output.size() != 4) {
+                return false;
+            }
+            auto batch_size = input[0];
+            auto input_size = input[2];
+            auto num_dir = output[1];
+            auto hidden_size = output[3];
 
-                    if (hidden_size != 128 || batch_size != 1 || num_dir != 2 || (input_size != 64 && input_size != 256)) {
-                        return false;
-                    }
+            if (hidden_size != 128 || batch_size != 1 || num_dir != 2 || (input_size != 64 && input_size != 256)) {
+                return false;
+            }
 
-                    return true;
-                });
+            return true;
+        });
 
         manager.register_pass<ConvertShapeOf1To3>();
         manager.register_pass<ov::pass::ConvertNMS1ToNMS9>();
@@ -654,19 +636,15 @@ void TransformationsPipeline::apply(std::shared_ptr<ov::Model> func) {
         pass_config->disable<ov::pass::ConvertCompressedOnlyToLegacy>();
 
         // SpaceToDepth/DepthToSpace node implementation supports only equal input/output tensors with rank <= 5
-        pass_config->set_callback<ov::pass::ConvertSpaceToDepth,
-                                  ov::pass::ConvertDepthToSpace>(
-                [](const_node_ptr &node) -> bool {
-                    return node->input_value(0).get_partial_shape().size() <= 5lu &&
-                        node->input_value(0).get_partial_shape().size() == node->get_output_partial_shape(0).size();
-                });
+        pass_config->set_callback<ov::pass::ConvertSpaceToDepth, ov::pass::ConvertDepthToSpace>([](const_node_ptr& node) -> bool {
+            return node->input_value(0).get_partial_shape().size() <= 5lu &&
+                   node->input_value(0).get_partial_shape().size() == node->get_output_partial_shape(0).size();
+        });
 
-        pass_config->set_callback<ov::pass::ConvertBatchToSpace,
-                                  ov::pass::ConvertSpaceToBatch>(
-                [](const_node_ptr &node) -> bool {
-                    const auto& rank = node->input(0).get_partial_shape().rank().get_length();
-                    return rank <= 5;
-                });
+        pass_config->set_callback<ov::pass::ConvertBatchToSpace, ov::pass::ConvertSpaceToBatch>([](const_node_ptr& node) -> bool {
+            const auto& rank = node->input(0).get_partial_shape().rank().get_length();
+            return rank <= 5;
+        });
 
         // Convert reduce to reshape expected to be optimized out
         manager.register_pass<ov::pass::ConvertReduceToReshape>();
@@ -679,30 +657,27 @@ void TransformationsPipeline::apply(std::shared_ptr<ov::Model> func) {
             manager.register_pass<ConvertAvgPoolingToReduce>();
             manager.register_pass<DecomposeReduceForFalseKeepDims>();
         } else {
-            pass_config->set_callback<ov::pass::ConvertReduceSumToPooling>(
-            [](const_node_ptr &node) -> bool {
+            pass_config->set_callback<ov::pass::ConvertReduceSumToPooling>([](const_node_ptr& node) -> bool {
                 return disable_reduce_decomposition<ov::op::v1::ReduceSum>(node);
             });
 
-            pass_config->set_callback<ov::pass::ConvertReduceMeanToPooling>(
-            [](const_node_ptr &node) -> bool {
+            pass_config->set_callback<ov::pass::ConvertReduceMeanToPooling>([](const_node_ptr& node) -> bool {
                 return disable_reduce_decomposition<ov::op::v1::ReduceMean>(node);
             });
 
-            pass_config->set_callback<ov::pass::ConvertReduceMaxToPooling>(
-            [](const_node_ptr &node) -> bool {
+            pass_config->set_callback<ov::pass::ConvertReduceMaxToPooling>([](const_node_ptr& node) -> bool {
                 return disable_reduce_decomposition<ov::op::v1::ReduceMax>(node);
             });
         }
 
-        auto isCellPrimitiveSupported = [](const_node_ptr &node) -> bool {
+        auto isCellPrimitiveSupported = [](const_node_ptr& node) -> bool {
             if (ov::as_type_ptr<const ov::op::v0::RNNCell>(node)) {
                 return false;
             } else if (ov::as_type_ptr<const ov::op::v3::GRUCell>(node)) {
                 return false;
-            } else if (const auto &lstm_cell = ov::as_type_ptr<const ov::op::v4::LSTMCell>(node)) {
+            } else if (const auto& lstm_cell = ov::as_type_ptr<const ov::op::v4::LSTMCell>(node)) {
                 return false;
-            } else if (const auto &lstm_cell_v1 = ov::as_type_ptr<const ov::op::v0::LSTMCell>(node)) {
+            } else if (const auto& lstm_cell_v1 = ov::as_type_ptr<const ov::op::v0::LSTMCell>(node)) {
                 return lstm_cell_v1->get_clip() == 0.0f && lstm_cell_v1->get_activations() == std::vector<std::string>{"sigmoid", "tanh", "tanh"};
             }
             return false;
@@ -713,7 +688,7 @@ void TransformationsPipeline::apply(std::shared_ptr<ov::Model> func) {
         // should always convert to TensorIterator.
         // RNN/GRU Sequences are not supported in GPU plugin
         // LSTM Sequence supported with clip == 0, and activations have default values (sigmoid, tanh, tanh)
-        auto isSequencePrimitiveSupported = [](const_node_ptr &node) -> bool {
+        auto isSequencePrimitiveSupported = [](const_node_ptr& node) -> bool {
             const auto& data = node->input(0);
             const auto& data_pshape = data.get_partial_shape();
             auto max_seq_len = data_pshape[1];
@@ -723,86 +698,76 @@ void TransformationsPipeline::apply(std::shared_ptr<ov::Model> func) {
                 return false;
             } else if (ov::as_type_ptr<const ov::op::v5::GRUSequence>(node)) {
                 return false;
-            } else if (const auto &lstm_seq = ov::as_type_ptr<const ov::op::v5::LSTMSequence>(node)) {
-                return lstm_seq->get_clip() == 0.0f &&
-                       lstm_seq->get_activations() == std::vector<std::string>{"sigmoid", "tanh", "tanh"} &&
-                       max_seq_len != 1 &&
-                       !ov::op::util::is_seq_len_provided(lstm_seq->get_input_node_shared_ptr(0),
-                                                          lstm_seq->get_input_node_shared_ptr(3));
+            } else if (const auto& lstm_seq = ov::as_type_ptr<const ov::op::v5::LSTMSequence>(node)) {
+                return lstm_seq->get_clip() == 0.0f && lstm_seq->get_activations() == std::vector<std::string>{"sigmoid", "tanh", "tanh"} && max_seq_len != 1 &&
+                       !ov::op::util::is_seq_len_provided(lstm_seq->get_input_node_shared_ptr(0), lstm_seq->get_input_node_shared_ptr(3));
             }
             return false;
         };
 
-        pass_config->set_callback<ov::pass::RNNCellDecomposition,
-                                  ov::pass::GRUCellDecomposition,
-                                  ov::pass::LSTMCellDecomposition>(
-            [isCellPrimitiveSupported](const_node_ptr &node) -> bool {
+        pass_config->set_callback<ov::pass::RNNCellDecomposition, ov::pass::GRUCellDecomposition, ov::pass::LSTMCellDecomposition>(
+            [isCellPrimitiveSupported](const_node_ptr& node) -> bool {
                 return isCellPrimitiveSupported(node);
             });
 
-        pass_config->set_callback<ov::pass::LSTMCellFusion>(
-            [isCellPrimitiveSupported](const_node_ptr &node) -> bool {
-                return !isCellPrimitiveSupported(node);
-            });
+        pass_config->set_callback<ov::pass::LSTMCellFusion>([isCellPrimitiveSupported](const_node_ptr& node) -> bool {
+            return !isCellPrimitiveSupported(node);
+        });
         if (unroll_loop) {
             pass_config->set_callback<ov::pass::ConvertRNNSequenceToTensorIterator,
-                    ov::pass::ConvertGRUSequenceToTensorIterator,
-                    ov::pass::ConvertLSTMSequenceToTensorIterator>(
-                    [isSequencePrimitiveSupported](const_node_ptr &node) -> bool {
-                        return isSequencePrimitiveSupported(node);
-                    });
+                                      ov::pass::ConvertGRUSequenceToTensorIterator,
+                                      ov::pass::ConvertLSTMSequenceToTensorIterator>([isSequencePrimitiveSupported](const_node_ptr& node) -> bool {
+                return isSequencePrimitiveSupported(node);
+            });
         }
 
-        pass_config->set_callback<ov::pass::ConvertLoopToLSTMSequence,
-                                  ov::pass::FuseReverseLSTMSequence,
-                                  ov::pass::FuseLSTMSequencesToBidirectionalLSTMSequence>(
-                [isSequencePrimitiveSupported](const_node_ptr &node) -> bool {
+        pass_config
+            ->set_callback<ov::pass::ConvertLoopToLSTMSequence, ov::pass::FuseReverseLSTMSequence, ov::pass::FuseLSTMSequencesToBidirectionalLSTMSequence>(
+                [isSequencePrimitiveSupported](const_node_ptr& node) -> bool {
                     return !isSequencePrimitiveSupported(node);
                 });
 
-        pass_config->set_callback<ov::pass::MVN6Decomposition>(
-            [](const_node_ptr &node) -> bool {
-                const auto mvn = ov::as_type_ptr<const ov::op::v6::MVN>(node);
-                if (mvn != nullptr && node->get_input_size() == 2) {
-                    if (auto axes_node = ov::as_type<ov::op::v0::Constant>(mvn->get_input_node_ptr(1))) {
-                        auto mvn_axes = axes_node->cast_vector<int64_t>();
-                        auto out_rank = mvn->get_output_partial_shape(0).size();
-                        ov::util::try_normalize_axes(mvn_axes, out_rank, *mvn);
+        pass_config->set_callback<ov::pass::MVN6Decomposition>([](const_node_ptr& node) -> bool {
+            const auto mvn = ov::as_type_ptr<const ov::op::v6::MVN>(node);
+            if (mvn != nullptr && node->get_input_size() == 2) {
+                if (auto axes_node = ov::as_type<ov::op::v0::Constant>(mvn->get_input_node_ptr(1))) {
+                    auto mvn_axes = axes_node->cast_vector<int64_t>();
+                    auto out_rank = mvn->get_output_partial_shape(0).size();
+                    ov::util::try_normalize_axes(mvn_axes, out_rank, *mvn);
 
-                        std::sort(mvn_axes.begin(), mvn_axes.end());
+                    std::sort(mvn_axes.begin(), mvn_axes.end());
 
-                        // Supported cases:
-                        // 2 <= out_rank <= 5
-                        // axes set: [out_rank - 1, out_rank - 2, ... r] where r > 1
-                        // basically impl supports cases when tensor can be reshaped to [d1, d2]
-                        // so that d2 is set of dimensions for normalization
+                    // Supported cases:
+                    // 2 <= out_rank <= 5
+                    // axes set: [out_rank - 1, out_rank - 2, ... r] where r > 1
+                    // basically impl supports cases when tensor can be reshaped to [d1, d2]
+                    // so that d2 is set of dimensions for normalization
 
-                        // Skip unsupported ranks
-                        if (out_rank == 1 || out_rank > 5)
+                    // Skip unsupported ranks
+                    if (out_rank == 1 || out_rank > 5)
+                        return false;
+
+                    // check axes set
+                    for (size_t i = 0; i < mvn_axes.size(); i++) {
+                        auto axis = mvn_axes[mvn_axes.size() - i - 1];
+                        if (axis != static_cast<int64_t>(out_rank - i - 1) || axis == 0) {
                             return false;
-
-                        // check axes set
-                        for (size_t i = 0; i < mvn_axes.size(); i++) {
-                            auto axis = mvn_axes[mvn_axes.size() - i - 1];
-                            if (axis != static_cast<int64_t>(out_rank - i - 1) || axis == 0) {
-                                  return false;
-                            }
                         }
-                        return true;
                     }
+                    return true;
                 }
-                return false;
-            });
+            }
+            return false;
+        });
 
         pass_config->enable<ov::pass::NormalizeL2Decomposition>();
-        pass_config->set_callback<ov::pass::NormalizeL2Decomposition>(
-            [](const_node_ptr &node) -> bool {
+        pass_config->set_callback<ov::pass::NormalizeL2Decomposition>([](const_node_ptr& node) -> bool {
             // Condition to filter out axes such as [0, 1, 2] which is not supported currently.
             const auto norm = ov::as_type_ptr<const ov::op::v0::NormalizeL2>(node);
             const auto inputRank = norm->get_input_partial_shape(0).size();
             auto axesNode = ov::as_type_ptr<const ov::op::v0::Constant>(norm->get_input_node_shared_ptr(1));
             const auto axes = axesNode->cast_vector<size_t>();
-            const auto isSupportedAxes = [](const std::vector<size_t> &axes, const size_t inputRank) {
+            const auto isSupportedAxes = [](const std::vector<size_t>& axes, const size_t inputRank) {
                 if (axes.size() == 1 && axes[0] == 1) {
                     return true;
                 } else if (axes.size() == inputRank - 1) {
@@ -821,18 +786,15 @@ void TransformationsPipeline::apply(std::shared_ptr<ov::Model> func) {
                 return false;
             }
             return true;
-            });
+        });
 
         pass_config->enable<ov::pass::SoftmaxDecomposition>();
-        pass_config->set_callback<ov::pass::SoftmaxDecomposition>(
-            [&](const_node_ptr &node) -> bool {
-                OPENVINO_ASSERT(node->input_value(0).get_partial_shape().rank().is_static(),
-                    node->get_friendly_name() + " has dynamic rank!");
-                return node->input_value(0).get_partial_shape().rank().get_length() <= 5;
-            });
+        pass_config->set_callback<ov::pass::SoftmaxDecomposition>([&](const_node_ptr& node) -> bool {
+            OPENVINO_ASSERT(node->input_value(0).get_partial_shape().rank().is_static(), node->get_friendly_name() + " has dynamic rank!");
+            return node->input_value(0).get_partial_shape().rank().get_length() <= 5;
+        });
 
-        pass_config->set_callback<ov::pass::ConvertNMS9ToNMSIEInternal>(
-            [&](const_node_ptr &node) -> bool {
+        pass_config->set_callback<ov::pass::ConvertNMS9ToNMSIEInternal>([&](const_node_ptr& node) -> bool {
             // Convert to NMSIEInternal when model is static
             return !func->is_dynamic() ? false : true;
         });
@@ -861,7 +823,7 @@ void TransformationsPipeline::apply(std::shared_ptr<ov::Model> func) {
         pass_config->enable<ov::pass::ConvertInterpolate1ToInterpolate4>();
 
         if (enableInt8) {
-            pass_config->set_callback<ov::pass::ConvertQuantizeDequantize>([&](const_node_ptr &node) -> bool {
+            pass_config->set_callback<ov::pass::ConvertQuantizeDequantize>([&](const_node_ptr& node) -> bool {
                 return ov::pass::low_precision::NetworkHelper::areQuantizeAndDequantizeSupportedForMultiply(node, defaultPrecisions);
             });
         }
@@ -873,22 +835,15 @@ void TransformationsPipeline::apply(std::shared_ptr<ov::Model> func) {
         OV_ITT_SCOPED_TASK(itt::domains::intel_gpu_plugin, "TransformationsPipeline::apply::lpt");
         using namespace ov::pass::low_precision;
 
-        auto supportedPrecisions = std::vector<PrecisionsRestriction>({
-            PrecisionsRestriction::create<ov::op::v1::Convolution>({
-                {{0}, {ov::element::u8, ov::element::i8}},
-                {{1}, {ov::element::i8}},
-            }),
-            PrecisionsRestriction::create<ov::op::v1::ConvolutionBackpropData>({
-                {{0}, {ov::element::u8, ov::element::i8}},
-                {{1}, {ov::element::i8}}
-            }),
-            PrecisionsRestriction::create<ov::op::v1::GroupConvolution>({
-                {{0}, {ov::element::u8, ov::element::i8}},
-                {{1}, {ov::element::i8}}
-            }),
-            PrecisionsRestriction::create<ov::op::v5::LSTMSequence>(PrecisionsRestriction::PrecisionsByPorts{}),
-            PrecisionsRestriction::create<ov::op::v5::GRUSequence>(PrecisionsRestriction::PrecisionsByPorts{})
-        });
+        auto supportedPrecisions = std::vector<PrecisionsRestriction>(
+            {PrecisionsRestriction::create<ov::op::v1::Convolution>({
+                 {{0}, {ov::element::u8, ov::element::i8}},
+                 {{1}, {ov::element::i8}},
+             }),
+             PrecisionsRestriction::create<ov::op::v1::ConvolutionBackpropData>({{{0}, {ov::element::u8, ov::element::i8}}, {{1}, {ov::element::i8}}}),
+             PrecisionsRestriction::create<ov::op::v1::GroupConvolution>({{{0}, {ov::element::u8, ov::element::i8}}, {{1}, {ov::element::i8}}}),
+             PrecisionsRestriction::create<ov::op::v5::LSTMSequence>(PrecisionsRestriction::PrecisionsByPorts{}),
+             PrecisionsRestriction::create<ov::op::v5::GRUSequence>(PrecisionsRestriction::PrecisionsByPorts{})});
 
         auto perTensorQuantization = std::vector<QuantizationGranularityRestriction>({
             QuantizationGranularityRestriction::create<ov::op::v1::Convolution>({0}),
@@ -927,13 +882,12 @@ void TransformationsPipeline::apply(std::shared_ptr<ov::Model> func) {
                 return true;
             }
 
-
             if ((inputChannels % 4 != 0) || (outputChannels % 16 != 0)) {
                 return true;
             }
 
-            return LayerTransformation::isAsymmetricQuantization(node, defaultPrecisions)
-                || WeightableLayerTransformation::isAsymmetricOnWeights(node, defaultPrecisions);
+            return LayerTransformation::isAsymmetricQuantization(node, defaultPrecisions) ||
+                   WeightableLayerTransformation::isAsymmetricOnWeights(node, defaultPrecisions);
         });
 
         lptPassConfig->set_callback<TransposeTransformation>([&](const_node_ptr& node) -> bool {
@@ -1003,7 +957,7 @@ void TransformationsPipeline::apply(std::shared_ptr<ov::Model> func) {
         });
 
         bool reshapeIgnorePerTensorQuantizationCheck = false;
-        if (device_info.supports_immad) // Disable reshape transform until onednn i8 fc is optimized
+        if (device_info.supports_immad)  // Disable reshape transform until onednn i8 fc is optimized
             reshapeIgnorePerTensorQuantizationCheck = true;
         auto params = LayerTransformation::Params(true, element::f32, defaultPrecisions, reshapeIgnorePerTensorQuantizationCheck);
         lptManager.register_pass<LowPrecision>(supportedPrecisions, perTensorQuantization, params);
@@ -1019,14 +973,13 @@ void TransformationsPipeline::apply(std::shared_ptr<ov::Model> func) {
 
         manager.register_pass<ov::pass::UnrollTensorIterator>();
         auto pass_config = manager.get_pass_config();
-        pass_config->set_callback<ov::pass::UnrollTensorIterator>(
-            [unroll_loop](const std::shared_ptr<const ov::Node> &node) -> bool {
-                auto sub_graph_op = ov::as_type_ptr<const ov::op::util::SubGraphOp>(node);
-                int64_t num_iter = sub_graph_op->get_num_iterations();
-                if (!unroll_loop)
-                    return num_iter != 1;
-                return num_iter >= 16;
-            });
+        pass_config->set_callback<ov::pass::UnrollTensorIterator>([unroll_loop](const std::shared_ptr<const ov::Node>& node) -> bool {
+            auto sub_graph_op = ov::as_type_ptr<const ov::op::util::SubGraphOp>(node);
+            int64_t num_iter = sub_graph_op->get_num_iterations();
+            if (!unroll_loop)
+                return num_iter != 1;
+            return num_iter >= 16;
+        });
 
         manager.run_passes(func);
     }
@@ -1081,21 +1034,19 @@ void TransformationsPipeline::apply(std::shared_ptr<ov::Model> func) {
             pass_config->disable<MatMulTransformation>();
             pass_config->disable<MVNTransformation>();
 
-            pass_config->set_callback<FoldConvertTransformation>(
-                [](const std::shared_ptr<const ov::Node> &node) -> bool {
-                    return ov::is_dequantization_node(node);
-                });
+            pass_config->set_callback<FoldConvertTransformation>([](const std::shared_ptr<const ov::Node>& node) -> bool {
+                return ov::is_dequantization_node(node);
+            });
 
-            pass_config->set_callback<FuseConvertTransformation>(
-                [](const std::shared_ptr<const ov::Node> &node) -> bool {
-                    return (ov::is_dequantization_node(node) || ov::is_type<ov::opset1::FakeQuantize>(node));
-                });
+            pass_config->set_callback<FuseConvertTransformation>([](const std::shared_ptr<const ov::Node>& node) -> bool {
+                return (ov::is_dequantization_node(node) || ov::is_type<ov::opset1::FakeQuantize>(node));
+            });
 
             manager.register_pass<ov::pass::activations_scaling::ScaleDownSingleLayer>(activations_scale_factor, infer_precision);
             manager.register_pass<ov::pass::SharedOpOptimization>();
 
             pass_config->set_callback<ov::pass::activations_scaling::ScaleDownSingleLayer>(
-                [&infer_precision](const std::shared_ptr<const ov::Node> &node) -> bool {
+                [&infer_precision](const std::shared_ptr<const ov::Node>& node) -> bool {
                     return (node->input(0).get_element_type() != infer_precision);
                 });
 
@@ -1133,9 +1084,7 @@ void TransformationsPipeline::apply(std::shared_ptr<ov::Model> func) {
         const bool disable_fc_swiglu_fusion = GPU_DEBUG_VALUE_OR(config.get_disable_fc_swiglu_fusion(), false);
 
         // mlp fusion is only supported for cldnn on high performant GPUis
-        bool fuse_mlp_swiglu = !device_info.supports_immad &&
-                               device_info.execution_units_count >= 128 &&
-                               !disable_fc_swiglu_fusion;
+        bool fuse_mlp_swiglu = !device_info.supports_immad && device_info.execution_units_count >= 128 && !disable_fc_swiglu_fusion;
         if (!disable_horizontal_fc_fusion) {
             manager.register_pass<ov::intel_gpu::FullyConnectedHorizontalFusion>(fuse_mlp_swiglu);
             // Temporary disabling for BMG due to regression
@@ -1190,7 +1139,7 @@ void TransformationsPipeline::apply(std::shared_ptr<ov::Model> func) {
             bool asymmetric_dyn_quant = config.get_asym_dynamic_quantization();
             auto dynamic_quantization_group_size = config.get_dynamic_quantization_group_size();
             pass_config->set_callback<ov::intel_gpu::DynamicQuantizeFullyConnected>([=](const_node_ptr& root) -> bool {
-                for (size_t i = 0 ; i < root->get_input_node_shared_ptr(0)->get_output_size(); ++i) {
+                for (size_t i = 0; i < root->get_input_node_shared_ptr(0)->get_output_size(); ++i) {
                     if (root->get_input_node_shared_ptr(0)->get_output_element_type(i) == ov::element::Type_t::f32) {
                         GPU_DEBUG_TRACE << root->get_friendly_name() << "  dyn_quan is turned off: input type is not supported" << std::endl;
                         return true;
@@ -1206,17 +1155,18 @@ void TransformationsPipeline::apply(std::shared_ptr<ov::Model> func) {
 
                 // AZP does not support grouped size dyn-quan
                 GPU_DEBUG_IF(asymmetric_dyn_quant && (dynamic_quantization_group_size != UINT64_MAX)) {
-                    GPU_DEBUG_TRACE << root->get_friendly_name() << "  dyn_quan is turned off: asym quantization does not support grouped quantization" <<
-                                                                   " ('DynamicQuantizeAsym' is enabled with grouped size dyn-quan)" << std::endl;
+                    GPU_DEBUG_TRACE << root->get_friendly_name() << "  dyn_quan is turned off: asym quantization does not support grouped quantization"
+                                    << " ('DynamicQuantizeAsym' is enabled with grouped size dyn-quan)" << std::endl;
                     return true;
                 }
 
                 bool has_wzp = root->get_input_size() > 4;
-                if ((root->get_input_element_type(1) == ov::element::i8 || root->get_input_element_type(1) == ov::element::u8)
-                    && has_wzp
-                    && dynamic_quantization_group_size != UINT64_MAX) {
-                    GPU_DEBUG_TRACE << root->get_friendly_name() << "  dyn_quan is turned off:"
-                                                                    " asym 8bit weight does not support grouped quantization" << std::endl;
+                if ((root->get_input_element_type(1) == ov::element::i8 || root->get_input_element_type(1) == ov::element::u8) && has_wzp &&
+                    dynamic_quantization_group_size != UINT64_MAX) {
+                    GPU_DEBUG_TRACE << root->get_friendly_name()
+                                    << "  dyn_quan is turned off:"
+                                       " asym 8bit weight does not support grouped quantization"
+                                    << std::endl;
                     return true;
                 }
 

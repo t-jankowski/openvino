@@ -10,7 +10,6 @@
 #include "openvino/util/log.hpp"
 #include "openvino/pass/pattern/op/wrap_type.hpp"
 #include "low_precision/network_helper.hpp"
-#include "openvino/op/clamp.hpp"
 
 namespace ov {
 namespace pass {

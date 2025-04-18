@@ -5,8 +5,6 @@
 #include <gtest/gtest.h>
 
 #include "utils.hpp"
-#include "openvino/op/fake_quantize.hpp"
-#include "openvino/op/relu.hpp"
 
 using namespace ov;
 using namespace ov::intel_cpu;

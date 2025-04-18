@@ -5,9 +5,8 @@
 #include "ov_lpt_models/elementwise.hpp"
 
 #include "low_precision/layer_transformation.hpp"
-#include "openvino/opsets/opset1_decl.hpp"
+#include "openvino/opsets/opset1.hpp"
 #include "ov_lpt_models/common/dequantization_operations.hpp"
-#include "openvino/op/max_pool.hpp"
 
 using namespace ov::pass::low_precision;
 

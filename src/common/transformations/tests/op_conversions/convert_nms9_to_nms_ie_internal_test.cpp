@@ -12,8 +12,7 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/core/model.hpp"
-#include "openvino/op/non_max_suppression.hpp"
-#include "openvino/opsets/opset9_decl.hpp"
+#include "openvino/opsets/opset9.hpp"
 #include "openvino/pass/constant_folding.hpp"
 #include "openvino/pass/manager.hpp"
 #include "ov_ops/nms_ie_internal.hpp"

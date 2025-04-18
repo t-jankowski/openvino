@@ -4,7 +4,6 @@
 
 #include "shared_test_classes/subgraph/integer_reduce_mean.hpp"
 #include "common_test_utils/node_builders/fake_quantize.hpp"
-#include "openvino/op/reduce_mean.hpp"
 
 namespace ov {
 namespace test {

@@ -6,7 +6,6 @@
 
 #include "shared_test_classes/base/ov_subgraph.hpp"
 #include "utils/cpu_test_utils.hpp"
-#include "openvino/op/batch_to_space.hpp"
 
 using namespace CPUTestUtils;
 

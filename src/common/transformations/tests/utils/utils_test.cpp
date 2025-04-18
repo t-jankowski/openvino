@@ -10,7 +10,7 @@
 #include <queue>
 #include <string>
 
-#include "openvino/opsets/opset4_decl.hpp"
+#include "openvino/opsets/opset4.hpp"
 
 using namespace ov;
 

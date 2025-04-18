@@ -5,7 +5,6 @@
 #include "softmax.hpp"
 #include "gtest/gtest.h"
 #include "utils/cpu_test_utils.hpp"
-#include "openvino/op/softmax.hpp"
 
 using namespace CPUTestUtils;
 

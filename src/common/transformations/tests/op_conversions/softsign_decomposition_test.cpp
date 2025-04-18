@@ -11,11 +11,7 @@
 
 #include "common_test_utils/ov_test_utils.hpp"
 #include "openvino/core/model.hpp"
-#include "openvino/op/abs.hpp"
-#include "openvino/op/add.hpp"
-#include "openvino/op/divide.hpp"
-#include "openvino/op/softsign.hpp"
-#include "openvino/opsets/opset9_decl.hpp"
+#include "openvino/opsets/opset9.hpp"
 #include "transformations/init_node_info.hpp"
 using namespace ov;
 using namespace testing;

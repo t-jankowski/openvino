@@ -3,7 +3,6 @@
 //
 
 #include "shared_test_classes/single_op/strided_slice.hpp"
-#include "openvino/op/strided_slice.hpp"
 
 namespace ov {
 namespace test {
