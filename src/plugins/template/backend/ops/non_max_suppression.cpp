@@ -6,7 +6,6 @@
 
 #include "evaluate_node.hpp"
 #include "evaluates_map.hpp"
-#include "openvino/op/non_max_suppression.hpp"
 #include "openvino/runtime/tensor.hpp"
 
 namespace nms_v9 {

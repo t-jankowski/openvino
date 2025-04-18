@@ -6,7 +6,6 @@
 
 #include "evaluate_node.hpp"
 #include "evaluates_map.hpp"
-#include "openvino/op/rdft.hpp"
 #include "openvino/reference/fft.hpp"
 #include "openvino/runtime/tensor.hpp"
 

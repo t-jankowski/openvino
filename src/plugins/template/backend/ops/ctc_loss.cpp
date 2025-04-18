@@ -5,8 +5,6 @@
 #include "openvino/reference/ctc_loss.hpp"
 
 #include "evaluate_node.hpp"
-#include "openvino/core/type/element_type_traits.hpp"
-#include "openvino/op/ctc_loss.hpp"
 
 namespace ctc_loss_v4 {
 template <

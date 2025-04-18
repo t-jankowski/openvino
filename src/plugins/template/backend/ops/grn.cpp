@@ -5,8 +5,6 @@
 #include "openvino/reference/grn.hpp"
 
 #include "evaluate_node.hpp"
-#include "openvino/core/type/element_type_traits.hpp"
-#include "openvino/op/grn.hpp"
 
 template <ov::element::Type_t T>
 bool evaluate(const std::shared_ptr<ov::op::v0::GRN>& op, ov::TensorVector& outputs, const ov::TensorVector& inputs) {

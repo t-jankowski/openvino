@@ -4,7 +4,6 @@
 
 #pragma once
 #include "evaluate_node.hpp"
-#include "openvino/op/ops.hpp"
 #include "openvino/op/rms_norm.hpp"
 #include "ov_ops/augru_cell.hpp"
 #include "ov_ops/augru_sequence.hpp"

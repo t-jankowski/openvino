@@ -5,8 +5,6 @@
 #include "openvino/reference/sigmoid.hpp"
 
 #include "evaluate_node.hpp"
-#include "openvino/core/type/element_type_traits.hpp"
-#include "openvino/op/sigmoid.hpp"
 
 template <ov::element::Type_t ET>
 bool evaluate(const std::shared_ptr<ov::op::v0::Sigmoid>& op,

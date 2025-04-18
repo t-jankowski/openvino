@@ -5,8 +5,6 @@
 #include "openvino/reference/gather_elements.hpp"
 
 #include "evaluate_node.hpp"
-#include "openvino/core/type/element_type_traits.hpp"
-#include "openvino/op/gather_elements.hpp"
 
 template <ov::element::Type_t ET>
 bool evaluate(const std::shared_ptr<ov::op::v6::GatherElements>& op,

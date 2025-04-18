@@ -5,8 +5,6 @@
 #include "openvino/reference/tanh.hpp"
 
 #include "evaluate_node.hpp"
-#include "openvino/core/type/element_type_traits.hpp"
-#include "openvino/op/tanh.hpp"
 
 template <ov::element::Type_t ET>
 bool evaluate(const std::shared_ptr<ov::op::v0::Tanh>& op, ov::TensorVector& outputs, const ov::TensorVector& inputs) {

@@ -3,8 +3,6 @@
 //
 
 #include "evaluate_node.hpp"
-#include "openvino/core/type/element_type_traits.hpp"
-#include "openvino/op/embeddingbag_offsets_sum.hpp"
 #include "openvino/reference/embedding_bag_offsets.hpp"
 
 namespace embedding_bag_offsets_sum_v3 {

@@ -5,8 +5,6 @@
 #include "openvino/reference/convolution_backprop_data.hpp"
 
 #include "evaluate_node.hpp"
-#include "openvino/core/type/element_type_traits.hpp"
-#include "openvino/op/convolution.hpp"
 
 template <ov::element::Type_t T>
 bool evaluate(const std::shared_ptr<ov::op::v1::ConvolutionBackpropData>& op,

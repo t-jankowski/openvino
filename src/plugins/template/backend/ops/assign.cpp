@@ -2,8 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#include "openvino/op/assign.hpp"
-
 #include "evaluate_node.hpp"
 
 bool evaluate(const std::shared_ptr<ov::op::v3::Assign>& op,
