@@ -3,9 +3,8 @@
 //
 
 #include "frontend_test.hpp"
-#include "openvino/op/tensor_iterator.hpp"
-#include "openvino/opsets/opset1_decl.hpp"
-#include "openvino/opsets/opset8_decl.hpp"
+#include "openvino/opsets/opset1.hpp"
+#include "openvino/opsets/opset8.hpp"
 
 class IRFrontendTestsTensorIterator : public ::testing::Test, public IRFrontendTestsImpl {
 protected:
