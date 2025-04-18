@@ -6,7 +6,6 @@
 
 #include "common_test_utils/type_prop.hpp"
 #include "convolution_shape_inference.hpp"
-#include "openvino/op/group_conv.hpp"
 
 using namespace std;
 using namespace ov;

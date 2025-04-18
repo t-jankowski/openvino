@@ -6,9 +6,6 @@
 
 #include <vector>
 
-#include "openvino/op/reshape.hpp"
-#include "openvino/op/squeeze.hpp"
-#include "openvino/op/unsqueeze.hpp"
 #include "utils.hpp"
 #include "utils/general_utils.h"
 

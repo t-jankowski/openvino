@@ -6,7 +6,6 @@
 #include <array>
 
 #include "convolution_shape_inference_util.hpp"
-#include "openvino/op/deformable_convolution.hpp"
 #include "openvino/op/util/deformable_convolution_base.hpp"
 
 namespace ov {

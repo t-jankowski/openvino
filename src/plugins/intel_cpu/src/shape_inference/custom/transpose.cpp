@@ -4,7 +4,6 @@
 
 #include "transpose.hpp"
 
-#include "openvino/op/transpose.hpp"
 #include "utils.hpp"
 
 namespace ov::intel_cpu::node {

@@ -7,7 +7,6 @@
 #include "dimension_util.hpp"
 #include "openvino/op/util/convolution_backprop_base.hpp"
 #include "openvino/op/util/convolution_base.hpp"
-#include "openvino/op/util/deformable_convolution_base.hpp"
 #include "pooling_shape_inference_util.hpp"
 #include "utils.hpp"
 

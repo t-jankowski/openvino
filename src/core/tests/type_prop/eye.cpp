@@ -7,7 +7,6 @@
 #include "common_test_utils/test_assertions.hpp"
 #include "common_test_utils/type_prop.hpp"
 #include "eye_shape_inference.hpp"
-#include "openvino/op/squeeze.hpp"
 
 using namespace std;
 using namespace ov;

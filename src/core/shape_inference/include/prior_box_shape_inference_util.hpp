@@ -7,8 +7,6 @@
 #include <array>
 
 #include "dimension_util.hpp"
-#include "openvino/op/prior_box.hpp"
-#include "openvino/op/prior_box_clustered.hpp"
 #include "utils.hpp"
 
 namespace ov {
