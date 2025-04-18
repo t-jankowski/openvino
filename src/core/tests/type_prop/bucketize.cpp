@@ -2,16 +2,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#include "openvino/op/bucketize.hpp"
-
 #include <gtest/gtest.h>
 
 #include "common_test_utils/test_assertions.hpp"
 #include "common_test_utils/type_prop.hpp"
+#include "openvino/opsets/opset11.hpp"
 
 using namespace std;
 using namespace ov;
-using ov::op::v0::Parameter;
+using namespace ov::opset11;
 using namespace testing;
 
 class TypePropBucketizeV3Test : public TypePropOpTest<op::v3::Bucketize> {};

@@ -2,15 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#include "openvino/op/roi_pooling.hpp"
-
 #include "common_test_utils/test_assertions.hpp"
 #include "common_test_utils/type_prop.hpp"
 #include "gtest/gtest.h"
+#include "openvino/opsets/opset11.hpp"
 
 using namespace std;
 using namespace ov;
-using ov::op::v0::Parameter;
+using namespace ov::opset11;
 using namespace testing;
 
 class TypePropROIPoolingV0 : public TypePropOpTest<op::v0::ROIPooling> {

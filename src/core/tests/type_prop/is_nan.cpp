@@ -2,16 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#include "openvino/op/is_nan.hpp"
-
 #include <gtest/gtest.h>
 
 #include "common_test_utils/type_prop.hpp"
+#include "openvino/opsets/opset10.hpp"
 
 using namespace std;
 using namespace ov;
-using ov::op::v0::Parameter;
-using ov::op::v10::IsNaN;
+using namespace ov::opset10;
 
 TEST(type_prop, isnan_output_shape) {
     const auto data = make_shared<Parameter>(element::f16, Shape{4, 2});

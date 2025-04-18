@@ -2,16 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#include "openvino/op/is_inf.hpp"
-
 #include <gtest/gtest.h>
 
 #include "common_test_utils/type_prop.hpp"
+#include "openvino/opsets/opset10.hpp"
 
 using namespace std;
 using namespace ov;
-using ov::op::v0::Parameter;
-using ov::op::v10::IsInf;
+using namespace ov::opset10;
 
 TEST(type_prop, is_inf_default) {
     const auto data = make_shared<Parameter>(element::f32, PartialShape{1, 64, 256, 256});

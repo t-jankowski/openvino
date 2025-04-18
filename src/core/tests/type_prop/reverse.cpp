@@ -6,7 +6,7 @@
 
 #include "common_test_utils/test_assertions.hpp"
 #include "common_test_utils/type_prop.hpp"
-#include "openvino/op/if.hpp"
+#include "openvino/opsets/opset10.hpp"
 
 using namespace std;
 using namespace ov;
@@ -167,9 +167,7 @@ TEST(type_prop, reverse_partial_rank_dynamic) {
     EXPECT_EQ(rev->get_output_partial_shape(0), PartialShape::dynamic());
 }
 
-using ov::op::v0::Constant;
-using ov::op::v0::Parameter;
-using ov::op::v8::If;
+using namespace ov::opset10;
 
 //
 // If the input rank is static but the shape is dynamic, we should pass if the axis indices are

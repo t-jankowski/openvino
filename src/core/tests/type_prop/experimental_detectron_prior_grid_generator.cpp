@@ -2,15 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#include "openvino/op/experimental_detectron_prior_grid_generator.hpp"
-
 #include <gmock/gmock.h>
 
 #include "common_test_utils/test_assertions.hpp"
 #include "common_test_utils/type_prop.hpp"
+#include "openvino/opsets/opset11.hpp"
 
 using namespace ov;
-using ov::op::v0::Parameter;
+using namespace ov::opset11;
 using namespace testing;
 
 class TypePropExperimentalDetectronPriorGridGeneratorV6Test

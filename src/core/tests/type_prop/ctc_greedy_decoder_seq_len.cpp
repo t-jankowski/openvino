@@ -2,11 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#include "openvino/op/ctc_greedy_decoder_seq_len.hpp"
-
 #include <gtest/gtest.h>
 
 #include "common_test_utils/type_prop.hpp"
+#include "openvino/op/ops.hpp"
 
 using namespace std;
 using namespace ov;
