@@ -58,7 +58,7 @@ bool call(ov::TensorVector& func_outputs,
             } else {
                 host_tensor = it->second;
             }
-            op_outputs.push_back(host_tensor);
+            op_outputs.push_back(std::move(host_tensor));
         }
         op->validate_and_infer_types();
         if (!op->evaluate(op_outputs, op_inputs)) {
@@ -137,9 +137,7 @@ void if_reference(const std::vector<std::shared_ptr<ov::Model>>& bodies,
         OPENVINO_ASSERT(output_size > out_descr->m_output_index,
                         "Incorrect associating! If has not output with id ",
                         out_descr->m_output_index);
-        auto res = outs_from_body[out_descr->m_body_value_index];
-
-        res.copy_to(out[out_descr->m_output_index]);
+        outs_from_body[out_descr->m_body_value_index].copy_to(out[out_descr->m_output_index]);
     }
 }
 }  // namespace if_op

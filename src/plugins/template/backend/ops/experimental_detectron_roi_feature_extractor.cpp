@@ -22,15 +22,15 @@ InfoForEDROIFeature get_info_for_ed_roi_feature(
     auto out_shape = ov::Shape{0, 0, output_size, output_size};
     auto out_rois_shape = ov::Shape{0, 4};
 
-    auto rois_shape = input_shapes[0];
+    const auto& rois_shape = input_shapes[0];
 
     out_shape[0] = rois_shape[0];
     out_rois_shape[0] = rois_shape[0];
 
     out_shape[1] = input_shapes[1][1];
 
-    result.output_rois_features_shape = out_shape;
-    result.output_rois_shape = out_rois_shape;
+    result.output_rois_features_shape = std::move(out_shape);
+    result.output_rois_shape = std::move(out_rois_shape);
 
     return result;
 }

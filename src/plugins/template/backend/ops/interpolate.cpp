@@ -193,7 +193,8 @@ bool evaluate_interpolate(const std::shared_ptr<ov::op::v11::Interpolate>& op,
         return ht.get_shape();
     });
     const auto output_shape =
-        ov::op::v11::shape_infer(op.get(), input_shapes, m_attrs.pads_begin, m_attrs.pads_end, ta).front();
+        ov::op::v11::shape_infer(op.get(), input_shapes, m_attrs.pads_begin, m_attrs.pads_end, ta).front().to_shape();
+    outputs[0].set_shape(output_shape);
 
     Shape padded_input_shape;
     for (size_t i = 0; i < input_shape.size(); ++i) {
@@ -202,9 +203,6 @@ bool evaluate_interpolate(const std::shared_ptr<ov::op::v11::Interpolate>& op,
 
     auto axes = get_axes_vector(inputs, inputs[1].get_shape()[0], axes_port, max_num_of_ports);
     auto scales = get_scales_vector(inputs, padded_input_shape, m_attrs, axes, scales_sizes_port);
-
-    Shape out_shape = output_shape.to_shape();
-    outputs[0].set_shape(out_shape);
 
     size_t bytes_in_padded_input = shape_size(padded_input_shape) * type_size;
     std::vector<uint8_t> padded_input_data(bytes_in_padded_input, 0);
@@ -226,7 +224,7 @@ bool evaluate_interpolate(const std::shared_ptr<ov::op::v11::Interpolate>& op,
                                           scales,
                                           axes,
                                           outputs[0].data<float>(),
-                                          out_shape,
+                                          output_shape,
                                           m_attrs);
         break;
     case element::bf16:
@@ -235,7 +233,7 @@ bool evaluate_interpolate(const std::shared_ptr<ov::op::v11::Interpolate>& op,
                                              scales,
                                              axes,
                                              outputs[0].data<bfloat16>(),
-                                             out_shape,
+                                             output_shape,
                                              m_attrs);
         break;
     case element::f16:
@@ -244,7 +242,7 @@ bool evaluate_interpolate(const std::shared_ptr<ov::op::v11::Interpolate>& op,
                                             scales,
                                             axes,
                                             outputs[0].data<float16>(),
-                                            out_shape,
+                                            output_shape,
                                             m_attrs);
         break;
     case element::u8:
@@ -253,7 +251,7 @@ bool evaluate_interpolate(const std::shared_ptr<ov::op::v11::Interpolate>& op,
                                             scales,
                                             axes,
                                             outputs[0].data<uint8_t>(),
-                                            out_shape,
+                                            output_shape,
                                             m_attrs);
         break;
     case element::i8:
@@ -262,7 +260,7 @@ bool evaluate_interpolate(const std::shared_ptr<ov::op::v11::Interpolate>& op,
                                            scales,
                                            axes,
                                            outputs[0].data<int8_t>(),
-                                           out_shape,
+                                           output_shape,
                                            m_attrs);
         break;
     case element::i32:
@@ -271,7 +269,7 @@ bool evaluate_interpolate(const std::shared_ptr<ov::op::v11::Interpolate>& op,
                                             scales,
                                             axes,
                                             outputs[0].data<int32_t>(),
-                                            out_shape,
+                                            output_shape,
                                             m_attrs);
         break;
     default:;
