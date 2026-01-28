@@ -69,6 +69,7 @@ if(NOT BUILD_SHARED_LIBS)
 endif()
 
 target_compile_definitions(${TARGET_NAME}_obj PRIVATE
+    BLOBS_STORE_ENABLED
     IMPLEMENT_OPENVINO_RUNTIME_API
     $<$<TARGET_EXISTS:openvino_proxy_plugin_obj>:PROXY_PLUGIN_ENABLED>)
 
