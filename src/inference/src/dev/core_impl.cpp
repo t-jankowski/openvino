@@ -41,8 +41,8 @@
 #    include "openvino/proxy/properties.hpp"
 #endif
 
-#ifdef BLOBS_STORE_ENABLED
-#    include "blobs_store.hpp"
+#ifdef BLOBS_STORAGE_ENABLED
+#    include "blob_storage.hpp"
 #endif
 
 ov::ICore::~ICore() = default;
@@ -1709,7 +1709,7 @@ ov::CoreConfig::CacheConfig ov::CoreConfig::get_cache_config_for_device(const ov
 
 ov::CoreConfig::CacheConfig ov::CoreConfig::CacheConfig::create(const std::filesystem::path& dir) {
     CacheConfig cache_config{dir, nullptr};
-#ifdef BLOBS_STORE_ENABLED
+#ifdef BLOBS_STORAGE_ENABLED
     cache_config.m_cache_manager = std::make_shared<ov::storage::BlobsCacheEmulation>("/home/tj/tmp/blobs_store");
 #else
     if (!dir.empty()) {
