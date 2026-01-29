@@ -4,6 +4,8 @@
 
 set (TARGET_NAME "openvino_runtime")
 
+add_compile_definitions($<$<COMPILE_LANGUAGE:CXX>:BLOBS_STORAGE_ENABLED>)
+
 file (GLOB LIBRARY_SRC
         ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/cpp/*.cpp
@@ -69,7 +71,6 @@ if(NOT BUILD_SHARED_LIBS)
 endif()
 
 target_compile_definitions(${TARGET_NAME}_obj PRIVATE
-    BLOBS_STORE_ENABLED
     IMPLEMENT_OPENVINO_RUNTIME_API
     $<$<TARGET_EXISTS:openvino_proxy_plugin_obj>:PROXY_PLUGIN_ENABLED>)
 
