@@ -3,8 +3,13 @@
 //
 
 #ifdef BLOBS_STORAGE_ENABLED
-#    include "blob_storage.hpp"
+#    include "../../src/dev/blob_storage.hpp"
 
-namespace ov::test {}
+#    include <gtest/gtest.h>
 
+namespace ov::test {
+
+TEST(BlobStorageEmulation, WriteReadEntry) {}
+
+}  // namespace ov::test
 #endif  // BLOBS_STORAGE_ENABLED
