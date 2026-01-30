@@ -12,42 +12,47 @@
 namespace ov::storage {
 
 struct Bundle {
-    using byte_t = char;
-    static_assert(sizeof(byte_t) == 1);
-    using tag_t = uint64_t;
-    using offset_t = uint64_t;
+    using byte_type = char;
+    using tag_type = uint64_t;
+    using offset_type = uint64_t;  // should it be ptrdiff or size_t ?
+    static_assert(sizeof(byte_type) == 1);
 
-    tag_t tag;
-    offset_t length;  // value length in bytes
+    tag_type tag;
+    offset_type length;  // value length in bytes
     // offset to the value from the begining of the stream
     // consider whether it should be relative to this struct position?
-    offset_t value_offset;  // should it be ptrdiff or size_t ?
-    offset_t value_length() const;
+    offset_type value_offset;
+    // offset_type value_length() const;
 
     struct BufferView {
-        const byte_t* data;
+        const byte_type* data;
         size_t size;
     };
-    std::variant<BufferView, std::stringstream*, std::vector<byte_t>> value;
+    std::variant<BufferView, std::istream*, std::vector<byte_type>> value;
     // might be not needed
-    offset_t entry_offset;  // offset of the entry from the begining of the stream
-    offset_t entry_size;    // total size of the entry in bytes (including tag, length, value_offset, value)
+    offset_type entry_offset;  // offset of the entry from the begining of the stream
+    offset_type entry_size;    // total size of the entry in bytes (including tag, length, value_offset, value)
 };
 
 class BundlePool {
 public:
-    using tag_t = Bundle::tag_t;
-    using byte_t = Bundle::byte_t;
+    using byte_type = Bundle::byte_type;
+    using tag_type = Bundle::tag_type;
+    using offset_type = Bundle::offset_type;
+
     // void add_header_entry();
-    void add_entry(tag_t tag, std::stringstream* value, uint64_t value_alignment = 0);
-    void add_entry(tag_t tag, uint64_t length, const byte_t* value, uint64_t value_alignment = 0);
-    void add_entry(tag_t tag, const std::vector<byte_t>& value, uint64_t value_alignment = 0);
-    void add_entry(tag_t tag, std::vector<byte_t>&& value, uint64_t value_alignment = 0);
+    void add_entry(tag_type tag, std::istream* value, uint64_t value_alignment = 0);
+    void add_entry(tag_type tag, uint64_t length, const byte_type* value, uint64_t value_alignment = 0);
+    void add_entry(tag_type tag, const std::vector<byte_type>& value, uint64_t value_alignment = 0);
+    void add_entry(tag_type tag, std::vector<byte_type>&& value, uint64_t value_alignment = 0);
 
     void write_to(std::ostream& dest);
     void read_from(std::istream& src);
 
-    const std::vector<Bundle>& entries() const;
+    // the name reflects that the bundles' values are read as streams
+    void read_as_streams_from(std::istream& src);
+
+    const std::vector<Bundle>& pool() const;
 
 private:
     // AccessMode m_access_mode {AccessMode::READ};
@@ -55,7 +60,7 @@ private:
     size_t ind_pos{0};
 
     void append(Bundle&& pack, uint64_t value_alignment);
-    std::vector<Bundle> m_entries;
+    std::vector<Bundle> m_pool;
 
     // alignment of value e.g. per page size 4096
     const uint64_t m_default_value_alignment{1};
