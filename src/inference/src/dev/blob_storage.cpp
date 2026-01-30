@@ -10,6 +10,10 @@
 
 namespace ov::storage {
 
+Bundle::offset_t Bundle::value_length() const {
+    return length;
+}
+
 enum class Tag : Bundle::tag_t {
     header = 0x0100,
     shared_context = 0x0101,
@@ -17,29 +21,6 @@ enum class Tag : Bundle::tag_t {
     blob = 0x1000,
     blob_id = 0x1001,
     blob_data = 0x1002,
-};
-
-class BundlePool {
-public:
-    using tag_t = Bundle::tag_t;
-    using byte_t = Bundle::byte_t;
-    // void add_header_entry();
-    void add_entry(tag_t tag, std::stringstream* value, uint64_t value_alignment = 0);
-    void add_entry(tag_t tag, uint64_t length, byte_t* value, uint64_t value_alignment = 0);
-    void add_entry(tag_t tag, const std::vector<byte_t>& value, uint64_t value_alignment = 0);
-    void add_entry(tag_t tag, std::vector<byte_t>&& value, uint64_t value_alignment = 0);
-    void write_to(std::ostream& dest);
-
-private:
-    // AccessMode m_access_mode {AccessMode::READ};
-
-    size_t ind_pos{0};
-
-    void append(Bundle&& pack, uint64_t value_alignment);
-    std::vector<Bundle> m_entries;
-
-    // alignment of value e.g. per page size 4096
-    const uint64_t m_default_value_alignment{1};
 };
 
 void BundlePool::add_entry(tag_t tag, std::stringstream* value, uint64_t value_alignment) {
@@ -52,7 +33,7 @@ void BundlePool::add_entry(tag_t tag, std::stringstream* value, uint64_t value_a
     append(std::move(pack), value_alignment);
 }
 
-void BundlePool::add_entry(tag_t tag, uint64_t length, byte_t* value, uint64_t value_alignment) {
+void BundlePool::add_entry(tag_t tag, uint64_t length, const byte_t* value, uint64_t value_alignment) {
     Bundle pack;
     pack.tag = tag;
     pack.length = length;
@@ -74,6 +55,10 @@ void BundlePool::add_entry(tag_t tag, std::vector<byte_t>&& value, uint64_t valu
     pack.length = value.size();
     pack.value = std::move(value);
     append(std::move(pack), value_alignment);
+}
+
+const std::vector<Bundle>& BundlePool::entries() const {
+    return m_entries;
 }
 
 void BundlePool::write_to(std::ostream& dest) {
@@ -103,15 +88,39 @@ void BundlePool::write_to(std::ostream& dest) {
     }
 }
 
+void BundlePool::read_from(std::istream& src) {
+    m_entries.clear();
+    ind_pos = 0;
+    while (src.peek() != EOF) {
+        Bundle pack;
+        src.read(reinterpret_cast<char*>(&pack.tag), sizeof(pack.tag));
+        src.read(reinterpret_cast<char*>(&pack.length), sizeof(pack.length));
+        src.read(reinterpret_cast<char*>(&pack.value_offset), sizeof(pack.value_offset));
+        pack.entry_offset = ind_pos;
+        pack.entry_size = (pack.value_offset - pack.entry_offset) + pack.length;
+        ind_pos += pack.entry_size;
+
+        // move to value offset
+        src.seekg(pack.value_offset, std::ios::beg);
+        // read value
+        std::vector<byte_t> buffer(pack.length);
+        src.read(buffer.data(), static_cast<std::streamsize>(pack.length));
+        pack.value = std::move(buffer);
+        m_entries.push_back(std::move(pack));
+    }
+}
+
 void BundlePool::append(Bundle&& pack, uint64_t value_alignment) {
     if (value_alignment == 0) {
         value_alignment = m_default_value_alignment;
     }
 
+    // ! move it write_to method
     // Assumed invariant order of bundles to store. If needed otherwise the offset calculation should go to write
     // method.
     pack.entry_offset = ind_pos;
-    pack.value_offset = pack.entry_offset + Bundle::fixed_size() + value_alignment - 1;
+    constexpr uint64_t header_size = sizeof(pack.tag) + sizeof(pack.value_length()) + sizeof(pack.value_offset);
+    pack.value_offset = pack.entry_offset + header_size + value_alignment - 1;
     pack.value_offset -= pack.value_offset % value_alignment;
     pack.entry_size = (pack.value_offset - pack.entry_offset) + pack.length;
     ind_pos += pack.entry_size;
