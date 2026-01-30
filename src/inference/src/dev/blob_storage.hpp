@@ -15,25 +15,50 @@ struct Bundle {
     using byte_t = char;
     static_assert(sizeof(byte_t) == 1);
     using tag_t = uint64_t;
+    using offset_t = uint64_t;
 
     tag_t tag;
-    uint64_t length;  // value length in bytes
+    offset_t length;  // value length in bytes
     // offset to the value from the begining of the stream
-    // todo: consider whether it should be relative to this struct position?
-    uint64_t value_offset;  // should it be ptrdiff or size_t ?
-
-    static constexpr size_t fixed_size() {
-        return sizeof(tag) + sizeof(length) + sizeof(value_offset);
-    }
+    // consider whether it should be relative to this struct position?
+    offset_t value_offset;  // should it be ptrdiff or size_t ?
+    offset_t value_length() const;
 
     struct BufferView {
-        byte_t* data;
+        const byte_t* data;
         size_t size;
     };
     std::variant<BufferView, std::stringstream*, std::vector<byte_t>> value;
     // might be not needed
-    uint64_t entry_offset;  // offset of the entry from the begining of the stream
-    uint64_t entry_size;    // total size of the entry in bytes (including tag, length, value_offset, value)
+    offset_t entry_offset;  // offset of the entry from the begining of the stream
+    offset_t entry_size;    // total size of the entry in bytes (including tag, length, value_offset, value)
+};
+
+class BundlePool {
+public:
+    using tag_t = Bundle::tag_t;
+    using byte_t = Bundle::byte_t;
+    // void add_header_entry();
+    void add_entry(tag_t tag, std::stringstream* value, uint64_t value_alignment = 0);
+    void add_entry(tag_t tag, uint64_t length, const byte_t* value, uint64_t value_alignment = 0);
+    void add_entry(tag_t tag, const std::vector<byte_t>& value, uint64_t value_alignment = 0);
+    void add_entry(tag_t tag, std::vector<byte_t>&& value, uint64_t value_alignment = 0);
+
+    void write_to(std::ostream& dest);
+    void read_from(std::istream& src);
+
+    const std::vector<Bundle>& entries() const;
+
+private:
+    // AccessMode m_access_mode {AccessMode::READ};
+
+    size_t ind_pos{0};
+
+    void append(Bundle&& pack, uint64_t value_alignment);
+    std::vector<Bundle> m_entries;
+
+    // alignment of value e.g. per page size 4096
+    const uint64_t m_default_value_alignment{1};
 };
 
 class BlobsCacheEmulation : public ICacheManager {
