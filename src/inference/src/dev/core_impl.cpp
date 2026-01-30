@@ -7,6 +7,7 @@
 #include <memory>
 #include <variant>
 
+#include "blob_storage.hpp"
 #include "check_network_batchable.hpp"
 #include "itt.hpp"
 #include "model_reader.hpp"
@@ -39,10 +40,6 @@
 #ifdef PROXY_PLUGIN_ENABLED
 #    include "openvino/proxy/plugin.hpp"
 #    include "openvino/proxy/properties.hpp"
-#endif
-
-#ifdef BLOBS_STORAGE_ENABLED
-#    include "blob_storage.hpp"
 #endif
 
 ov::ICore::~ICore() = default;
@@ -1709,7 +1706,7 @@ ov::CoreConfig::CacheConfig ov::CoreConfig::get_cache_config_for_device(const ov
 
 ov::CoreConfig::CacheConfig ov::CoreConfig::CacheConfig::create(const std::filesystem::path& dir) {
     CacheConfig cache_config{dir, nullptr};
-#ifdef BLOBS_STORAGE_ENABLED
+#if 1
     cache_config.m_cache_manager = std::make_shared<ov::storage::BlobsCacheEmulation>("/home/tj/tmp/blobs_store");
 #else
     if (!dir.empty()) {

@@ -4,8 +4,6 @@
 
 set (TARGET_NAME "openvino_runtime")
 
-add_compile_definitions($<$<COMPILE_LANGUAGE:CXX>:BLOBS_STORAGE_ENABLED>)
-
 file (GLOB LIBRARY_SRC
         ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/cpp/*.cpp

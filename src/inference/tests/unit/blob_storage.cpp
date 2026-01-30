@@ -2,57 +2,58 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#ifdef BLOBS_STORAGE_ENABLED
-#    include "../../src/dev/blob_storage.hpp"
+#include "../../src/dev/blob_storage.hpp"
 
-#    include <gtest/gtest.h>
+#include <gtest/gtest.h>
 
-#    include "openvino/util/variant_visitor.hpp"
+#include "openvino/util/variant_visitor.hpp"
 
 namespace ov::test {
 
 TEST(BlobStorageTest, BundleReadFromVector) {
     using namespace ov::storage;
 
-    const std::string test_text{"Blob Storage test"};
-    const std::vector<Bundle::byte_t> test_value(test_text.begin(), test_text.end());
-    auto moveable_test_value = test_value;
-    std::stringstream test_stream;
-    test_stream << test_text;
+    const std::string test_text{"read from vector test"};
+    const std::vector<Bundle::byte_type> test_value(test_text.begin(), test_text.end());
+    std::stringstream storage;
+    {
+        auto moveable_test_value = test_value;
+        std::stringstream test_stream;
+        test_stream << test_text;
 
-    BundlePool pool;
-    pool.add_entry(100, test_value);
-    pool.add_entry(200, std::move(moveable_test_value));
-    pool.add_entry(300, &test_stream);
-    pool.add_entry(400, test_text.size(), test_text.data());
+        BundlePool bundles_to_keep;
+        bundles_to_keep.add_entry(0, test_value);
+        bundles_to_keep.add_entry(1, std::move(moveable_test_value));
+        bundles_to_keep.add_entry(2, &test_stream);
+        bundles_to_keep.add_entry(3, test_text.size(), test_text.data());
 
-    std::stringstream ss;
-    pool.write_to(ss);
+        bundles_to_keep.write_to(storage);
+    }
 
     // Read back and verify
-    BundlePool read_pool;
-    ss.seekg(0, std::ios::beg);
-    read_pool.read_from(ss);
+    BundlePool restored_bundles;
+    storage.seekg(0, std::ios::beg);
+    restored_bundles.read_from(storage);
 
-    const auto& entries = read_pool.entries();
-    ASSERT_EQ(entries.size(), 4);
+    const auto& bundles = restored_bundles.pool();
+    ASSERT_EQ(bundles.size(), 4);
 
-    for (size_t i = 0; i < entries.size(); ++i) {
-        const auto& entry = entries[i];
-        EXPECT_EQ(entry.tag, 100 + i * 100);
-        EXPECT_EQ(entry.length, test_value.size());
+    for (size_t i = 0; i < bundles.size(); ++i) {
+        const auto& bundle = bundles[i];
+        EXPECT_EQ(bundle.tag, i);
+        EXPECT_EQ(bundle.length, test_value.size());
 
-        const auto read_visitor =
+        const auto test_read =
             ov::util::VariantVisitor{[](const Bundle::BufferView&) {
                                          FAIL() << "Expected std::vector, got BufferView";
                                      },
-                                     [](std::stringstream* ss) {
-                                         FAIL() << "Expected std::vector, got stringstream*";
+                                     [](std::istream*) {
+                                         FAIL() << "Expected std::vector, got istream*";
                                      },
-                                     [&test_value](const std::vector<Bundle::byte_t>& read_value) {
+                                     [&test_value](const std::vector<Bundle::byte_type>& read_value) {
                                          EXPECT_EQ(read_value, test_value);
                                      }};
-        std::visit(read_visitor, entry.value);
+        std::visit(test_read, bundle.value);
     }
 }
 
@@ -60,41 +61,41 @@ TEST(BlobStorageTest, BundleReadFromStream) {
     using namespace ov::storage;
     GTEST_SKIP() << "feature is under development";
 
-    const std::string test_text{"Blob Storage stream test"};
-    std::stringstream test_stream;
-    test_stream << test_text;
+    const std::string test_text{"read from stream test"};
+    std::stringstream storage;
+    {
+        std::stringstream test_stream;
+        test_stream << test_text;
 
-    BundlePool pool;
-    pool.add_entry(100, &test_stream);
+        BundlePool bundles_to_keep;
+        bundles_to_keep.add_entry(100, &test_stream);
 
-    std::stringstream ss;
-    pool.write_to(ss);
+        bundles_to_keep.write_to(storage);
+    }
 
     // Read back and verify
-    BundlePool read_pool;
-    ss.seekg(0, std::ios::beg);
-    read_pool.read_from(ss);
+    BundlePool restored_bundles;
+    storage.seekg(0, std::ios::beg);
+    restored_bundles.read_from(storage);
 
-    const auto& entries = read_pool.entries();
-    ASSERT_EQ(entries.size(), 1);
-
-    const auto& entry = entries[0];
-    EXPECT_EQ(entry.tag, 100);
-    EXPECT_EQ(entry.length, test_text.size());
+    const auto& bundles = restored_bundles.pool();
+    ASSERT_EQ(bundles.size(), 1);
+    const auto& bundle = bundles[0];
+    EXPECT_EQ(bundle.tag, 100);
+    EXPECT_EQ(bundle.length, test_text.size());
 
     const auto read_visitor = ov::util::VariantVisitor{[](const Bundle::BufferView&) {
-                                                           FAIL() << "Expected stringstream*, got BufferView";
+                                                           FAIL() << "Expected istream*, got BufferView";
                                                        },
-                                                       [&test_text](std::stringstream* ss) {
+                                                       [&test_text](std::istream* read_value) {
                                                            std::string read_text;
-                                                           (*ss) >> read_text;
+                                                           (*read_value) >> read_text;
                                                            EXPECT_EQ(read_text, test_text);
                                                        },
-                                                       [](const std::vector<Bundle::byte_t>&) {
-                                                           FAIL() << "Expected stringstream*, got vector";
+                                                       [](const std::vector<Bundle::byte_type>&) {
+                                                           FAIL() << "Expected istream*, got vector";
                                                        }};
-    std::visit(read_visitor, entry.value);
+    std::visit(read_visitor, bundle.value);
 }
 
 }  // namespace ov::test
-#endif  // BLOBS_STORAGE_ENABLED

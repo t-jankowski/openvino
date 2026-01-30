@@ -1,20 +1,19 @@
 // Copyright (C) 2018-2026 Intel Corporation
 // SPDX-License-Identifier: Apache-2.0
 
-#ifdef BLOBS_STORAGE_ENABLED
-#    include "blob_storage.hpp"
+#include "blob_storage.hpp"
 
-#    include <cassert>
+#include <cassert>
 
-#    include "openvino/util/variant_visitor.hpp"
+#include "openvino/util/variant_visitor.hpp"
 
 namespace ov::storage {
 
-Bundle::offset_t Bundle::value_length() const {
-    return length;
-}
+// Bundle::offset_type Bundle::value_length() const {
+//     return length;
+// }
 
-enum class Tag : Bundle::tag_t {
+enum class Tag : Bundle::tag_type {
     header = 0x0100,
     shared_context = 0x0101,
     content_summary = 0x0102,
@@ -23,7 +22,7 @@ enum class Tag : Bundle::tag_t {
     blob_data = 0x1002,
 };
 
-void BundlePool::add_entry(tag_t tag, std::stringstream* value, uint64_t value_alignment) {
+void BundlePool::add_entry(tag_type tag, std::istream* value, uint64_t value_alignment) {
     Bundle pack;
     pack.tag = tag;
     value->seekg(0, std::ios::end);
@@ -33,7 +32,7 @@ void BundlePool::add_entry(tag_t tag, std::stringstream* value, uint64_t value_a
     append(std::move(pack), value_alignment);
 }
 
-void BundlePool::add_entry(tag_t tag, uint64_t length, const byte_t* value, uint64_t value_alignment) {
+void BundlePool::add_entry(tag_type tag, uint64_t length, const byte_type* value, uint64_t value_alignment) {
     Bundle pack;
     pack.tag = tag;
     pack.length = length;
@@ -41,7 +40,7 @@ void BundlePool::add_entry(tag_t tag, uint64_t length, const byte_t* value, uint
     append(std::move(pack), value_alignment);
 }
 
-void BundlePool::add_entry(tag_t tag, const std::vector<byte_t>& value, uint64_t value_alignment) {
+void BundlePool::add_entry(tag_type tag, const std::vector<byte_type>& value, uint64_t value_alignment) {
     Bundle pack;
     pack.tag = tag;
     pack.length = value.size();
@@ -49,7 +48,7 @@ void BundlePool::add_entry(tag_t tag, const std::vector<byte_t>& value, uint64_t
     append(std::move(pack), value_alignment);
 }
 
-void BundlePool::add_entry(tag_t tag, std::vector<byte_t>&& value, uint64_t value_alignment) {
+void BundlePool::add_entry(tag_type tag, std::vector<byte_type>&& value, uint64_t value_alignment) {
     Bundle pack;
     pack.tag = tag;
     pack.length = value.size();
@@ -57,12 +56,12 @@ void BundlePool::add_entry(tag_t tag, std::vector<byte_t>&& value, uint64_t valu
     append(std::move(pack), value_alignment);
 }
 
-const std::vector<Bundle>& BundlePool::entries() const {
-    return m_entries;
+const std::vector<Bundle>& BundlePool::pool() const {
+    return m_pool;
 }
 
 void BundlePool::write_to(std::ostream& dest) {
-    for (const auto& pack : m_entries) {
+    for (const auto& pack : m_pool) {
         dest.write(reinterpret_cast<const char*>(&pack.tag), sizeof(pack.tag));
         dest.write(reinterpret_cast<const char*>(&pack.length), sizeof(pack.length));
         dest.write(reinterpret_cast<const char*>(&pack.value_offset), sizeof(pack.value_offset));
@@ -70,7 +69,7 @@ void BundlePool::write_to(std::ostream& dest) {
         auto current_pos = dest.tellp();
         if (current_pos < static_cast<std::streampos>(pack.value_offset)) {
             const size_t padding_size = pack.value_offset - current_pos;
-            const std::vector<byte_t> padding(padding_size, 0);
+            const std::vector<byte_type> padding(padding_size, 0);
             dest.write(padding.data(), static_cast<std::streamsize>(padding_size));
         }
         // write value
@@ -78,10 +77,10 @@ void BundlePool::write_to(std::ostream& dest) {
                                                      dest.write(buffer_view.data,
                                                                 static_cast<std::streamsize>(buffer_view.size));
                                                  },
-                                                 [&dest](std::stringstream* stream) {
+                                                 [&dest](std::istream* stream) {
                                                      dest << stream->rdbuf();
                                                  },
-                                                 [&dest](const std::vector<byte_t>& data) {
+                                                 [&dest](const std::vector<byte_type>& data) {
                                                      dest.write(data.data(), static_cast<std::streamsize>(data.size()));
                                                  }};
         std::visit(value_to_stream, pack.value);
@@ -89,7 +88,7 @@ void BundlePool::write_to(std::ostream& dest) {
 }
 
 void BundlePool::read_from(std::istream& src) {
-    m_entries.clear();
+    m_pool.clear();
     ind_pos = 0;
     while (src.peek() != EOF) {
         Bundle pack;
@@ -103,12 +102,14 @@ void BundlePool::read_from(std::istream& src) {
         // move to value offset
         src.seekg(pack.value_offset, std::ios::beg);
         // read value
-        std::vector<byte_t> buffer(pack.length);
+        std::vector<byte_type> buffer(pack.length);
         src.read(buffer.data(), static_cast<std::streamsize>(pack.length));
         pack.value = std::move(buffer);
-        m_entries.push_back(std::move(pack));
+        m_pool.push_back(std::move(pack));
     }
 }
+
+void BundlePool::read_as_streams_from(std::istream& src) {}
 
 void BundlePool::append(Bundle&& pack, uint64_t value_alignment) {
     if (value_alignment == 0) {
@@ -119,12 +120,12 @@ void BundlePool::append(Bundle&& pack, uint64_t value_alignment) {
     // Assumed invariant order of bundles to store. If needed otherwise the offset calculation should go to write
     // method.
     pack.entry_offset = ind_pos;
-    constexpr uint64_t header_size = sizeof(pack.tag) + sizeof(pack.value_length()) + sizeof(pack.value_offset);
+    constexpr uint64_t header_size = sizeof(pack.tag) + sizeof(pack.length) + sizeof(pack.value_offset);
     pack.value_offset = pack.entry_offset + header_size + value_alignment - 1;
     pack.value_offset -= pack.value_offset % value_alignment;
     pack.entry_size = (pack.value_offset - pack.entry_offset) + pack.length;
     ind_pos += pack.entry_size;
-    m_entries.push_back(std::move(pack));
+    m_pool.push_back(std::move(pack));
 }
 
 BlobsCacheEmulation::BlobsCacheEmulation(std::filesystem::path blobs_path) : m_blobs_path(std::move(blobs_path)) {}
@@ -153,9 +154,9 @@ void BlobsCacheEmulation::write_to_file() {
     // blobs add content summary
 
     for (auto& [id, stream] : m_blob_streams) {
-        blobs.add_entry(static_cast<BundlePool::tag_t>(Tag::blob_id),
-                        std::vector<BundlePool::byte_t>(id.begin(), id.end()));
-        blobs.add_entry(static_cast<BundlePool::tag_t>(Tag::blob_data), &stream);
+        blobs.add_entry(static_cast<BundlePool::tag_type>(Tag::blob_id),
+                        std::vector<BundlePool::byte_type>(id.begin(), id.end()));
+        blobs.add_entry(static_cast<BundlePool::tag_type>(Tag::blob_data), &stream);
     }
     blobs.write_to(blobs_file);
     blobs_file.close();
@@ -165,4 +166,3 @@ void BlobsCacheEmulation::read_from_file() {
     // implementation here
 }
 }  // namespace ov::storage
-#endif  // BLOBS_STORAGE_ENABLED
