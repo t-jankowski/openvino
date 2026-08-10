@@ -99,7 +99,7 @@ TEST(RTInfoCustom, simple_entries) {
         OV_ASSERT_NO_THROW(value = util::rt_info_get_user_data(abs_rti, "infoC").as<std::string>());
         EXPECT_EQ(value.compare("C"), 0);
 
-        const auto& abs_output_rti = abs->output(0).get_rt_info();
+        const auto abs_output_rti = abs->output(0).get_rt_info();
         EXPECT_EQ(abs_output_rti.size(), 1);
         OV_ASSERT_NO_THROW(value = util::rt_info_get_user_data(abs_output_rti, "infoD").as<std::string>());
         EXPECT_EQ(value.compare("D"), 0);
@@ -192,7 +192,7 @@ TEST(RTInfoCustom, nested_entries) {
     EXPECT_EQ(value.compare("C"), 0);
 
     const auto abs = model->get_results().at(0)->get_input_node_ptr(0);
-    const auto& abs_rti = abs->output(0).get_rt_info();
+    const auto abs_rti = abs->output(0).get_rt_info();
     EXPECT_EQ(abs_rti.size(), 1);
     OV_ASSERT_NO_THROW(any_map = util::rt_info_get_user_data(abs_rti, "nested_0").as<AnyMap>());
     EXPECT_EQ(any_map.size(), 1);
