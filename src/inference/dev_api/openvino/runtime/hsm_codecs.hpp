@@ -12,6 +12,8 @@
 #include <cstdint>
 #include <cstring>
 #include <optional>
+#include <string>
+#include <string_view>
 
 #include "openvino/runtime/hsm_format.hpp"
 #include "openvino/util/memory.hpp"
@@ -40,6 +42,21 @@ inline std::optional<uint64_t> decode_model_id(ov::util::MemoryView section) noe
     }
     std::memcpy(&id, section.data(), sizeof(id));
     return id;
+}
+
+/**
+ * @brief Byte view of @p options, for #IWriter::add_section() on a #compiled_options_tag section.
+ * @param options Opaque, plugin-defined text (e.g. `"key=value;key2=value2"`) - this layer neither parses
+ * nor validates it. Borrowed, never copied - the returned view stays valid only as long as @p options does.
+ */
+inline ov::util::MemoryView encode_compiled_options(std::string_view options) noexcept {
+    return {reinterpret_cast<const std::byte*>(options.data()), options.size()};
+}
+
+/// Recovers the text written by #encode_compiled_options() - a byte copy, embedded `'\0'` included, no parsing.
+inline std::optional<std::string> decode_compiled_options(ov::util::MemoryView section) {
+    return section.size() == 0 ? std::string{}
+                               : std::string{reinterpret_cast<const char*>(section.data()), section.size()};
 }
 
 }  // namespace v1
