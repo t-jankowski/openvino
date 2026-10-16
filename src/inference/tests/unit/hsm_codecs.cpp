@@ -115,4 +115,107 @@ TEST(HsmModelIdSectionTest, device_scoped_id_decodes_independently_of_the_common
     EXPECT_FALSE(reader->section(hsm::gpu_device_id, hsm::Tags::model_id).has_value());
 }
 
+namespace {
+
+std::string container_with_compiled_options(hsm::DeviceId device, std::string_view options) {
+    std::stringstream stream;
+    auto writer = hsm::DeferredWriter::open(stream);
+    EXPECT_TRUE(writer.has_value());
+    EXPECT_TRUE(writer->add_section(device, hsm::compiled_options_tag, hsm::encode_compiled_options(options)));
+    EXPECT_EQ(writer->finalize(), std::error_code{});
+    return stream.str();
+}
+
+}  // namespace
+
+TEST(HsmCompiledOptionsSectionTest, round_trips_through_a_real_writer_and_reader) {
+    const std::string options = "key=value;key2=value2";
+
+    const auto bytes = container_with_compiled_options(hsm::any_device_id, options);
+    const auto reader = open_reader(bytes);
+    ASSERT_TRUE(reader.has_value());
+
+    const auto section = reader->section(hsm::Tags::compiled_options);
+    ASSERT_TRUE(section.has_value());
+    const auto payload = section->view();
+    ASSERT_TRUE(payload.has_value());
+    EXPECT_EQ(hsm::decode_compiled_options(*payload), options);
+}
+
+TEST(HsmCompiledOptionsSectionTest, empty_options_round_trip) {
+    const auto bytes = container_with_compiled_options(hsm::any_device_id, "");
+    const auto reader = open_reader(bytes);
+    ASSERT_TRUE(reader.has_value());
+
+    const auto section = reader->section(hsm::Tags::compiled_options);
+    ASSERT_TRUE(section.has_value());
+    const auto payload = section->view();
+    ASSERT_TRUE(payload.has_value());
+    EXPECT_EQ(hsm::decode_compiled_options(*payload), "");
+}
+
+TEST(HsmCompiledOptionsSectionTest, embedded_nul_and_high_bytes_round_trip_unchanged) {
+    // Pointer-mode sections are size-prefixed by the manifest entry, not length-prefixed in the payload
+    // itself - an embedded '\0' or a byte above 0x7f must not truncate or corrupt the decoded content.
+    const std::string options{"before\x00"
+                              "\x7f\x80\xff"
+                              "after",
+                              15};
+
+    const auto bytes = container_with_compiled_options(hsm::any_device_id, options);
+    const auto reader = open_reader(bytes);
+    ASSERT_TRUE(reader.has_value());
+
+    const auto section = reader->section(hsm::Tags::compiled_options);
+    ASSERT_TRUE(section.has_value());
+    const auto payload = section->view();
+    ASSERT_TRUE(payload.has_value());
+    EXPECT_EQ(hsm::decode_compiled_options(*payload), options);
+}
+
+TEST(HsmCompiledOptionsSectionTest, device_scoped_options_decode_independently_of_the_common_one) {
+    const std::string common_options = "shared=1";
+    const std::string npu_options = "npu-only=1";
+
+    std::stringstream stream;
+    auto writer = hsm::DeferredWriter::open(stream);
+    ASSERT_TRUE(writer.has_value());
+    ASSERT_TRUE(writer->add_section(hsm::any_device_id,
+                                    hsm::compiled_options_tag,
+                                    hsm::encode_compiled_options(common_options)));
+    ASSERT_TRUE(
+        writer->add_section(hsm::npu_device_id, hsm::compiled_options_tag, hsm::encode_compiled_options(npu_options)));
+    ASSERT_EQ(writer->finalize(), std::error_code{});
+
+    const auto bytes = stream.str();
+    const auto reader = open_reader(bytes);
+    ASSERT_TRUE(reader.has_value());
+
+    const auto common = reader->section(hsm::Tags::compiled_options);
+    ASSERT_TRUE(common.has_value());
+    EXPECT_EQ(hsm::decode_compiled_options(*common->view()), common_options);
+
+    const auto overridden = reader->section(hsm::npu_device_id, hsm::Tags::compiled_options);
+    ASSERT_TRUE(overridden.has_value());
+    EXPECT_EQ(hsm::decode_compiled_options(*overridden->view()), npu_options);
+
+    // A device that published no override of its own finds nothing under its id.
+    EXPECT_FALSE(reader->section(hsm::gpu_device_id, hsm::Tags::compiled_options).has_value());
+}
+
+TEST(HsmCompiledOptionsSectionTest, decodes_through_a_stream_backed_reader) {
+    const std::string options = "key=value;key2=value2";
+    std::stringstream stream{container_with_compiled_options(hsm::any_device_id, options)};
+
+    // Opened over a stream rather than a buffer, so Section::view() is unavailable and the decoder must
+    // go through make_section_decoder()'s Section::read() fallback instead.
+    const auto reader = hsm::Reader::open(stream);
+    ASSERT_TRUE(reader.has_value());
+
+    const auto decoded = reader->decode(hsm::Tags::compiled_options,
+                                        hsm::make_section_decoder<std::string>(hsm::decode_compiled_options));
+    ASSERT_TRUE(decoded.has_value());
+    EXPECT_EQ(*decoded, options);
+}
+
 }  // namespace ov::test
