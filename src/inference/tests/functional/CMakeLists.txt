@@ -46,6 +46,7 @@ ov_add_test_target(
         SOURCES
             ${CMAKE_CURRENT_SOURCE_DIR}/caching_test.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/get_supported_property_test.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/hsm_multi_blob_writer.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/import_model.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/local_test.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/matmul_sr_tests.cpp
