@@ -131,11 +131,12 @@ bool all_in_range(const std::array<T, N>& values, T low, T high) {
 
 // Every Core tag id. Listing them here is what makes the uniqueness and count guards below meaningful:
 // adding a tag to Tags without adding it here fails the build.
-constexpr std::array<uint32_t, 5> k_core_tag_ids{hsm::model_id,
+constexpr std::array<uint32_t, 6> k_core_tag_ids{hsm::model_id,
                                                  hsm::model,
                                                  hsm::runtime_requirements,
                                                  hsm::weights,
-                                                 hsm::compiled_options};
+                                                 hsm::compiled_options,
+                                                 hsm::shared_context};
 
 // Every assigned device id, pinned the same way as k_core_tag_ids.
 constexpr std::array<hsm::DeviceId, 5> k_device_ids{hsm::any_device_id,
@@ -221,6 +222,9 @@ TEST_F(HsmFormatLayoutCompatibilityTest, core_tags_have_fixed_mode) {
     static_assert(hsm::compiled_options_tag.id() == hsm::compiled_options, "compiled_options_tag id");
     static_assert(hsm::compiled_options_tag.is_pointer(), "compiled_options_tag must always be pointer-mode");
 
+    static_assert(hsm::shared_context_tag.id() == hsm::shared_context, "shared_context_tag id");
+    static_assert(hsm::shared_context_tag.is_pointer(), "shared_context_tag must always be pointer-mode");
+
     SUCCEED();
 }
 
@@ -247,8 +251,16 @@ TEST_F(HsmFormatLayoutCompatibilityTest, core_tag_values_are_pinned) {
                   "Tags::runtime_requirements value changed");
     static_assert(static_cast<uint32_t>(hsm::Tags::weights) == 4, "Tags::weights value changed");
     static_assert(static_cast<uint32_t>(hsm::Tags::compiled_options) == 5, "Tags::compiled_options value changed");
+    static_assert(static_cast<uint32_t>(hsm::Tags::shared_context) == 6, "Tags::shared_context value changed");
 
     SUCCEED();
+}
+
+TEST_F(HsmFormatLayoutCompatibilityTest, multi_blob_alignment_is_pinned) {
+    static_assert(hsm::multi_blob_alignment == 4096, "multi_blob_alignment changed");
+    static_assert((hsm::multi_blob_alignment & (hsm::multi_blob_alignment - 1)) == 0,
+                  "multi_blob_alignment must be a power of two");
+    static_assert(hsm::multi_blob_alignment >= sizeof(hsm::Header), "a container header must fit its alignment unit");
 }
 
 TEST_F(HsmFormatLayoutCompatibilityTest, core_tag_ids_cannot_be_shared) {

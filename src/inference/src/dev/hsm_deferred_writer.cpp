@@ -52,9 +52,9 @@ constexpr std::optional<SectionSlot> reserve_slot(size_t cursor, size_t size, Se
     }
 }
 
-constexpr Header make_header(size_t manifest_offset, size_t manifest_size, size_t container_size) {
+constexpr Header make_header(BlobMagic magic, size_t manifest_offset, size_t manifest_size, size_t container_size) {
     return {
-        BlobMagic::single,
+        magic,
         FormatVersion::major,
         FormatVersion::minor,
         container_size,
@@ -304,32 +304,34 @@ ManifestEntry DeferredWriter::write_section(DeviceId device,
     return entry;
 }
 
-DeferredWriter::DeferredWriter(std::ostream& stream) noexcept
+DeferredWriter::DeferredWriter(std::ostream& stream, BlobMagic magic) noexcept
     : m_destination{StreamDestination{&stream, stream.tellp()}},
+      m_magic{magic},
       m_sections{},
       m_result{},
       m_has_unsized_section{false} {}
 
-DeferredWriter::DeferredWriter(std::byte* dst, size_t capacity) noexcept
+DeferredWriter::DeferredWriter(std::byte* dst, size_t capacity, BlobMagic magic) noexcept
     : m_destination{BufferDestination{dst, capacity}},
+      m_magic{magic},
       m_sections{},
       m_result{},
       m_has_unsized_section{false} {}
 
-std::optional<DeferredWriter> DeferredWriter::open(std::ostream& stream) {
+std::optional<DeferredWriter> DeferredWriter::open(std::ostream& stream, BlobMagic magic) {
     if (stream.tellp() == std::streampos(-1)) {
         return std::nullopt;
     } else {
-        DeferredWriter writer{stream};
+        DeferredWriter writer{stream, magic};
         return writer.destination_good() ? std::optional<DeferredWriter>{std::move(writer)} : std::nullopt;
     }
 }
 
-std::optional<DeferredWriter> DeferredWriter::open(std::byte* dst, size_t size) {
+std::optional<DeferredWriter> DeferredWriter::open(std::byte* dst, size_t size, BlobMagic magic) {
     if (dst == nullptr || size < sizeof(Header)) {
         return std::nullopt;
     } else {
-        DeferredWriter writer{dst, size};
+        DeferredWriter writer{dst, size, magic};
         return writer.destination_good() ? std::optional<DeferredWriter>{std::move(writer)} : std::nullopt;
     }
 }
@@ -414,7 +416,7 @@ std::error_code DeferredWriter::finalize() {
 
             if (destination_good()) {
                 const auto manifest_size = section_count * sizeof(ManifestEntry);
-                const auto header = make_header(body_size, manifest_size, body_size + manifest_size);
+                const auto header = make_header(m_magic, body_size, manifest_size, body_size + manifest_size);
                 write({reinterpret_cast<const std::byte*>(&header), sizeof(header)});
                 manifest_offset = body_size;
             }
@@ -435,7 +437,8 @@ std::error_code DeferredWriter::finalize() {
         }
         write({reinterpret_cast<const std::byte*>(entries.data()), entries.size() * sizeof(ManifestEntry)});
         if (m_has_unsized_section && destination_good()) {
-            const auto header = make_header(manifest_offset, entries.size() * sizeof(ManifestEntry), written_size());
+            const auto header =
+                make_header(m_magic, manifest_offset, entries.size() * sizeof(ManifestEntry), written_size());
             patch(0, {reinterpret_cast<const std::byte*>(&header), sizeof(header)});
         }
         m_result = destination_good() ? std::error_code{} : make_error_code(WriteErrc::write_failed);

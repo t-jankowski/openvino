@@ -36,18 +36,20 @@ public:
      * @param stream The output stream to write into. Must remain valid until #finalize() is called, and
      * be seekable - needed both to retry after a thrown exception and to revisit the destination when
      * the unsized overload of #add_section() is used.
+     * @param magic Container magic written to the header; #BlobMagic::single for a model blob.
      * @return A DeferredWriter instance if the stream is usable; std::nullopt otherwise.
      */
-    static std::optional<DeferredWriter> open(std::ostream& stream);
+    static std::optional<DeferredWriter> open(std::ostream& stream, BlobMagic magic = BlobMagic::single);
 
     /**
      * @brief Opens a DeferredWriter that writes into the given preallocated buffer.
      *
      * @param dst The preallocated buffer to write into. Must remain valid until #finalize() is called.
      * @param size The size of the preallocated buffer in bytes.
+     * @param magic Container magic written to the header; #BlobMagic::single for a model blob.
      * @return A DeferredWriter instance if the buffer is usable; std::nullopt otherwise.
      */
-    static std::optional<DeferredWriter> open(std::byte* dst, size_t size);
+    static std::optional<DeferredWriter> open(std::byte* dst, size_t size, BlobMagic magic = BlobMagic::single);
 
     /// @note Move-only: copying would silently duplicate owned/generated section payloads.
     DeferredWriter(const DeferredWriter&) = delete;
@@ -79,8 +81,8 @@ public:
     std::error_code finalize() override;
 
 private:
-    explicit DeferredWriter(std::ostream& stream) noexcept;
-    DeferredWriter(std::byte* dst, size_t capacity) noexcept;
+    explicit DeferredWriter(std::ostream& stream, BlobMagic magic) noexcept;
+    DeferredWriter(std::byte* dst, size_t capacity, BlobMagic magic) noexcept;
 
     // A section produced on demand at finalize() time - its size is known up front.
     struct PendingEncode {
@@ -149,6 +151,7 @@ private:
                                 const SectionEncoderPtr& encoder);
 
     std::variant<StreamDestination, BufferDestination> m_destination;
+    BlobMagic m_magic;
     std::vector<PendingSection> m_sections;
     std::optional<std::error_code> m_result;
     bool m_has_unsized_section;

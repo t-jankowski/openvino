@@ -273,6 +273,38 @@ TEST(HsmDeferredWriterTest, writes_into_a_preallocated_buffer) {
     EXPECT_EQ(payload_string(*container, *entry), "model-bytes");
 }
 
+TEST(HsmDeferredWriterTest, writes_the_model_blob_magic_by_default) {
+    std::vector<std::byte> buffer(k_buffer_capacity);
+    auto writer = open_buffer_writer(buffer.data(), buffer.size());
+    ASSERT_EQ(writer.finalize(), std::error_code{});
+
+    EXPECT_EQ(hsm::Header::view(buffer.data()).magic, hsm::BlobMagic::single);
+}
+
+TEST(HsmDeferredWriterTest, writes_the_requested_magic_into_a_buffer) {
+    std::vector<std::byte> buffer(k_buffer_capacity);
+    auto writer = hsm::DeferredWriter::open(buffer.data(), buffer.size(), hsm::BlobMagic::multi);
+    ASSERT_TRUE(writer.has_value());
+    ASSERT_EQ(writer->finalize(), std::error_code{});
+
+    const auto container = parse_container(buffer.data(), buffer.size());
+    ASSERT_TRUE(container.has_value());
+    EXPECT_EQ(container->header.magic, hsm::BlobMagic::multi);
+}
+
+TEST(HsmDeferredWriterTest, writes_the_requested_magic_into_a_stream_with_an_unsized_section) {
+    // The unsized path patches the header after the fact - the magic must survive that second write.
+    std::stringstream stream;
+    auto writer = hsm::DeferredWriter::open(stream, hsm::BlobMagic::multi);
+    ASSERT_TRUE(writer.has_value());
+    ASSERT_TRUE(writer->add_section(fake_device_id, hsm::model_tag, std::make_shared<OwnedStringEncoder>("payload")));
+    ASSERT_EQ(writer->finalize(), std::error_code{});
+
+    const auto container = parse_container(stream.str());
+    ASSERT_TRUE(container.has_value());
+    EXPECT_EQ(container->header.magic, hsm::BlobMagic::multi);
+}
+
 TEST(HsmDeferredWriterTest, pads_an_alignment_gap_larger_than_the_internal_zero_fill_chunk) {
     // write_zeros() fills padding gaps via a small internal buffer reused in a loop - this forces a gap
     // bigger than that buffer, exercising more than one iteration of it.
